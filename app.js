@@ -43,7 +43,7 @@ module.exports = () => {
   const start = () => {
     const hostname = server.get('hostname');
     const port = server.get('port');
-    const uri = 'mongodb+srv://root:root@grocery-system-wa6ge.mongodb.net/aapki-dokan?retryWrites=true&w=majority';
+    const uri = 'mongodb+srv://root:root@grocery-system-wa6ge.mongodb.net/grocery-demo?retryWrites=true&w=majority';
     mongoose.connect(uri, {
       useNewUrlParser: true
     });

@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Your order details</title>
+  <style>
+    body {
+      font-size: 16px;
+    }
+
+    table {
+      width: 70%;
+      margin: auto;
+    }
+
+    .order-table-body td {
+      border: 1px solid #ccc;
+      padding: 6px 12px;
+    }
+
+    .order-table-footer td {
+      border: 1px solid #1faf4b;
+      padding: 6px 12px;
+    }
+
+    .m-0 {
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <table cellpadding="0" cellspacing="0">
+    <thead>
+      <tr>
+        <td colspan="5">
+          <h2>Hi <%= customer.full_name %>!</h2>
+          <p>Thanks for using Essentials Delight! <%= orderStatusString %>.</p>
+        </td>
+      </tr>
+    </thead>
+    <tbody class="order-table-body">
+      <tr class="heading">
+        <td>ITEM</td>
+        <td>SIZE</td>
+        <td>PRICE PER QUANTITY</td>
+        <td>QUANTITY</td>
+        <td>TOTAL</td>
+      </tr>
+
+      <% order.products.forEach(function(product, index) { %>
+        <% product.variants.forEach(function(singleVariant) { %>
+      <tr class="item">
+        <td><%= product.name %></td>
+         <td><%= singleVariant.size %> </td>
+         <td align="center">INR <%= singleVariant.price %></td>
+         <td align="center"><%= singleVariant.count %></td>
+         <td align="right">INR <%= singleVariant.price * singleVariant.count %></td>
+       </tr>
+      <% }) %>
+      <% }) %>
+    </tbody>
+    <tfoot class="order-table-footer" style="background-color:#1faf4b; -webkit-print-color-adjust: exact;">
+      <tr style="background-color: #1faf4b;">
+        <td colspan="5">
+          <p class="m-0">Order Price: INR <%= order.total_amount %></p>
+          <p class="m-0">Delivery Charges: INR <%= order.delivery_charges %></p>
+          <%if (order.taxes && order.taxes.length) { %>
+          <p class="m-0">Taxes: INR <%= (order.taxes || []).reduce((sum, tax) => sum + tax.value, 0) %></p>
+          <% } %>
+          <p class="m-0">Discount: INR <%= order.discount || 0 %></p>
+          <p class="m-0">Total Price: INR <%= (order.total_amount_after_tax + order.delivery_charges) - order.discount %></p>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+  </div>
+</body>
+
+</html>

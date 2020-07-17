@@ -1,0 +1,20 @@
+# dependencies
+/node_modules
+/static/uploads
+/mongo-help.js
+/package-lock.json
+/apidoc
+/apidoc.zip
+/apidoc.json
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# System Files
+.DS_Store
+Thumbs.db

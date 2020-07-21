@@ -127,6 +127,34 @@ class StoreController {
       return res.status(500).send(ResponseService.failure(e));
     }
   }
+
+  async getStoreFromArea(req, res) {
+    try{
+      const {lat, long, storeId }  = req.query;
+      const filters = {limit: 10};
+      let store = null;
+      if (storeId) {
+        store = await StoreService.getStore({
+          _id: mongoose.Types.ObjectId(storeId)
+        });
+      } else if(lat && long) {
+        store = await StoreService.getStoreByArea({ lat: parseInt(lat), long: parseInt(long)});
+      } else {
+        store = await StoreService.getStore({
+          _id: mongoose.Types.ObjectId('5e2eca2ad21fe166d8c93159')
+        });
+      }
+      if(!store) {
+        throw new apiError.ValidationError('store', 'Store not found');
+      }
+      return res.status(200).send(ResponseService.success({
+        store
+      }))
+    }
+    catch(e) {
+      return res.status(500).send(ResponseService.failure(e))
+    }
+  }
 }
 
 module.exports = new StoreController();

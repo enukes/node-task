@@ -200,5 +200,42 @@ module.exports = {
 
   getStoreByCategoryId(storeCategoryId) {
     return Store.findOne({ storeCategory: storeCategoryId });
+  },
+
+  getStoreByArea(request) {
+    return Store.aggregate([
+      {
+        $geoNear: {
+          near: {
+            type: "Point",
+            coordinates: [request.lat, request.long]
+          },
+          distanceField: "dist.calculated",
+          maxDistance: 20000
+        }
+      },
+      {
+        $group: {
+          _id: '$storeCategory',
+          stores: { $push: '$$ROOT' }
+        }
+      },
+      {
+        $lookup: {
+          from: 'storecategories',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'categoryDetails'
+        }
+      },
+      {
+        $match: {
+          'categoryDetails.status': 1
+        }
+      },
+      {
+        $unwind: '$categoryDetails'
+      }
+    ])
   }
 };

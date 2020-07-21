@@ -8,7 +8,7 @@ const StoreController = require('../../../controllers/customer/store');
 
 router.get('/link', StoreController.getStoreDetailsFromLink);
 
-router.get('/', StoreController.getStoreBasedOnArea);
+router.get('/', StoreController.getStoreFromArea);
 
 /**
  * @api {get} /api/customer/store Get Stores

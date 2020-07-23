@@ -3,12 +3,9 @@
 const moment = require('moment-timezone');
 const rp = require('request-promise');
 const helper = require('../common/helper');
-
 const config = require('../config/constants');
-
 const AuthService = require('../services/auth');
 const Mailer = require('../common/mailer');
-
 const apiError = require('../common/api-errors');
 const messages = require('../common/messages');
 
@@ -56,7 +53,7 @@ module.exports = {
           password: config.otp.password,
           originator: config.otp.originator,
           recipient: contact,
-          messagedata: `${OTP} is your OTP for Aapkidokan Account, Please don't share this with anyone.`
+          messagedata: `${OTP} is your OTP for Encomendaria, Please don't share this with anyone.`
         },
         headers: {
           'User-Agent': 'Request-Promise'
@@ -70,7 +67,7 @@ module.exports = {
         to: [user.email],
         from: 'aapkidokan@gmail.com',
         subject: 'Account created',
-        html: `<h4>Dear ${user.full_name}!</h4><p>${OTP} is your OTP for Essentials Delight Account, Please don't share this with anyone.</p><br>`
+        html: `<h4>Dear ${user.full_name}!</h4><p>${OTP} is your OTP for Encomendaria, Please don't share this with anyone.</p><br>`
       });
     } catch (error) {
       console.log(error);

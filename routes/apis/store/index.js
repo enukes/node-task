@@ -1,7 +1,5 @@
 const express = require('express');
-
 const router = express.Router();
-
 const AuthRoutes = require('./auth');
 const ProductRoutes = require('./product');
 const CategoryRoutes = require('./category');
@@ -10,7 +8,6 @@ const SlotRoutes = require('./slot');
 const CouponRoutes = require('./coupon');
 const ReportRoutes = require('./report');
 const CommonRoutes = require('./common');
-
 const isStoreAdminMiddleware = require('../../../middlewares/is-store-admin');
 
 router.use('/auth', AuthRoutes);

@@ -1,7 +1,5 @@
 const express = require('express');
-
 const router = express.Router();
-
 const AuthRoutes = require('./auth');
 const CategoryRoutes = require('./category');
 const StoreRoutes = require('./store');
@@ -13,17 +11,13 @@ const CouponRoutes = require('./coupon');
 const AreaRoutes = require('./area');
 const CityRoutes = require('./city');
 const StoreCategoryRoutes = require('./store_category');
-
 const ConfigRoutes = require('./config');
-
 const DriverRoutes = require('./driver');
 const CommonRoutes = require('./common');
-
 const ReportRoutes = require('./report');
 const UserRoutes = require('./user');
 const SlotRoutes = require('./slot');
 const HomeConfigRoutes = require('./home_config');
-
 const isSuperAdminMiddleware = require('../../../middlewares/is-super-admin');
 
 router.use('/auth', AuthRoutes);

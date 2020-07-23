@@ -1,7 +1,5 @@
 const express = require('express');
-
 const router = express.Router();
-
 const AuthRoutes = require('./auth');
 const CommonRoutes = require('./common');
 const StoreRoutes = require('./store');

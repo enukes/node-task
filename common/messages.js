@@ -145,6 +145,8 @@ module.exports = {
   // Driver
   DRIVER_ID_REQUIRED: 'Driver Id is a required field',
   DRIVER_IS_ASSOCIATED: 'Driver is either associated with any store or with any order',
-  IS_ONLINE_REQUIRED: 'online status is required'
+  IS_ONLINE_REQUIRED: 'online status is required',
 
+  //Service
+  SERVICE_SIZE_REQUIRED: 'Size is a required field'
 };

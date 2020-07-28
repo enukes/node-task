@@ -153,5 +153,10 @@ module.exports = {
   //Service Category
   SERVICE_PROVIDER_CATEGORY_ID_INVALID: 'Service Provider category id is Invalid',
   SERVICE_PROVIDER_CATEGORY_ID_ASSOCIATED: 'Service Provider category id is associated with Service Provider',
-  
+
+  //Service Provider
+  SERVICE_PROVIDER_ID_INVALID: 'Service Provider id is Invalid',
+  SERVICE_PROVIDER_ORDER_EXISTS_CANNOT_BE_DELETED: 'Above Service Provider cannot be deleted as order has already been placed from this Service Provider. Please disable it to avoid any further orders.',
+
+
 };

@@ -7,6 +7,7 @@ const bcrypt = require('bcrypt');
 const sh = require('shorthash');
 const AreaService = require('../../services/area');
 const config = require('../../config/constants');
+const ServiceOrderService = require('../../services/service_order');
 
 
 module.exports = {
@@ -83,7 +84,9 @@ module.exports = {
       }
 
       const data = await ServiceProviderService.createServiceProvider(request);
-      if (!data.success) throw new apiError.InternalServerError();
+      if (!data.success){
+        throw new apiError.InternalServerError();
+      }
       return res.status(200).send(ResponseService.success({ service_provider: data.service_provider }));
     } catch (error) {
       return res.status(error.code || 500).send(ResponseService.failure(error))
@@ -179,5 +182,40 @@ module.exports = {
     catch (error) {
       return res.status(error.code || 500).send(ResponseService.failure(error))
     }
-  }
+  },
+
+  /**
+   * Delete Service Provider
+   */
+
+   deleteServiceProvider: async(req, res) => {
+     try{
+       const serviceProviderId = req.params.id;
+       if (!HelperService.isValidMongoId(serviceProviderId)) {
+         throw new apiError.ValidationError('id', messages.ID_INVALID);
+       }
+
+       const serviceProvider = await ServiceProviderService.getServiceProvider({ _id: serviceProviderId });
+       if (!serviceProvider) {
+         throw new apiError.ValidationError('service_provider_id', messages.SERVICE_PROVIDER_ID_INVALID)
+       }
+
+       const serviceOrder = await ServiceOrderService.getServiceOrder({ service_provider_id: serviceProviderId});
+       if (serviceOrder) {
+         throw new apiError.ValidationError('service_provider_id', messages.SERVICE_PROVIDER_ORDER_EXISTS_CANNOT_BE_DELETED)
+       }
+
+       const deletedServiceProvider = await ServiceProviderService.deleteServiceProvider(serviceProviderId);
+       if (!deletedServiceProvider) {
+         throw new apiError.InternalServerError();
+       }
+
+       return res.status(200).send(ResponseService.success({ service_provider: deletedServiceProvider}))
+
+     }
+     catch(error){
+       return res.status(error.code || 500).send(ResponseService.failure(error))
+     }
+
+   }
 }

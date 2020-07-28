@@ -5,6 +5,7 @@ const ServiceProviderController = require('../../../controllers/admin/service_pr
 
 router.post('/', Upload.any(), ServiceProviderController.addAServiceProvider);
 router.put('/:id', Upload.any(), ServiceProviderController.updateAServiceProvider);
-router.get('/', ServiceProviderController.getServiceProviderList)
+router.get('/', ServiceProviderController.getServiceProviderList);
+router.delete('/:id', ServiceProviderController.deleteServiceProvider);
 
 module.exports = router;

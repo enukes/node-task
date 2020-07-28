@@ -125,7 +125,7 @@ module.exports = {
    * Delete Service Provider
    */
 
-  async deleteStore(service_provider_id, parentSession) {
+  async deleteServiceProvider(service_provider_id, parentSession) {
     let session;
 
     if (parentSession) {
@@ -137,17 +137,17 @@ module.exports = {
     const opts = { session };
 
     try {
-      const categories = await CategoryService.getCategories(service_provider_id);
+      // const categories = await CategoryService.getCategories(service_provider_id);
 
-      for (let i = 0; i < categories.length; i++) {
-        const category = categories[i];
+      // for (let i = 0; i < categories.length; i++) {
+      //   const category = categories[i];
 
-        if (category._id) {
-          const deletedCategory = await CategoryService.deleteCategory(category, session);
-        } else {
-          throw new Error('Invalid Category ID');
-        }
-      }
+      //   if (category._id) {
+      //     const deletedCategory = await CategoryService.deleteCategory(category, session);
+      //   } else {
+      //     throw new Error('Invalid Category ID');
+      //   }
+      // }
 
       const deletedServiceProvider = await ServiceProvider.deleteMany({ _id: service_provider_id }, opts);
 

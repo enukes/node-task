@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const ServiceProviderCategeoryController = require('../../../controllers/admin/service_provider_category');
 
+router.get('/', ServiceProviderCategeoryController.getServiceProviderCategories);
 router.post('/', ServiceProviderCategeoryController.addServiceCategory);
 
 

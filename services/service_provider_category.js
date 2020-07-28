@@ -36,5 +36,28 @@ module.exports = {
        ]
      };
      return ServiceProviderCategory.countDocuments(condition);
-   }
+   },
+
+   /**
+    * Get Service Provider Category by Id
+    */
+   getServiceProviderCategoryById(id) {
+     return ServiceProviderCategory.findById(id);
+   },
+
+   /**
+    * Update Service Provider Category
+    */
+
+    updateServiceProviderCategory(criteria, serviceProviderCategoryDetails) {
+      return ServiceProviderCategory.findOneAndUpdate(criteria, serviceProviderCategoryDetails, {new: true} );
+    },
+
+    /**
+     * Delete Service Provider Category
+     */
+
+     deleteServiceProviderCategory(serviceProviderCategoryId) {
+       return ServiceProviderCategory.deleteMany({ _id: serviceProviderCategoryId });
+     }
 }

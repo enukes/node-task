@@ -1,8 +1,10 @@
 const router = require('express').Router();
-const ServiceProviderCategeoryController = require('../../../controllers/admin/service_provider_category');
+const ServiceProviderCategoryController = require('../../../controllers/admin/service_provider_category');
 
-router.get('/', ServiceProviderCategeoryController.getServiceProviderCategories);
-router.post('/', ServiceProviderCategeoryController.addServiceCategory);
+router.get('/', ServiceProviderCategoryController.getServiceProviderCategories);
+router.post('/', ServiceProviderCategoryController.addServiceCategory);
+router.put('/:id', ServiceProviderCategoryController.updateServiceProviderCategory);
+router.delete('/:id', ServiceProviderCategoryController.deleteServiceProviderCategory);
 
 
 module.exports = router; 

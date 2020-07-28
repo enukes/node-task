@@ -102,7 +102,7 @@ const schema = Schema(
         required: true
       }
     },
-    storeCategory: {
+    serviceCategory: {
       type: mongoose.Schema.Types.ObjectId,
       required: true
     },

@@ -19,6 +19,7 @@ const UserRoutes = require('./user');
 const SlotRoutes = require('./slot');
 const HomeConfigRoutes = require('./home_config');
 const isSuperAdminMiddleware = require('../../../middlewares/is-super-admin');
+const ServiceProviderCategory = require('./service_provider_category');
 
 router.use('/auth', AuthRoutes);
 router.use('/category', isSuperAdminMiddleware, CategoryRoutes);
@@ -37,6 +38,7 @@ router.use('/user', isSuperAdminMiddleware, UserRoutes);
 router.use('/offer', isSuperAdminMiddleware, OfferRoutes);
 router.use('/slot', isSuperAdminMiddleware, SlotRoutes);
 router.use('/home-config', isSuperAdminMiddleware, HomeConfigRoutes);
+router.use('/service-category', isSuperAdminMiddleware, ServiceProviderCategory);
 router.use('/', isSuperAdminMiddleware, CommonRoutes);
 
 module.exports = router;

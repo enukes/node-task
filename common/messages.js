@@ -149,6 +149,7 @@ module.exports = {
 
   //Service
   SERVICE_SIZE_REQUIRED: 'Size is a required field',
+  SERVICE_ID_REQUIRED: 'Service Id is a required field',
 
   //Service Category
   SERVICE_PROVIDER_CATEGORY_ID_INVALID: 'Service Provider category id is Invalid',

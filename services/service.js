@@ -48,4 +48,27 @@ module.exports = {
     };
     return Service.countDocuments(condition);
   },
+
+  /**
+   * Find a Service
+   */
+
+  getService(request) {
+    return Service.findOne(request);
+  },
+
+  /**
+   * Update a Service
+   */
+
+  updateService(criteria, details) {
+    return Service.findOneAndUpdate(criteria, details, { new: true });
+  },
+
+  /**
+   * Delete a Service
+   */
+  deleteService(request) {
+    return Product.deleteOne(request);
+  },
 }

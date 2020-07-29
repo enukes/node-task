@@ -3,6 +3,8 @@ const ResponseService = require('../../common/response');
 const config = require('../../config/constants');
 const ServicesService = require('../../services/service');
 const messages = require('../../common/messages');
+const HelperService = require('../../common/helper');
+const mongoose = require('mongoose');
 
 
 module.exports = {
@@ -73,5 +75,56 @@ module.exports = {
     catch (error) {
       return res.status(error.code || 500).send(ResponseService.failure(error))
     }
-  }
+  },
+
+  updateAService: async(req, res) => {
+    try{
+      const request = { ...req.body };
+      const { id } = req.params;
+
+      delete request.created_at;
+      delete request.updated_at;
+      delete request._id;
+      delete request.__v;
+      delete request.service_provider_id;
+
+      if (!request.name) {
+        throw new apiError.ValidationError('service_name', messages.NAME_REQUIRED);
+      }
+      if (!HelperService.isValidMongoId(id)) {
+        throw new apiError.ValidationError('service_id', messages.ID_INVALID);
+      }
+
+      const foundService = await ServicesService.getService({
+        _id: mongoose.Types.ObjectId(id)
+      });
+      if (!foundService) {
+        throw new apiError.ValidationError('service_id', messages.ID_INVALID);
+      }
+      request.pictures = [...(foundService.pictures || []), ...(req.files && req.files.length)
+        ? req.files.map((file) => file.filename)
+        : []];
+
+      if (request.tags) {
+        request.tags = JSON.parse(request.tags);
+        request.tags = request.tags.map((tag) => (tag || '').trim()).filter((tag) => !!tag);
+      }
+
+      const updatedService = await ServicesService.updateService({ _id: id }, request);
+      if (!updatedService) {
+        throw new apiError.InternalServerError();
+      }
+      return res.status(200).send(ResponseService.success({ service: updatedService }));
+    }
+    catch(error) {
+      return res.status(error.code || 500).json(ResponseService,failure(error));
+    }
+  },
+
+  // deleteAService: async(req, res) => {
+  //   try{}
+  //   catch(error) {
+  //     return res.status(error.code || 500).json(ResponseService.failure(error))
+  //   }
+  // }
 }

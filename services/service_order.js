@@ -159,10 +159,22 @@ module.exports = {
       }
     ]);
   },
+  
+  /**
+   * Get Total Orders Count
+   */
 
   getTotalOrdersCount(request) {
     return ServiceOrder.countDocuments(request);
   },
+
+  /**
+   * Update an Order
+   */
+  updateServiceOrder(details, criteria) {
+    return ServiceOrder.findOneAndUpdate(criteria, details, { new: true, upsert: false });
+  },
+
 
 
 

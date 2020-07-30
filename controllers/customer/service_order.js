@@ -16,8 +16,8 @@ const requestPromise = require('request-promise');
 
 const ServiceOrderController = {
   async placeServiceOrder(req, res) {
-    try{
-      const request = {...req.body };
+    try {
+      const request = { ...req.body };
       const type = ServiceOrderController.getUserType(req.baseUrl);
       const userId = type === 1 ? req.body.user_id : req._userInfo._user_id;
       const orderDetails = {};
@@ -30,7 +30,7 @@ const ServiceOrderController = {
       if (!request.address_id) {
         throw new apiError.ValidationError('address_id', messages.ADDRESS_ID_REQUIRED);
       }
-      
+
       if (!request.service_provider_address_id) {
         throw new apiError.ValidationError('service_provider_address_id', messages.ADDRESS_ID_REQUIRED);
       }
@@ -45,15 +45,15 @@ const ServiceOrderController = {
 
       orderDetails.address = {};
       orderDetails.address.delivery = address;
-      if (!request.service_provider_id)  {
+      if (!request.service_provider_id) {
         throw new apiError.ValidationError('service_provider_id', messages.SERVICE_PROVIDER_ID_INVALID);
       }
 
       const serviceProvider = await ServiceProviderService.getServiceProvider({ _id: request.service_provider_id });
-      if (!serviceProvider)  {
+      if (!serviceProvider) {
         throw new apiError.ValidationError('service_provider_id', messages.SERVICE_PROVIDER_ID_INVALID);
       }
-      if (!request.slot_id )  {
+      if (!request.slot_id) {
         throw new apiError.ValidationError('slot_id', messages.SLOT_ID_REQUIRED);
       }
 
@@ -61,7 +61,7 @@ const ServiceOrderController = {
 
       if (request.slot_id) {
         const slot = await SlotService.getSlot({ _id: request.slot_id, store_id: serviceProvider._id });
-        if (!slot)  {
+        if (!slot) {
           throw new apiError.ValidationError('slot_id', messages.SLOT_ID_INVALID);
         }
 
@@ -69,7 +69,7 @@ const ServiceOrderController = {
           throw new apiError.ValidationError('slot_id', messages.SLOT_INACTIVE);
         }
 
-        if (slot.ordersCount >= adminConfig.per_slot_order_limit)  {
+        if (slot.ordersCount >= adminConfig.per_slot_order_limit) {
           throw new apiError.ValidationError('slot', messages.SLOT_FULL);
         }
 
@@ -88,7 +88,7 @@ const ServiceOrderController = {
       } else {
         orderDetails.deliver_start_time = moment().toISOString();
         orderDetails.deliver_end_time = moment().add(2, 'h').toISOString();
-        orderDetails.is_express_delivery = true;
+        // orderDetails.is_express_delivery = true;
       }
 
       orderDetails.customer_id = userId;
@@ -102,14 +102,14 @@ const ServiceOrderController = {
         return false;
       });
 
-      if (!isServiceProviderAddressValid)  {
+      if (!isServiceProviderAddressValid) {
         throw new apiError.ValidationError('service_provider_address_id', messages.SERVICE_PROVIDER_ID_INVALID);
       }
 
       const areServicesPresent = !!request.services
         && Array.isArray(request.services)
         && request.services.every((serviceProvider) => (
-          !!serviceProvider && !!serviceProvider.size && !!serviceProvider.price 
+          !!serviceProvider && !!serviceProvider.size && !!serviceProvider.price
         ));
 
       if (!areServicesPresent) {
@@ -175,8 +175,8 @@ const ServiceOrderController = {
         });
 
         orderDetails.total_amount += (serviceDetail.price.sale_price * service.count);
-  
-          }
+
+      }
 
       const { taxes } = adminConfig;
       let totalAmountAfterTax = orderDetails.total_amount;
@@ -199,11 +199,11 @@ const ServiceOrderController = {
           throw new apiError.ValidationError('coupon_id', messages.COUPON_ID_INVALID);
         }
 
-        if (coupon.usage < 1)  {
+        if (coupon.usage < 1) {
           throw new apiError.ValidationError('coupon_id', messages.COUPON_ID_INVALID);
         }
 
-        if (orderDetails.total_amount < coupon.min_order_amount)  {
+        if (orderDetails.total_amount < coupon.min_order_amount) {
           throw new apiError.ValidationError('coupon_code', `This coupon can only be applied on amount  ${coupon.min_order_amount} PKR or greater`);
         }
 
@@ -287,14 +287,14 @@ const ServiceOrderController = {
         orderStatusString: `Your order has been confirmed with order id ${`${serviceOrder.order_id}`.toUpperCase()}`
       });
       return res.status(200).send(ResponseService.success({ serviceOrder }));
-      }
-    catch(error) {
+    }
+    catch (error) {
       return res.status(error.code || 500).send(ResponseService.failure(error))
     }
   },
 
-  async getServiceOrders (req, res) {
-    try{
+  async getServiceOrders(req, res) {
+    try {
       const userId = req._userInfo._user_id;
 
       const customer = await CustomerService.getCustomer({ _id: userId });
@@ -352,7 +352,7 @@ const ServiceOrderController = {
 
       return res.status(200).send(ResponseService.success({ orders, totalCount: orderCount }));
     }
-    catch(error) {
+    catch (error) {
       return res.status(error.code || 500).send(ResponseService.failure(error))
     }
   },

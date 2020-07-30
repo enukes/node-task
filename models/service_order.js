@@ -114,10 +114,9 @@ const schema = new mongoose.Schema({
     type: Number,
     enum: [
       1, // Placed
-      2, // Picked Up
-      3, // Fulfilled
-      4, // UnFulfilled
-      5, // Cancelled
+      2, // Fulfilled
+      3, // UnFulfilled
+      4, // Cancelled
     ],
     default: 1
   },

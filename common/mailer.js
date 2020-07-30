@@ -63,6 +63,33 @@ const MailerService = {
     }
   },
 
+  async sendPlacedServiceOrderToCustomer({
+    serviceOrder,
+    customer,
+    subject,
+    orderStatusString
+  }) {
+    try {
+      const htmlString = fs.readFileSync(path.join(__dirname, '../views/layouts/order-placed-template.ejs'), { encoding: 'utf8' });
+      const html = ejs.render(htmlString, { customer, serviceOrder, orderStatusString });
+
+      const payload = {
+        to: [customer.email, serviceOrder.address.delivery.email],
+        from: 'aapkidokan@gmail.com',
+        subject,
+        html
+      };
+
+      const mailer = await MailerService.sendMail(payload);
+      if (mailer.status === false) throw mailer.error;
+
+      return { status: true, data: mailer.data };
+    } catch (e) {
+      console.log(e);
+      return { status: false, error: e };
+    }
+  },
+
 
   async sendInvoice(order, customer, pdf) {
     try {

@@ -175,7 +175,142 @@ module.exports = {
     return ServiceOrder.findOneAndUpdate(criteria, details, { new: true, upsert: false });
   },
 
+  // getting orders for super-admin
+  async getServiceOrdersWithPagination(request, pageNo, perPage, search, sort = null) {
+    if (sort) {
+      return ServiceOrder.aggregate([
+        {
+          $match: {
+            $and:
+              [
+                {
+                  $or:
+                    [
+                      { service_order_id: new RegExp(search, 'i') }
+                      // { "store.name": new RegExp(search, 'i') },
+                    ]
+                },
+                request
+              ]
+          }
+        },
+        {
+          $lookup: {
+            from: 'serviceproviders',
+            foreignField: '_id',
+            localField: 'service_provider_id',
+            as: 'serviceProvider'
+          }
+        },
+        {
+          $unwind: '$serviceProvider'
+        },
+        {
+          $lookup: {
+            from: 'cities',
+            localField: 'address.delivery.city_id',
+            foreignField: '_id',
+            as: 'address.delivery.city'
+          }
+        },
+        {
+          $unwind: '$address.delivery.city'
+        },
+        // {
+        //   $lookup: {
+        //     from: 'drivers',
+        //     localField: 'driver_id',
+        //     foreignField: '_id',
+        //     as: 'driver'
+        //   }
+        // },
+        // {
+        //   $unwind: // "$driver"
+        //   {
+        //     path: '$driver',
+        //     preserveNullAndEmptyArrays: true
+        //   }
+        // },
+        {
+          $sort: sort
+        },
+        {
+          $skip: ((pageNo - 1) * perPage)
+        },
 
+        {
+          $limit: perPage
+        }
+      ]);
+    }
 
+    return ServiceOrder.aggregate([
+      {
+        $match: {
+          service_order_id: new RegExp(search, 'i')
+        }
+      },
+      {
+        $lookup: {
+          from: 'serviceproviders',
+          foreignField: '_id',
+          localField: 'service_provider_id',
+          as: 'serviceProvider'
+        }
+      },
+      {
+        $unwind: '$serviceProvider'
+      },
+      {
+        $lookup: {
+          from: 'cities',
+          localField: 'address.delivery.city_id',
+          foreignField: '_id',
+          as: 'address.delivery.city'
+        }
+      },
+      {
+        $unwind: '$address.delivery.city'
+      },
+      // {
+      //   $lookup: {
+      //     from: 'drivers',
+      //     localField: 'driver_id',
+      //     foreignField: '_id',
+      //     as: 'driver'
+      //   }
+      // },
+      // {
+      //   $unwind: // "$driver"
+      //   {
+      //     path: '$driver',
+      //     preserveNullAndEmptyArrays: true
+      //   }
+      // },
+      {
+        $skip: ((pageNo - 1) * perPage)
+      },
 
+      {
+        $limit: perPage
+      }
+    ]);
+  },
+
+  getTotalOrdersCountForServiceOrderManagement(request, search) {
+    const condition = {
+      $and:
+        [
+          {
+            $or: [
+              {
+                service_order_id: new RegExp(search, 'i')
+              }
+            ]
+          },
+          request
+        ]
+    };
+    return ServiceOrder.countDocuments(condition);
+  },
 }

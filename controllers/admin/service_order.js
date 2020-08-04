@@ -1,8 +1,7 @@
 const ServiceOrderService = require('../../services/service_order');
 const ServiceProviderService = require('../../services/service_provider');
-
-const messages = require('../../common/messages');
 const config = require('../../config/constants');
+const messages = require('../../common/messages');
 const PushNotification = require('../../common/push-notification');
 const MailerService = require('../../common/mailer');
 const SlotService = require('../../services/slot');
@@ -37,7 +36,7 @@ module.exports = {
         }
       }
 
-      if (!request.service_provider_id)  {
+      if (!request.service_provider_id) {
         throw new apiError.ValidationError('service_provider_id', messages.SERVICE_PROVIDER_ORDER_ID_REQUIRED);
       }
 
@@ -46,7 +45,7 @@ module.exports = {
         throw new apiError.ValidationError('service_provider_id', messages.SERVICE_PROVIDER_ID_INVALID);
       }
 
-      if (!request.slot_id )  {
+      if (!request.slot_id) {
         throw new apiError.ValidationError('slot_id', messages.SLOT_ID_REQUIRED);
       }
 
@@ -148,5 +147,41 @@ module.exports = {
       return res.status(error.code || 500).json(ResponseService.failure(error));
     }
   },
+
+  async getServiceOrder(req, res) {
+    try {
+      const pageNo = Number(req.query.pageNo || config.pagination.pageNo);
+      const perPage = Number(req.query.perPage || config.pagination.perPage);
+      const sort = { [req.query.name]: Number(req.query.sortType) };
+
+      const search = req.query.search || '';
+      const condition = {};
+      const type = req._userInfo._user_type;
+      if (type === 2) {
+        condition.store_id = mongoose.Types.ObjectId(req._userInfo._user_id);
+      }
+      const serviceOrder = await ServiceOrderService.getServiceOrdersWithPagination(
+        condition,
+        pageNo,
+        perPage,
+        search,
+        sort
+      );
+      const paginationVariables = {
+        pageNo,
+        perPage
+      };
+      const totalItems = await ServiceOrderService.getTotalOrdersCountForServiceOrderManagement(
+        condition,
+        search
+      );
+      paginationVariables.totalItems = totalItems;
+      return res.status(200).send(ResponseService.success({ serviceOrder, paginationVariables }));
+
+    }
+    catch (error) {
+      return res.status(500).send(ResponseService.failure(error))
+    }
+  }
 
 }

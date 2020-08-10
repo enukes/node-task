@@ -1,7 +1,5 @@
 const express = require('express');
-
 const router = express.Router();
-
 const adminRoutes = require('./admin');
 const customerRoutes = require('./customer');
 const driverRoutes = require('./driver');

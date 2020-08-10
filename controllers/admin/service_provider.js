@@ -37,9 +37,6 @@ module.exports = {
       request.address = JSON.parse(request.address);
       request.timings = JSON.parse(request.timings);
 
-      if (request.address.length === 0) {
-        throw new apiError.ValidationError('address', messages.ADDRESS_REQUIRED);
-      }
       if (!request.owner.email) {
         throw new apiError.ValidationError('email', messages.EMAIL_REQUIRED);
       }
@@ -72,19 +69,17 @@ module.exports = {
         throw new apiError.ValidationError('picture', messages.STORE_PICTURE_REQUIRED);
       }
 
-      const serviceProviderPicture = req.files.filter((ele) => ele.fieldname === 'service_provider_picture');
+      const serviceProviderPicture = req.files.filter((ele) => ele.fieldname === 'picture');
       request.picture = serviceProviderPicture[0].filename;
 
-      for (let i = 0; i < request.address.length; i++) {
-        const element = request.address[i];
-        if (element.unique_link) continue;
+      const element = request.address;
+      if (element.unique_link) {
         const city = await AreaService.getCity({ _id: element.city_id });
         const area = await AreaService.getArea({ _id: element.area_id });
         element.unique_link = sh.unique(request.name + city.name + area.name);
       }
-
       const data = await ServiceProviderService.createServiceProvider(request);
-      if (!data.success){
+      if (!data.success) {
         throw new apiError.InternalServerError();
       }
       return res.status(200).send(ResponseService.success({ service_provider: data.service_provider }));
@@ -100,7 +95,7 @@ module.exports = {
 
   updateAServiceProvider: async (req, res) => {
     try {
-      const request = { ...req.body };
+      const request = { ...req. body };
       if (!request.owner) {
         throw new apiError.ValidationError('owner_details', messages.OWNER_DETAILS_REQUIRED);
       }
@@ -124,10 +119,10 @@ module.exports = {
         throw new apiError.ValidationError('address', messages.ADDRESS_REQUIRED);
       }
 
-      if (req.files.length > 0) {
-        const serviceProviderPicture = req.files.filter((ele) => ele.fieldname === 'service_provider_picture');
-        request.picture = serviceProviderPicture[0].filename;
-      }
+      // if (req.files.length > 0) {
+      // const serviceProviderPicture = request.picture.filter((ele) => ele.fieldname === 'picture');
+      request.picture = request.picture[0];
+      // }
 
       const { id } = req.params;
       if (!HelperService.isValidMongoId(id)) {
@@ -188,34 +183,34 @@ module.exports = {
    * Delete Service Provider
    */
 
-   deleteServiceProvider: async(req, res) => {
-     try{
-       const serviceProviderId = req.params.id;
-       if (!HelperService.isValidMongoId(serviceProviderId)) {
-         throw new apiError.ValidationError('id', messages.ID_INVALID);
-       }
+  deleteServiceProvider: async (req, res) => {
+    try {
+      const serviceProviderId = req.params.id;
+      if (!HelperService.isValidMongoId(serviceProviderId)) {
+        throw new apiError.ValidationError('id', messages.ID_INVALID);
+      }
 
-       const serviceProvider = await ServiceProviderService.getServiceProvider({ _id: serviceProviderId });
-       if (!serviceProvider) {
-         throw new apiError.ValidationError('service_provider_id', messages.SERVICE_PROVIDER_ID_INVALID)
-       }
+      const serviceProvider = await ServiceProviderService.getServiceProvider({ _id: serviceProviderId });
+      if (!serviceProvider) {
+        throw new apiError.ValidationError('service_provider_id', messages.SERVICE_PROVIDER_ID_INVALID)
+      }
 
-       const serviceOrder = await ServiceOrderService.getServiceOrder({ service_provider_id: serviceProviderId});
-       if (serviceOrder) {
-         throw new apiError.ValidationError('service_provider_id', messages.SERVICE_PROVIDER_ORDER_EXISTS_CANNOT_BE_DELETED)
-       }
+      const serviceOrder = await ServiceOrderService.getServiceOrder({ service_provider_id: serviceProviderId });
+      if (serviceOrder) {
+        throw new apiError.ValidationError('service_provider_id', messages.SERVICE_PROVIDER_ORDER_EXISTS_CANNOT_BE_DELETED)
+      }
 
-       const deletedServiceProvider = await ServiceProviderService.deleteServiceProvider(serviceProviderId);
-       if (!deletedServiceProvider) {
-         throw new apiError.InternalServerError();
-       }
+      const deletedServiceProvider = await ServiceProviderService.deleteServiceProvider(serviceProviderId);
+      if (!deletedServiceProvider) {
+        throw new apiError.InternalServerError();
+      }
 
-       return res.status(200).send(ResponseService.success({ service_provider: deletedServiceProvider}))
+      return res.status(200).send(ResponseService.success({ service_provider: deletedServiceProvider }))
 
-     }
-     catch(error){
-       return res.status(error.code || 500).send(ResponseService.failure(error))
-     }
+    }
+    catch (error) {
+      return res.status(error.code || 500).send(ResponseService.failure(error))
+    }
 
-   }
+  }
 }

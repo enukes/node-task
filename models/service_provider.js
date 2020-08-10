@@ -49,16 +49,6 @@ const schema = Schema(
       type: String,
       required: true
     },
-    email: {
-      type: String,
-      required: false,
-      unique: true
-    },
-    contact_number: {
-      type: String,
-      required: false,
-      unique: true
-    },
     timings: {
       open_time: {
         type: String,
@@ -69,10 +59,10 @@ const schema = Schema(
         required: true
       }
     },
-    address: [{
+    address: {
       type: addressSchema,
       required: true
-    }],
+    },
     picture: {
       type: String,
       required: true,

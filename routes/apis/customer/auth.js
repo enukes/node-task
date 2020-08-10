@@ -13,5 +13,4 @@ router.post('/google-login', AuthController.googleLogin.bind(AuthController));
 router.post('/facebook-login', AuthController.facebookLogin.bind(AuthController));
 router.get('/logout', jwtAuth, AuthController.logout.bind(AuthController));
 
-
 module.exports = router;

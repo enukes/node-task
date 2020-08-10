@@ -6,5 +6,4 @@ router.post('/', ServiceProviderCategoryController.addServiceCategory);
 router.put('/:id', ServiceProviderCategoryController.updateServiceProviderCategory);
 router.delete('/:id', ServiceProviderCategoryController.deleteServiceProviderCategory);
 
-
 module.exports = router; 

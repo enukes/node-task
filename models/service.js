@@ -13,13 +13,10 @@ const schema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'ServiceProvider'
   },
-  pictures: [{
+  pictures: {
     type: String,
     required: [true, messages.PRODUCT_PICTURE_REQUIRED]
-  }],
-  tags: [{
-    type: String
-  }],
+  },
   size: {
     type: String,
     required: [true, messages.PRODUCT_SIZE_REQUIRED]

@@ -49,8 +49,8 @@ module.exports = {
     * Update Service Provider Category
     */
 
-    updateServiceProviderCategory(criteria, serviceProviderCategoryDetails) {
-      return ServiceProviderCategory.findOneAndUpdate(criteria, serviceProviderCategoryDetails, {new: true} );
+  updateServiceProviderCategory(details, criteria) {
+    return ServiceProviderCategory.findOneAndUpdate(criteria, details, {new: true} );
     },
 
     /**

@@ -65,12 +65,12 @@ module.exports = {
       }
 
       request.owner.password = hash;
-      if (req.files.length === 0) {
+      if (!req.file) {
         throw new apiError.ValidationError('picture', messages.STORE_PICTURE_REQUIRED);
       }
-
-      const serviceProviderPicture = req.files.filter((ele) => ele.fieldname === 'picture');
-      request.picture = serviceProviderPicture[0].filename;
+      if (req.file) {
+        request.picture = req.file.filename
+      }
 
       const element = request.address;
       if (element.unique_link) {

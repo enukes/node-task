@@ -51,9 +51,10 @@ module.exports = {
     try {
       const request = { ...req.body };
       const userType = req._userInfo._user_type;
-      request.pictures = (req.files && req.files.length)
-        ? req.files.map((file) => file.filename)
-        : [];
+      if(req.file) {
+        request.pictures = req.file.filename 
+      }
+
 
       if (!request.service_provider_id && `${userType}` !== '2') {
         throw new apiError.ValidationError('service_provider_id', messages.SERVICE_ID_REQUIRED);
@@ -62,10 +63,7 @@ module.exports = {
       if (`${userType}` === '2') {
         request.service_provider_id = req._userInfo._user_id;
       }
-      if (request.tags) {
-        request.tags = JSON.parse(request.tags);
-        request.tags = request.tags.map((tag) => (tag || '').trim()).filter((tag) => !!tag);
-      }
+
       request.order_max = Number(request.order_max);
       request.price = JSON.parse(request.price)
 
@@ -101,14 +99,12 @@ module.exports = {
       if (!foundService) {
         throw new apiError.ValidationError('service_id', messages.ID_INVALID);
       }
-      request.pictures = [...(foundService.pictures || []), ...(req.files && req.files.length)
-        ? req.files.map((file) => file.filename)
-        : []];
 
-      if (request.tags) {
-        request.tags = JSON.parse(request.tags);
-        request.tags = request.tags.map((tag) => (tag || '').trim()).filter((tag) => !!tag);
+      request.pictures = foundService.pictures ? foundService.pictures : {} ;
+      if (req.file) {
+        request.pictures = req.file.filename
       }
+      request.price = JSON.parse(request.price)
 
       const updatedService = await ServicesService.updateService({ _id: id }, request);
       if (!updatedService) {

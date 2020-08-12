@@ -24,7 +24,7 @@ const schema = new mongoose.Schema({
 
   permissions: {
     type: [String],
-    enum: ['DASHBOARD', 'STORE', 'CUSTOMER', 'DRIVER', 'CATEGORY', 'PRODUCT', 'ORDER', 'REPORT', 'COUPON', 'SETTING', 'SERVICE_PROVIDER']
+    enum: ['DASHBOARD', 'STORE', 'CUSTOMER', 'DRIVER', 'CATEGORY', 'PRODUCT', 'ORDER', 'REPORT', 'COUPON', 'SETTING', 'SERVICE_PROVIDER', 'SERVICE']
   },
 
   status: {

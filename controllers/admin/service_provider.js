@@ -119,11 +119,6 @@ module.exports = {
         throw new apiError.ValidationError('address', messages.ADDRESS_REQUIRED);
       }
 
-      // if (req.files.length > 0) {
-      // const serviceProviderPicture = request.picture.filter((ele) => ele.fieldname === 'picture');
-      request.picture = request.picture[0];
-      // }
-
       const { id } = req.params;
       if (!HelperService.isValidMongoId(id)) {
         throw new apiError.ValidationError('serviceProviderCategoryId', messages.ID_INVALID);
@@ -137,6 +132,11 @@ module.exports = {
       delete request._id;
       delete request.password;
 
+      if (req.file) {
+        request.picture = req.file.filename
+      } else {
+        request.picture = service_provider.picture
+      }
 
       for (let i = 0; i < request.address.length; i++) {
         const element = request.address[i];

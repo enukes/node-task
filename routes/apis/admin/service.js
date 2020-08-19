@@ -4,6 +4,7 @@ const ServiceController = require('../../../controllers/admin/service');
 
 router.post('/', Upload.single('pictures'), ServiceController.addAService);
 router.get('/', ServiceController.getServices);
-router.put('/:id', Upload.single('pictures'), ServiceController.updateAService)
+router.put('/:id', Upload.single('pictures'), ServiceController.updateAService);
+router.delete('/:id', ServiceController.deleteAService)
 
 module.exports = router;

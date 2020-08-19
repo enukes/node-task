@@ -164,6 +164,7 @@ module.exports = {
   SERVICE_ID_REQUIRED: 'Service Id is a required Field',
   SERVICE_ORDER_ID_REQUIRED: 'The Service Order Id is a required field',
   SERVICE_PROVIDER_ORDER_ID_REQUIRED: 'The Service Order Id is a required field',
+  SERVICE_ID_INVALID: 'Service Provider id is Invalid',
 
 
 

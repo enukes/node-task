@@ -69,6 +69,6 @@ module.exports = {
    * Delete a Service
    */
   deleteService(request) {
-    return Product.deleteOne(request);
+    return Service.deleteOne(request);
   },
 }

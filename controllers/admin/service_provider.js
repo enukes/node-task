@@ -206,7 +206,6 @@ module.exports = {
       }
 
       return res.status(200).send(ResponseService.success({ service_provider: deletedServiceProvider }))
-
     }
     catch (error) {
       return res.status(error.code || 500).send(ResponseService.failure(error))

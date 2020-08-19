@@ -51,8 +51,8 @@ module.exports = {
     try {
       const request = { ...req.body };
       const userType = req._userInfo._user_type;
-      if(req.file) {
-        request.pictures = req.file.filename 
+      if (req.file) {
+        request.pictures = req.file.filename
       }
 
 
@@ -75,8 +75,8 @@ module.exports = {
     }
   },
 
-  updateAService: async(req, res) => {
-    try{
+  updateAService: async (req, res) => {
+    try {
       const request = { ...req.body };
       const { id } = req.params;
 
@@ -100,7 +100,7 @@ module.exports = {
         throw new apiError.ValidationError('service_id', messages.ID_INVALID);
       }
 
-      request.pictures = foundService.pictures ? foundService.pictures : {} ;
+      request.pictures = foundService.pictures ? foundService.pictures : {};
       if (req.file) {
         request.pictures = req.file.filename
       }
@@ -112,15 +112,27 @@ module.exports = {
       }
       return res.status(200).send(ResponseService.success({ service: updatedService }));
     }
-    catch(error) {
-      return res.status(error.code || 500).json(ResponseService,failure(error));
+    catch (error) {
+      return res.status(error.code || 500).json(ResponseService, failure(error));
     }
   },
 
-  // deleteAService: async(req, res) => {
-  //   try{}
-  //   catch(error) {
-  //     return res.status(error.code || 500).json(ResponseService.failure(error))
-  //   }
-  // }
+  deleteAService: async (req, res) => {
+    try {
+      const serviceId = req.params.id;
+      if (!HelperService.isValidMongoId(serviceId)) {
+        throw new apiError.ValidationError('id', messages.ID_INVALID);
+      }
+
+      const service = await ServicesService.getService({ _id: serviceId });
+      if (!service) {
+        throw new apiError.ValidationError('service_id', messages.SERVICE_ID_INVALID);
+      }
+      const deletedService = await ServicesService.deleteService({ _id: serviceId });
+      return res.status(200).send(ResponseService.success({ service: deletedService }))
+    }
+    catch (error) {
+      return res.status(error.code || 500).json(ResponseService.failure(error))
+    }
+  }
 }

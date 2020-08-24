@@ -127,13 +127,13 @@ module.exports = {
     try {
       const type = req._userInfo._user_type;
 
-      let storeId;
+      // let storeId;
 
-      if (type === 2) storeId = req._userInfo._user_id;
-      else storeId = req.query.store_id;
+      // if (type === 2) storeId = req._userInfo._user_id;
+      // else storeId = req.query.store_id;
 
-      if (!storeId) throw new apiError.ValidationError('store_id', messages.STORE_ID_REQUIRED);
-      if (!HelperService.isValidMongoId(storeId)) throw new apiError.ValidationError('store_id', messages.ID_INVALID);
+      // if (!storeId) throw new apiError.ValidationError('store_id', messages.STORE_ID_REQUIRED);
+      // if (!HelperService.isValidMongoId(storeId)) throw new apiError.ValidationError('store_id', messages.ID_INVALID);
 
       const categories = await CategoryService.getAllStoreCategoriesForCategoryManagement(storeId);
 

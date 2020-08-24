@@ -92,7 +92,7 @@ module.exports = {
       },
       {
         $lookup: {
-          from: 'categories',
+          from: 'categorynews',
           localField: '_id',
           foreignField: 'parent',
           as: 'subcategories'

@@ -10,7 +10,7 @@ module.exports = {
   async addCategory(req, res) {
     try {
       const request = { ...req.body };
-      if (!request.name)  {
+      if (!request.name) {
         throw new apiError.ValidationError('category_name', messages.NAME_REQUIRED);
       }
       if (!request.status) {
@@ -47,39 +47,37 @@ module.exports = {
   async updateCategory(req, res) {
     try {
       const request = { ...req.body };
-
       const type = req._userInfo._user_type;
-
-      if (type === 2) {
-        if (req._userInfo._user_id !== request.store_id) {
-          throw new apiError.UnauthorizedError(messages.STORE_CATEGORY_MISMATCH);
-        }
-      }
+      // if (type === 2) {
+      //   if (req._userInfo._user_id !== request.store_id) {
+      //     throw new apiError.UnauthorizedError(messages.STORE_CATEGORY_MISMATCH);
+      //   }
+      // }
 
       delete request._id;
       delete request.subcategories;
-      delete request.store_id;
-
-      if (!request.name) throw new apiError.ValidationError('owner_details', messages.NAME_REQUIRED);
-      if (!request.status) throw new apiError.ValidationError('owner_details', messages.STATUS_REQUIRED);
-
+      // delete request.store_id;
+      if (!request.name) {
+        throw new apiError.ValidationError('category_details', messages.NAME_REQUIRED);
+      }
+      if (!request.status) {
+        throw new apiError.ValidationError('categorry_details', messages.STATUS_REQUIRED);
+      }
       if (req.files.length > 0) {
         request.picture = req.files.find((ele) => ele.fieldname === 'picture').filename;
       }
-
       const { id } = req.params;
-
-      if (!HelperService.isValidMongoId(id)) throw new apiError.ValidationError('category_id', messages.ID_INVALID);
-
+      if (!HelperService.isValidMongoId(id)) {
+        throw new apiError.ValidationError('category_id', messages.ID_INVALID);
+      }
       const condition = {
         _id: id
       };
-
       if (type === 2) condition.store_id = req._userInfo._user_id;
-
       const category = await CategoryService.getOnlyCategory(condition);
-      if (!category) throw new apiError.ValidationError('category_id', messages.ID_INVALID);
-
+      if (!category) {
+        throw new apiError.ValidationError('category_id', messages.ID_INVALID);
+      }
       const updatedCategory = await CategoryService.updateCategory(request, { _id: id });
       return res.status(200).send(ResponseService.success({ category: updatedCategory }));
     } catch (e) {
@@ -192,22 +190,25 @@ module.exports = {
   async deleteCategory(req, res) {
     try {
       const type = req._userInfo._user_type;
-
       const { id } = req.params;
-      if (!HelperService.isValidMongoId(id)) throw new apiError.ValidationError('product_id', messages.ID_INVALID);
-
+      if (!HelperService.isValidMongoId(id)) {
+        throw new apiError.ValidationError('product_id', messages.ID_INVALID);
+      }
       let category;
-
       if (type === 2) {
         category = await CategoryService.getOnlyCategory({
           _id: id,
           store_id: req._userInfo._user_id
         });
-        if (!category) throw new apiError.ValidationError('category_id', messages.ID_INVALID);
+        if (!category) {
+          throw new apiError.ValidationError('category_id', messages.ID_INVALID);
+        }
       } else {
         category = await CategoryService.getCategory(id);
         [category] = category;
-        if (!category) throw new apiError.ValidationError('category_id', messages.ID_INVALID);
+        if (!category) {
+          throw new apiError.ValidationError('category_id', messages.ID_INVALID);
+        }
       }
 
       if (!category.parent) {

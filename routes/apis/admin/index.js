@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const AuthRoutes = require('./auth');
 const CategoryRoutes = require('./category');
+const CategoryNewRoutes = require('./category-new');
 const StoreRoutes = require('./store');
 const CustomerRoutes = require('./customer');
 const OrderRoutes = require('./order');
@@ -26,6 +27,7 @@ const ServiceOrderRoutes = require('./service_order');
 
 router.use('/auth', AuthRoutes);
 router.use('/category', isSuperAdminMiddleware, CategoryRoutes);
+router.use('/category-new', isSuperAdminMiddleware, CategoryNewRoutes);
 router.use('/store', isSuperAdminMiddleware, StoreRoutes);
 router.use('/customer', isSuperAdminMiddleware, CustomerRoutes);
 router.use('/order', isSuperAdminMiddleware, OrderRoutes);

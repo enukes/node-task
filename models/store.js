@@ -124,7 +124,7 @@ const schema = Schema(
       type: Boolean,
       required: true
     },
-    category: [{
+    categories: [{
       _id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category',

@@ -8,8 +8,6 @@ router.get('/', StoreController.getStores);
 router.post('/', Upload.any(), StoreController.addStore);
 router.get('/stores', StoreController.getStoresForCategoryManagement);
 router.put('/:id', Upload.any(), StoreController.updateStore);
-router.put('/sku-token/:id', StoreController.updateStoreSkuToken);
-router.delete('/sku-token/:id', StoreController.deleteStoreSkuToken);
 router.get('/:id/drivers', StoreController.getActiveStoreDrivers);
 router.get('/:id/slots/today', StoreController.getDaySlot);
 router.delete('/:id', StoreController.deleteStore);

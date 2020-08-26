@@ -18,30 +18,57 @@ module.exports = {
   async addStore(req, res) {
     try {
       const request = { ...req.body };
-      if (!request.owner) throw new apiError.ValidationError('owner_details', messages.OWNER_DETAILS_REQUIRED);
-      if (!request.address) throw new apiError.ValidationError('owner_details', messages.ADDRESS_REQUIRED);
-      if (!request.timings) throw new apiError.ValidationError('owner_details', messages.TIMINGS_REQUIRED);
+      if (!request.owner) {
+        throw new apiError.ValidationError('owner_details', messages.OWNER_DETAILS_REQUIRED);
+      }
+      if (!request.address) {
+        throw new apiError.ValidationError('owner_details', messages.ADDRESS_REQUIRED);
+      }
+      if (!request.timings) {
+        throw new apiError.ValidationError('owner_details', messages.TIMINGS_REQUIRED);
+      }
 
-      const storeCategoryId = request.storeCategory;
-      if (!storeCategoryId || !HelperService.isValidMongoId(storeCategoryId)) throw new apiError.ValidationError('storeCategoryId', messages.ID_INVALID);
+      // const storeCategoryId = request.storeCategory;
+      // if (!storeCategoryId || !HelperService.isValidMongoId(storeCategoryId)) throw new apiError.ValidationError('storeCategoryId', messages.ID_INVALID);
 
       request.owner = JSON.parse(request.owner);
       request.address = JSON.parse(request.address);
       request.timings = JSON.parse(request.timings);
+      request.categories = JSON.parse(request.categories);
 
-      if (request.address.length === 0) throw new apiError.ValidationError('address', messages.ADDRESS_REQUIRED);
-      if (!request.owner.email) throw new apiError.ValidationError('email', messages.EMAIL_REQUIRED);
-      if (!request.owner.contact_number) throw new apiError.ValidationError('email', messages.CONTACT_REQUIRED);
+      if (request.address.length === 0) {
+        throw new apiError.ValidationError('address', messages.ADDRESS_REQUIRED);
+      }
+      if (!request.owner.email) {
+        throw new apiError.ValidationError('email', messages.EMAIL_REQUIRED);
+      }
+      if (!request.owner.contact_number) {
+        throw new apiError.ValidationError('email', messages.CONTACT_REQUIRED);
+      }
+      if (!(request.categories && request.categories.length > 0)) {
+        throw new apiError.ValidationError('category', messages.CATEGORY_ID_REQUIRED)
+      }
+      request.categories.forEach(element => {
+        if (!element._id || !HelperService.isValidMongoId(element._id)) {
+          throw new apiError.ValidationError('categoryId', messages.ID_INVALID);
+        }
+      });
 
       let store = await StoreService.getStore({ 'owner.email': request.owner.email });
-      if (store) throw new apiError.ValidationError('email', messages.EMAIL_ALREADY_EXIST);
+      if (store) {
+        throw new apiError.ValidationError('email', messages.EMAIL_ALREADY_EXIST);
+      }
 
       store = await StoreService.getStore({ 'owner.contact_number': request.owner.contact_number });
-      if (store) throw new apiError.ValidationError('contact_number', messages.CONTACT_ALREADY_EXIST);
+      if (store) {
+        throw new apiError.ValidationError('contact_number', messages.CONTACT_ALREADY_EXIST);
+      }
       if (request.drivers && request.drivers.length > 0) {
         request.drivers = JSON.parse(request.drivers);
       }
-      if (!request.owner && !request.owner.password) throw new apiError.ValidationError('owner_password', messages.PASSWORD_REQUIRED);
+      if (!request.owner && !request.owner.password) {
+        throw new apiError.ValidationError('owner_password', messages.PASSWORD_REQUIRED);
+      }
 
       const salt = await bcrypt.genSaltSync(10);
       const hash = await bcrypt.hashSync(request.owner.password, salt);
@@ -49,7 +76,9 @@ module.exports = {
       if (!hash) throw apiError.InternalServerError();
 
       request.owner.password = hash;
-      if (req.files.length === 0) throw new apiError.ValidationError('picture', messages.STORE_PICTURE_REQUIRED);
+      if (req.files.length === 0) {
+        throw new apiError.ValidationError('picture', messages.STORE_PICTURE_REQUIRED);
+      }
 
       const storePicture = req.files.filter((ele) => ele.fieldname === 'store_picture');
       request.picture = storePicture[0].filename;
@@ -73,18 +102,32 @@ module.exports = {
   async updateStore(req, res) {
     try {
       const request = { ...req.body };
-      if (!request.owner) throw new apiError.ValidationError('owner_details', messages.OWNER_DETAILS_REQUIRED);
-      if (!request.address) throw new apiError.ValidationError('owner_details', messages.ADDRESS_REQUIRED);
-      if (!request.timings) throw new apiError.ValidationError('owner_details', messages.TIMINGS_REQUIRED);
-
-      const storeCategoryId = request.storeCategory;
-      if (!storeCategoryId || !HelperService.isValidMongoId(storeCategoryId)) throw new apiError.ValidationError('storeCategoryId', messages.ID_INVALID);
+      if (!request.owner) {
+        throw new apiError.ValidationError('owner_details', messages.OWNER_DETAILS_REQUIRED);
+      }
+      if (!request.address) {
+        throw new apiError.ValidationError('owner_details', messages.ADDRESS_REQUIRED);
+      }
+      if (!request.timings) {
+        throw new apiError.ValidationError('owner_details', messages.TIMINGS_REQUIRED);
+      }
 
       request.owner = JSON.parse(request.owner);
       request.address = JSON.parse(request.address);
       request.timings = JSON.parse(request.timings);
+      request.categories = JSON.parse(request.categories);
+      if (!(request.categories && request.categories.length > 0)) {
+        throw new apiError.ValidationError('category', messages.CATEGORY_ID_REQUIRED)
+      }
+      request.categories.forEach(element => {
+        if (!element._id || !HelperService.isValidMongoId(element._id)) {
+          throw new apiError.ValidationError('categoryId', messages.ID_INVALID);
+        }
+      });
 
-      if (request.address.length === 0) throw new apiError.ValidationError('address', messages.ADDRESS_REQUIRED);
+      if (request.address.length === 0) {
+        throw new apiError.ValidationError('address', messages.ADDRESS_REQUIRED);
+      }
       if (request.drivers && request.drivers.length > 0) {
         request.drivers = JSON.parse(request.drivers);
       }
@@ -94,10 +137,14 @@ module.exports = {
         request.picture = storePicture[0].filename;
       }
       const { id } = req.params;
-      if (!HelperService.isValidMongoId(id)) throw new apiError.ValidationError('store_id', messages.ID_INVALID);
+      if (!HelperService.isValidMongoId(id)) {
+        throw new apiError.ValidationError('store_id', messages.ID_INVALID);
+      }
 
       const store = await StoreService.getStore({ _id: id });
-      if (!store) throw new apiError.ValidationError('store_id', messages.ID_INVALID);
+      if (!store) {
+        throw new apiError.ValidationError('store_id', messages.ID_INVALID);
+      }
 
       delete request._id;
       delete request.password;
@@ -123,16 +170,12 @@ module.exports = {
       const perPage = Number(req.query.perPage || config.pagination.perPage);
       const search = req.query.search || '';
       const sort = { [req.query.name]: Number(req.query.sortType) };
-
       const stores = await StoreService.getStoresWithPagination({}, pageNo, perPage, search, sort);
-
       const paginationVariables = {
         pageNo,
         perPage
       };
-
       paginationVariables.totalItems = await StoreService.getTotalStoreCount({}, search);
-
       return res.status(200).send(ResponseService.success({ stores, paginationVariables }));
     } catch (e) {
       return res.status(500).send(ResponseService.failure(e));
@@ -142,11 +185,14 @@ module.exports = {
   async getActiveStoreDrivers(req, res) {
     try {
       const storeId = req.params.id;
-      if (!storeId) throw new apiError.ValidationError('store_id', messages.STORE_ID_REQUIRED);
+      if (!storeId) {
+        throw new apiError.ValidationError('store_id', messages.STORE_ID_REQUIRED);
+      }
 
       let store = await StoreService.getStore({ _id: storeId });
-      if (!store) throw new apiError.ValidationError('store_id', messages.STORE_ID_INVALID);
-
+      if (!store) {
+        throw new apiError.ValidationError('store_id', messages.STORE_ID_INVALID);
+      }
       store = await StoreService.getStoreDriverDetails({ _id: storeId });
       return res.status(200).send(ResponseService.success({ drivers: store.drivers }));
     } catch (e) {
@@ -169,13 +215,21 @@ module.exports = {
       const storeId = req.params.id;
       let { date } = req.query;
 
-      if (!date) date = moment();
-      else date = moment(date);
+      if (!date) {
+        date = moment();
+      }
+      else {
+        date = moment(date);
+      }
 
-      if (!HelperService.isValidMongoId(storeId)) throw new apiError.ValidationError('id', messages.ID_INVALID);
+      if (!HelperService.isValidMongoId(storeId)) {
+        throw new apiError.ValidationError('id', messages.ID_INVALID);
+      }
 
       const store = await StoreService.getStore({ _id: storeId });
-      if (!store) throw new apiError.ValidationError('store_id', messages.STORE_ID_INVALID);
+      if (!store) {
+        throw new apiError.ValidationError('store_id', messages.STORE_ID_INVALID);
+      }
       const slots = await SlotService.getDateSlots(storeId, date);
       return res.status(200).send(ResponseService.success({ slots, store }));
     } catch (e) {
@@ -187,17 +241,24 @@ module.exports = {
     try {
       const storeId = req.params.id;
 
-      if (!HelperService.isValidMongoId(storeId)) throw new apiError.ValidationError('id', messages.ID_INVALID);
+      if (!HelperService.isValidMongoId(storeId)) {
+        throw new apiError.ValidationError('id', messages.ID_INVALID);
+      }
 
       const store = await StoreService.getStore({ _id: storeId });
-      if (!store) throw new apiError.ValidationError('store_id', messages.STORE_ID_INVALID);
+      if (!store) {
+        throw new apiError.ValidationError('store_id', messages.STORE_ID_INVALID);
+      }
 
       const order = await OrderService.getOrder({ store_id: storeId });
-      if (order) throw new apiError.ValidationError('store_id', messages.STORE_ORDER_EXISTS_CANNOT_BE_DELETED);
+      if (order) {
+        throw new apiError.ValidationError('store_id', messages.STORE_ORDER_EXISTS_CANNOT_BE_DELETED);
+      }
 
       const deletedStore = await StoreService.deleteStore(storeId);
-      if (!deletedStore) throw new apiError.InternalServerError();
-
+      if (!deletedStore) {
+        throw new apiError.InternalServerError();
+      }
       return res.status(200).send(ResponseService.success({ store: deletedStore }));
     } catch (e) {
       return res.status(e.code || 500).send(ResponseService.failure(e));
@@ -209,19 +270,24 @@ module.exports = {
       const request = { ...req.body };
       const { id } = req.params;
 
-      if (!request.password) throw new apiError.ValidationError('password', messages.PASSWORD_REQUIRED);
+      if (!request.password) {
+        throw new apiError.ValidationError('password', messages.PASSWORD_REQUIRED);
+      }
 
       const store = await StoreService.getStore({ _id: id });
-      if (!store) throw new apiError.ValidationError('id', messages.ID_INVALID);
-
+      if (!store) {
+        throw new apiError.ValidationError('id', messages.ID_INVALID);
+      }
       const salt = await bcrypt.genSaltSync(10);
       const hash = await bcrypt.hashSync(request.password, salt);
-
-      if (!hash) throw apiError.InternalServerError();
+      if (!hash) {
+        throw apiError.InternalServerError();
+      }
 
       const updatedStore = await StoreService.updateStore({ 'owner.password': hash }, { _id: id });
-      if (!updatedStore) throw apiError.InternalServerError();
-
+      if (!updatedStore) {
+        throw apiError.InternalServerError();
+      }
       return res.send(ResponseService.success({ store: updatedStore }));
     } catch (e) {
       return res.status(500).send(ResponseService.failure(e));
@@ -253,41 +319,4 @@ module.exports = {
 
     res.send(ResponseService.success({ message: 'All Links have been generated Successfully.' }));
   },
-
-  async updateStoreSkuToken(req, res) {
-    try {
-      const { id } = req.params;
-
-      const store = await StoreService.getStore({ _id: id });
-      if (!store) throw new apiError.ValidationError('id', messages.ID_INVALID);
-
-      const jwtTokenArgs = {
-        id: store._id
-      };
-
-      const skuToken = await jwt.sign(jwtTokenArgs, config.authSecretToken);
-
-      const updatedStore = await StoreService.updateStore({ sku_token: skuToken }, { _id: id });
-
-      return res.send(ResponseService.success({ store: updatedStore }));
-    } catch (e) {
-      return res.status(500).send(ResponseService.failure(e));
-    }
-  },
-
-  async deleteStoreSkuToken(req, res) {
-    try {
-      const { id } = req.params;
-
-      const store = await StoreService.getStore({ _id: id });
-      if (!store) throw new apiError.ValidationError('id', messages.ID_INVALID);
-      const updatedStore = await StoreService.updateStore(
-        { $unset: { sku_token: 1 } },
-        { _id: id }
-      );
-      return res.send(ResponseService.success({ store: updatedStore }));
-    } catch (e) {
-      return res.status(500).send(ResponseService.failure(e));
-    }
-  }
 };

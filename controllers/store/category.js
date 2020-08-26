@@ -6,13 +6,8 @@ const apiError = require('../../common/api-errors');
 class CategoryController {
   async addCategory(req, res) {
     try {
-      console.log('rhgeugfuyeggfefygyu');
       const request = { ...req.body };
-
-      console.log('req.body', req.body);
-
       if (req.files.length == 0) throw new apiError.ValidationError('picture', messages.IMAGE_REQUIRED);
-
       const category_picture = req.files.filter((ele) => ele.fieldname === 'picture');
       request.picture = category_picture[0].filename;
 

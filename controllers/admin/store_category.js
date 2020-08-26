@@ -5,7 +5,6 @@ const apiError = require('../../common/api-errors');
 const messages = require('../../common/messages');
 const config = require('../../config/constants');
 
-
 module.exports = {
   async addStoreCategory(req, res) {
     try {

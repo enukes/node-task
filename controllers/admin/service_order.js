@@ -69,7 +69,6 @@ module.exports = {
 
       const updateServiceOrder = await ServiceOrderService.updateServiceOrder(request, { _id: orderId });
 
-
       // send push notification to the driver and the customer
       // if the status of the order has been changed
       if (serviceOrder.status !== updateServiceOrder.status) {
@@ -141,9 +140,7 @@ module.exports = {
         })(updateServiceOrder.status);
       }
       return res.status(200).send(ResponseService.success({ updateServiceOrder }));
-
-    }
-    catch (error) {
+    } catch (error) {
       return res.status(error.code || 500).json(ResponseService.failure(error));
     }
   },
@@ -177,11 +174,9 @@ module.exports = {
       );
       paginationVariables.totalItems = totalItems;
       return res.status(200).send(ResponseService.success({ serviceOrder, paginationVariables }));
-
-    }
-    catch (error) {
-      return res.status(500).send(ResponseService.failure(error))
+    } catch (error) {
+      return res.status(500).send(ResponseService.failure(error));
     }
   }
 
-}
+};

@@ -23,7 +23,6 @@ module.exports = {
       if (request.subcategory_id) criteria.subcategory_id = request.subcategory_id;
       if (request.category_id) criteria.category_id = request.category_id;
 
-
       if (request.category_id) {
         const subcategories = await ProductService.getProducts(criteria);
         return res.status(200).send(ResponseService.success({ subcategories }));
@@ -45,7 +44,6 @@ module.exports = {
       if (!store) throw new apiError.ValidationError('store_id', messages.STORE_ID_INVALID);
 
       if (!request.products || request.products.length === 0) throw new apiError.ValidationError('products', messages.PRODUCTS_REQUIRED);
-
 
       const invalidQuantityProducts = [];
 

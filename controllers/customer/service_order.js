@@ -1,6 +1,8 @@
+const cryptoRandomString = require('crypto-random-string');
+const mongoose = require('mongoose');
+const requestPromise = require('request-promise');
 const ResponseService = require('../../common/response');
 const CustomerService = require('../../services/customer');
-const cryptoRandomString = require('crypto-random-string');
 const messages = require('../../common/messages');
 const apiError = require('../../common/api-errors');
 const ServicesService = require('../../services/service');
@@ -11,8 +13,6 @@ const SlotService = require('../../services/slot');
 const notificationMessages = require('../../common/notification-messages');
 const HelperService = require('../../common/helper');
 const MailerService = require('../../common/mailer');
-const mongoose = require('mongoose');
-const requestPromise = require('request-promise');
 
 const ServiceOrderController = {
   async placeServiceOrder(req, res) {
@@ -175,7 +175,6 @@ const ServiceOrderController = {
         });
 
         orderDetails.total_amount += (serviceDetail.price.sale_price * service.count);
-
       }
 
       const { taxes } = adminConfig;
@@ -218,8 +217,7 @@ const ServiceOrderController = {
 
         if (couponCopy.type === 1) {
           orderDetails.discount = value;
-        }
-        else {
+        } else {
           orderDetails.discount = (value * orderDetails.total_amount) / 100;
         }
       }
@@ -243,7 +241,6 @@ const ServiceOrderController = {
         - orderDetails.admin_commission_amount;
 
       let uniqueId;
-
 
       // eslint-disable-next-line no-constant-condition
       while (1) {
@@ -287,9 +284,8 @@ const ServiceOrderController = {
         orderStatusString: `Your order has been confirmed with order id ${`${serviceOrder.order_id}`.toUpperCase()}`
       });
       return res.status(200).send(ResponseService.success({ serviceOrder }));
-    }
-    catch (error) {
-      return res.status(error.code || 500).send(ResponseService.failure(error))
+    } catch (error) {
+      return res.status(error.code || 500).send(ResponseService.failure(error));
     }
   },
 
@@ -351,9 +347,8 @@ const ServiceOrderController = {
       }
 
       return res.status(200).send(ResponseService.success({ orders, totalCount: orderCount }));
-    }
-    catch (error) {
-      return res.status(error.code || 500).send(ResponseService.failure(error))
+    } catch (error) {
+      return res.status(error.code || 500).send(ResponseService.failure(error));
     }
   },
 

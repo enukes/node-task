@@ -22,7 +22,6 @@ const InvoiceService = require('../../common/invoice/invoicePdf');
 const MailerService = require('../../common/mailer');
 const notificationMessages = require('../../common/notification-messages');
 
-
 const OrderController = {
 
   async placeOrder(req, res) {
@@ -175,7 +174,6 @@ const OrderController = {
       if (maxOrderExceedingProducts.length > 0) {
         throw new apiError.ModelValidationError({ message: 'Some Products have exceeded their max order limit', maxOrderExceedingProducts });
       }
-
 
       const { taxes } = adminConfig;
 
@@ -419,7 +417,6 @@ const OrderController = {
           notificationPayloadData
         );
       })();
-
 
       // Send the mail to customer
       (async () => {

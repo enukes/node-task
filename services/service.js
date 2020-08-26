@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Service = require('../models/service');
+
 module.exports = {
   getServicesWithPagination(request, pageNo, perPage, criteria, sort) {
     const condition = {
@@ -13,7 +14,7 @@ module.exports = {
               ]
           },
           {
-            service_provider_id: criteria.service_provider_id,
+            service_provider_id: criteria.service_provider_id
           }
         ]
     };
@@ -42,7 +43,7 @@ module.exports = {
           ]
         },
         {
-          service_provider_id: criteria.store_id,
+          service_provider_id: criteria.store_id
         }
       ]
     };
@@ -70,5 +71,5 @@ module.exports = {
    */
   deleteService(request) {
     return Service.deleteOne(request);
-  },
-}
+  }
+};

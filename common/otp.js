@@ -2,12 +2,12 @@
 
 const moment = require('moment-timezone');
 const rp = require('request-promise');
-const helper = require('../common/helper');
+const helper = require('./helper');
 const config = require('../config/constants');
 const AuthService = require('../services/auth');
-const Mailer = require('../common/mailer');
-const apiError = require('../common/api-errors');
-const messages = require('../common/messages');
+const Mailer = require('./mailer');
+const apiError = require('./api-errors');
+const messages = require('./messages');
 
 module.exports = {
   async send(contactNumber, type) {

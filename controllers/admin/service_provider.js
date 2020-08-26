@@ -1,14 +1,13 @@
+const bcrypt = require('bcrypt');
+const sh = require('shorthash');
 const apiError = require('../../common/api-errors');
 const messages = require('../../common/messages');
 const ResponseService = require('../../common/response');
 const HelperService = require('../../common/helper');
 const ServiceProviderService = require('../../services/service_provider');
-const bcrypt = require('bcrypt');
-const sh = require('shorthash');
 const AreaService = require('../../services/area');
 const config = require('../../config/constants');
 const ServiceOrderService = require('../../services/service_order');
-
 
 module.exports = {
 
@@ -22,10 +21,10 @@ module.exports = {
         throw new apiError.ValidationError('owner_details', messages.OWNER_DETAILS_REQUIRED);
       }
       if (!request.address) {
-        throw new apiError.ValidationError('owner_details', messages.ADDRESS_REQUIRED)
+        throw new apiError.ValidationError('owner_details', messages.ADDRESS_REQUIRED);
       }
       if (!request.timings) {
-        throw new apiError.ValidationError('owner_details', messages.TIMINGS_REQUIRED)
+        throw new apiError.ValidationError('owner_details', messages.TIMINGS_REQUIRED);
       }
 
       const serviceProviderCategoryId = request.serviceCategory;
@@ -69,7 +68,7 @@ module.exports = {
         throw new apiError.ValidationError('picture', messages.STORE_PICTURE_REQUIRED);
       }
       if (req.file) {
-        request.picture = req.file.filename
+        request.picture = req.file.filename;
       }
 
       const element = request.address;
@@ -84,9 +83,8 @@ module.exports = {
       }
       return res.status(200).send(ResponseService.success({ service_provider: data.service_provider }));
     } catch (error) {
-      return res.status(error.code || 500).send(ResponseService.failure(error))
+      return res.status(error.code || 500).send(ResponseService.failure(error));
     }
-
   },
 
   /**
@@ -95,7 +93,7 @@ module.exports = {
 
   updateAServiceProvider: async (req, res) => {
     try {
-      const request = { ...req. body };
+      const request = { ...req.body };
       if (!request.owner) {
         throw new apiError.ValidationError('owner_details', messages.OWNER_DETAILS_REQUIRED);
       }
@@ -133,9 +131,9 @@ module.exports = {
       delete request.password;
 
       if (req.file) {
-        request.picture = req.file.filename
+        request.picture = req.file.filename;
       } else {
-        request.picture = service_provider.picture
+        request.picture = service_provider.picture;
       }
 
       for (let i = 0; i < request.address.length; i++) {
@@ -146,10 +144,9 @@ module.exports = {
         element.unique_link = sh.unique(request.name + city.name + area.name);
       }
       const updatedServiceProvider = await ServiceProviderService.updateServiceProvider(request, { _id: id });
-      return res.send(ResponseService.success({ serviceProvider: updatedServiceProvider }))
-    }
-    catch (error) {
-      return res.status(error.code || 500).send(ResponseService.failure(error))
+      return res.send(ResponseService.success({ serviceProvider: updatedServiceProvider }));
+    } catch (error) {
+      return res.status(error.code || 500).send(ResponseService.failure(error));
     }
   },
 
@@ -172,10 +169,9 @@ module.exports = {
       };
 
       paginationVariables.totalItems = await ServiceProviderService.getTotalServiceProviderCount({}, search);
-      return res.status(200).send(ResponseService.success({ serviceProviders, paginationVariables }))
-    }
-    catch (error) {
-      return res.status(error.code || 500).send(ResponseService.failure(error))
+      return res.status(200).send(ResponseService.success({ serviceProviders, paginationVariables }));
+    } catch (error) {
+      return res.status(error.code || 500).send(ResponseService.failure(error));
     }
   },
 
@@ -192,12 +188,12 @@ module.exports = {
 
       const serviceProvider = await ServiceProviderService.getServiceProvider({ _id: serviceProviderId });
       if (!serviceProvider) {
-        throw new apiError.ValidationError('service_provider_id', messages.SERVICE_PROVIDER_ID_INVALID)
+        throw new apiError.ValidationError('service_provider_id', messages.SERVICE_PROVIDER_ID_INVALID);
       }
 
       const serviceOrder = await ServiceOrderService.getServiceOrder({ service_provider_id: serviceProviderId });
       if (serviceOrder) {
-        throw new apiError.ValidationError('service_provider_id', messages.SERVICE_PROVIDER_ORDER_EXISTS_CANNOT_BE_DELETED)
+        throw new apiError.ValidationError('service_provider_id', messages.SERVICE_PROVIDER_ORDER_EXISTS_CANNOT_BE_DELETED);
       }
 
       const deletedServiceProvider = await ServiceProviderService.deleteServiceProvider(serviceProviderId);
@@ -205,11 +201,9 @@ module.exports = {
         throw new apiError.InternalServerError();
       }
 
-      return res.status(200).send(ResponseService.success({ service_provider: deletedServiceProvider }))
+      return res.status(200).send(ResponseService.success({ service_provider: deletedServiceProvider }));
+    } catch (error) {
+      return res.status(error.code || 500).send(ResponseService.failure(error));
     }
-    catch (error) {
-      return res.status(error.code || 500).send(ResponseService.failure(error))
-    }
-
   }
-}
+};

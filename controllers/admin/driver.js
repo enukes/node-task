@@ -53,7 +53,6 @@ module.exports = {
     }
   },
 
-
   async getDrivers(req, res) {
     try {
       const pageNo = Number(req.query.pageNo || config.pagination.pageNo);

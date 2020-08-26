@@ -18,7 +18,6 @@ module.exports = {
       }
     });
 
-
     // Write the headers of the workSheet
     columns.forEach((column, columnIndex) => {
       workSheet.cell(1, (columnIndex + 1)).string(column.label).style(headerStyle);

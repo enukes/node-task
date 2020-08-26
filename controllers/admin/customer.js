@@ -41,7 +41,6 @@ module.exports = {
 
       request.status = 1;
 
-
       const customer = await CustomerService.createCustomer(request);
 
       return res.status(200).send(ResponseService.success({ customer }));
@@ -81,7 +80,6 @@ module.exports = {
       delete data.verification_token;
       delete data.created_at;
       delete data.updated_at;
-
 
       const customer = await CustomerService.updateCustomer(data, { _id: id });
 

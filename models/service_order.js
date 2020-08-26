@@ -53,26 +53,26 @@ const schema = new mongoose.Schema({
     delivery: {
       house_no: {
         type: String,
-       required: true
+        required: true
       },
 
       full_name: {
         type: String,
-       required: true
+        required: true
       },
       email: {
         type: String,
-       required: true
+        required: true
       },
 
       contact_number: {
         type: String,
-       required: true
+        required: true
       },
 
       locality: {
         type: String,
-       required: true
+        required: true
       },
 
       coordinates: {
@@ -101,14 +101,14 @@ const schema = new mongoose.Schema({
       city_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'City',
-       required: true
+        required: true
       },
 
       alias: {
         type: String,
-       required: true
-      },
-    },
+        required: true
+      }
+    }
   },
   status: {
     type: Number,
@@ -116,7 +116,7 @@ const schema = new mongoose.Schema({
       1, // Placed
       2, // Fulfilled
       3, // UnFulfilled
-      4, // Cancelled
+      4 // Cancelled
     ],
     default: 1
   },
@@ -202,7 +202,7 @@ const schema = new mongoose.Schema({
   }],
   service_order_id: {
     type: String,
-    required: true,
+    required: true
   },
   undelivered_description: {
     type: String

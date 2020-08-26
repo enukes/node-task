@@ -35,5 +35,4 @@ class OpenApiController {
   }
 }
 
-
 module.exports = new OpenApiController();

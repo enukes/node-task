@@ -108,7 +108,6 @@ const schema = new mongoose.Schema({
     default: null
   },
 
-
   is_logout: {
     type: Boolean,
     default: false

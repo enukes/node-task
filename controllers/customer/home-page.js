@@ -9,7 +9,6 @@ const CategoryService = require('../../services/category');
 const apiError = require('../../common/api-errors');
 const Constants = require('../../config/constants');
 
-
 module.exports = {
   homeContent: async (req, res) => {
     try {

@@ -14,7 +14,6 @@ const notificationMessages = require('../../common/notification-messages');
 const ConfigService = require('../../services/config');
 const MailerService = require('../../common/mailer');
 
-
 module.exports = {
   async getOrders(req, res) {
     try {

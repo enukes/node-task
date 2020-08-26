@@ -128,7 +128,6 @@ module.exports = {
     }
   },
 
-
   async markStorePaid(req, res) {
     try {
       const storeId = req.params.id;
@@ -419,7 +418,6 @@ module.exports = {
         storeId, fromDate, toDate
       });
 
-
       return exportToExcel.getExcelFile({
         expressRes: res,
         data: stores,
@@ -437,7 +435,6 @@ module.exports = {
       return res.status(500).send(ResponseService.failure(e));
     }
   },
-
 
   async getAllDriversCommission(req, res) {
     try {
@@ -507,7 +504,6 @@ module.exports = {
         ...(!!driverId && { driverId }),
         ...(!!orderId && { orderId })
       });
-
 
       return exportToExcel.getExcelFile({
         expressRes: res,

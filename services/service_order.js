@@ -1,6 +1,6 @@
-const ServiceOrder = require('../models/service_order');
 const mongoose = require('mongoose');
-const ServicesService = require('../services/service');
+const ServiceOrder = require('../models/service_order');
+const ServicesService = require('./service');
 
 module.exports = {
   /**
@@ -14,9 +14,9 @@ module.exports = {
    * Add a Service Order
    */
   async addOrder(details) {
-   const session = await mongoose.startSession();
-   session.startTransaction();
-   const opts = { session };
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    const opts = { session };
     try {
       const serviceOrder = await new ServiceOrder(details).save();
       if (!serviceOrder) {
@@ -31,7 +31,7 @@ module.exports = {
           { _id: details.services[i].service_id },
           { stock_quantity: newStockQuantity },
           opts
-          
+
         );
         if (!product) {
           throw new apiError.InternalServerError();
@@ -159,7 +159,7 @@ module.exports = {
       }
     ]);
   },
-  
+
   /**
    * Get Total Orders Count
    */
@@ -312,5 +312,5 @@ module.exports = {
         ]
     };
     return ServiceOrder.countDocuments(condition);
-  },
-}
+  }
+};

@@ -51,7 +51,6 @@ slotService.getSlots = async (storeId, ignoreOrderCount = false, ignoreDays = fa
     ...(!ignoreOrderCount && { ordersCount: { $lt: Number(adminConfig.per_slot_order_limit) } })
   });
 
-
   const slotsObject = {};
 
   for (let i = 0; i < slots.length; i++) {

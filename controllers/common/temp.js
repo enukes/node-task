@@ -12,5 +12,4 @@ class Temp {
   }
 }
 
-
 module.exports = new Temp();

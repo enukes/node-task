@@ -1,11 +1,10 @@
+const mongoose = require('mongoose');
 const apiError = require('../../common/api-errors');
 const ResponseService = require('../../common/response');
 const config = require('../../config/constants');
 const ServicesService = require('../../services/service');
 const messages = require('../../common/messages');
 const HelperService = require('../../common/helper');
-const mongoose = require('mongoose');
-
 
 module.exports = {
   getServices: async (req, res) => {
@@ -23,8 +22,7 @@ module.exports = {
       criteria.search = request.search ? request.search : '';
       if (type === 2) {
         criteria.service_provider_id = req._userInfo._user_id;
-      }
-      else {
+      } else {
         criteria.service_provider_id = request.service_provider_id;
       }
 
@@ -41,8 +39,7 @@ module.exports = {
 
       paginationVariables.totalItems = await ServicesService.getTotalServicesCount({}, criteria);
       return res.status(200).send(ResponseService.success({ services, paginationVariables }));
-    }
-    catch (error) {
+    } catch (error) {
       return res.status(error.code || 500).send(ResponseService.failure(error));
     }
   },
@@ -52,9 +49,8 @@ module.exports = {
       const request = { ...req.body };
       const userType = req._userInfo._user_type;
       if (req.file) {
-        request.pictures = req.file.filename
+        request.pictures = req.file.filename;
       }
-
 
       if (!request.service_provider_id && `${userType}` !== '2') {
         throw new apiError.ValidationError('service_provider_id', messages.SERVICE_ID_REQUIRED);
@@ -65,13 +61,12 @@ module.exports = {
       }
 
       request.order_max = Number(request.order_max);
-      request.price = JSON.parse(request.price)
+      request.price = JSON.parse(request.price);
 
       const service = await ServicesService.addAServiceToServiceProvider(request);
       return res.status(200).send(ResponseService.success(service));
-    }
-    catch (error) {
-      return res.status(error.code || 500).send(ResponseService.failure(error))
+    } catch (error) {
+      return res.status(error.code || 500).send(ResponseService.failure(error));
     }
   },
 
@@ -102,17 +97,16 @@ module.exports = {
 
       request.pictures = foundService.pictures ? foundService.pictures : {};
       if (req.file) {
-        request.pictures = req.file.filename
+        request.pictures = req.file.filename;
       }
-      request.price = JSON.parse(request.price)
+      request.price = JSON.parse(request.price);
 
       const updatedService = await ServicesService.updateService({ _id: id }, request);
       if (!updatedService) {
         throw new apiError.InternalServerError();
       }
       return res.status(200).send(ResponseService.success({ service: updatedService }));
-    }
-    catch (error) {
+    } catch (error) {
       return res.status(error.code || 500).json(ResponseService, failure(error));
     }
   },
@@ -129,10 +123,9 @@ module.exports = {
         throw new apiError.ValidationError('service_id', messages.SERVICE_ID_INVALID);
       }
       const deletedService = await ServicesService.deleteService({ _id: serviceId });
-      return res.status(200).send(ResponseService.success({ service: deletedService }))
-    }
-    catch (error) {
-      return res.status(error.code || 500).json(ResponseService.failure(error))
+      return res.status(200).send(ResponseService.success({ service: deletedService }));
+    } catch (error) {
+      return res.status(error.code || 500).json(ResponseService.failure(error));
     }
   }
-}
+};

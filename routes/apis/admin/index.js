@@ -46,7 +46,7 @@ router.use('/home-config', isSuperAdminMiddleware, HomeConfigRoutes);
 router.use('/service-category', isSuperAdminMiddleware, ServiceProviderCategoryRoutes);
 router.use('/service-order', isSuperAdminMiddleware, ServiceOrderRoutes);
 router.use('/service-provider', isSuperAdminMiddleware, ServiceProviderRoutes);
-router.use('/service', isSuperAdminMiddleware, ServiceRoutes)
+router.use('/service', isSuperAdminMiddleware, ServiceRoutes);
 router.use('/', isSuperAdminMiddleware, CommonRoutes);
 
 module.exports = router;

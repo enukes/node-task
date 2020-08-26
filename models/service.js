@@ -3,8 +3,8 @@ const messages = require('../common/messages');
 
 const schema = new mongoose.Schema({
   name: {
-  type: String,
-  required: [true, messages.NAME_REQUIRED]
+    type: String,
+    required: [true, messages.NAME_REQUIRED]
   },
   description: {
     type: String
@@ -57,7 +57,7 @@ const schema = new mongoose.Schema({
     type: String
   }
 },
-  {
-    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
-  });
-  module.exports = mongoose.model('Service', schema);
+{
+  timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
+});
+module.exports = mongoose.model('Service', schema);

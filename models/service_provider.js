@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const { Schema } = mongoose ;
+const { Schema } = mongoose;
 
 const addressSchema = new Schema({
   shop_no: {
@@ -41,7 +41,7 @@ const addressSchema = new Schema({
   }
 });
 
-addressSchema.index({geoPoint: '2dsphere'});
+addressSchema.index({ geoPoint: '2dsphere' });
 
 const schema = Schema(
   {
@@ -121,7 +121,7 @@ const schema = Schema(
         2 // Inactive
       ],
       default: 2
-    },
+    }
   },
   {
     timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }

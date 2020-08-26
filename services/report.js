@@ -64,7 +64,6 @@ module.exports = {
     ]);
   },
 
-
   getTotalCustomerCount(request) {
     return Customer.aggregate([
       {
@@ -714,7 +713,6 @@ module.exports = {
       }
     ]);
   },
-
 
   getDriverOrdersByDriverId({
     pageNo, perPage, fromDate, toDate, driverId

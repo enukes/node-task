@@ -233,7 +233,6 @@ class AuthController {
           userObj.auth_token = token;
         }
 
-
         // Update user with a password reset token
         await AuthService.updateUser(userObj, { contact_number: contact }, type);
 
@@ -311,7 +310,6 @@ class AuthController {
       if (!request.user_id) throw new apiError.ValidationError('user_id', messages.USER_ID_REQUIRED);
 
       const userFieldSet = 'id, name, about, email, picture';
-
 
       const options = {
         method: 'GET',
@@ -418,7 +416,6 @@ class AuthController {
 
       const salt = await bcrypt.genSaltSync(10);
       const hash = await bcrypt.hashSync(request.password, salt);
-
 
       if (!hash) throw apiError.InternalServerError();
 

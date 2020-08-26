@@ -12,52 +12,52 @@ module.exports = {
    * Get all Service Provider Category
    */
 
-   getAllServiceProviderCategories(search, pageNo, perPage, status) {
-     return ServiceProviderCategory.find({
-       name: new RegExp(search, 'i'),
-       ...(!!status && {status}) 
-     }).skip((pageNo - 1) * perPage).limit(perPage);
-   },
+  getAllServiceProviderCategories(search, pageNo, perPage, status) {
+    return ServiceProviderCategory.find({
+      name: new RegExp(search, 'i'),
+      ...(!!status && { status })
+    }).skip((pageNo - 1) * perPage).limit(perPage);
+  },
 
-   /**
+  /**
     * Count the Service Provider Categories
     */
-   getServiceProviderCategoryCount (request, search) {
-     const condition = {
-       $and: 
+  getServiceProviderCategoryCount(request, search) {
+    const condition = {
+      $and:
        [
          {
-           $or: 
+           $or:
            [
              { name: new RegExp(search, 'i') }
            ]
          },
          request
        ]
-     };
-     return ServiceProviderCategory.countDocuments(condition);
-   },
+    };
+    return ServiceProviderCategory.countDocuments(condition);
+  },
 
-   /**
+  /**
     * Get Service Provider Category by Id
     */
-   getServiceProviderCategoryById(id) {
-     return ServiceProviderCategory.findById(id);
-   },
+  getServiceProviderCategoryById(id) {
+    return ServiceProviderCategory.findById(id);
+  },
 
-   /**
+  /**
     * Update Service Provider Category
     */
 
   updateServiceProviderCategory(details, criteria) {
-    return ServiceProviderCategory.findOneAndUpdate(criteria, details, {new: true} );
-    },
+    return ServiceProviderCategory.findOneAndUpdate(criteria, details, { new: true });
+  },
 
-    /**
+  /**
      * Delete Service Provider Category
      */
 
-     deleteServiceProviderCategory(serviceProviderCategoryId) {
-       return ServiceProviderCategory.deleteMany({ _id: serviceProviderCategoryId });
-     }
-}
+  deleteServiceProviderCategory(serviceProviderCategoryId) {
+    return ServiceProviderCategory.deleteMany({ _id: serviceProviderCategoryId });
+  }
+};

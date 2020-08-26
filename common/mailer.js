@@ -90,7 +90,6 @@ const MailerService = {
     }
   },
 
-
   async sendInvoice(order, customer, pdf) {
     try {
       const invoiceNo = HelperService.getInvoiceFromOrder(order.order_id);

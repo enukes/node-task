@@ -137,7 +137,6 @@ module.exports = {
     return Store.find(condition).skip((pageNo - 1) * perPage).limit(perPage).sort(sort);
   },
 
-
   getStorePaymentDetails(from_date, to_date) {
     return Store.aggregate([
       {
@@ -165,7 +164,6 @@ module.exports = {
       session = await mongoose.startSession();
       session.startTransaction();
     }
-
 
     const opts = { session };
 
@@ -207,10 +205,10 @@ module.exports = {
       {
         $geoNear: {
           near: {
-            type: "Point",
+            type: 'Point',
             coordinates: [request.lat, request.long]
           },
-          distanceField: "dist.calculated",
+          distanceField: 'dist.calculated',
           maxDistance: 20000
         }
       },
@@ -236,6 +234,6 @@ module.exports = {
       {
         $unwind: '$categoryDetails'
       }
-    ])
+    ]);
   }
 };

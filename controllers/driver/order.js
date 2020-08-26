@@ -12,7 +12,6 @@ const PushNotification = require('../../common/push-notification');
 const notificationMessages = require('../../common/notification-messages');
 const MailerService = require('../../common/mailer');
 
-
 module.exports = {
 
   async getUnassignedOrders(req, res) {

@@ -10,7 +10,6 @@ module.exports = {
     body: `Order with order id ${orderId} has been cancelled by customer.`
   }),
 
-
   driverAssigned: ({ orderId }) => ({
     title: 'Driver assigned!',
     body: `Order with order id ${orderId} has been assigned to you.`

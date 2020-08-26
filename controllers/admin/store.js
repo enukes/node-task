@@ -46,9 +46,9 @@ module.exports = {
         throw new apiError.ValidationError('email', messages.CONTACT_REQUIRED);
       }
       if (!(request.categories && request.categories.length > 0)) {
-        throw new apiError.ValidationError('category', messages.CATEGORY_ID_REQUIRED)
+        throw new apiError.ValidationError('category', messages.CATEGORY_ID_REQUIRED);
       }
-      request.categories.forEach(element => {
+      request.categories.forEach((element) => {
         if (!element._id || !HelperService.isValidMongoId(element._id)) {
           throw new apiError.ValidationError('categoryId', messages.ID_INVALID);
         }
@@ -117,9 +117,9 @@ module.exports = {
       request.timings = JSON.parse(request.timings);
       request.categories = JSON.parse(request.categories);
       if (!(request.categories && request.categories.length > 0)) {
-        throw new apiError.ValidationError('category', messages.CATEGORY_ID_REQUIRED)
+        throw new apiError.ValidationError('category', messages.CATEGORY_ID_REQUIRED);
       }
-      request.categories.forEach(element => {
+      request.categories.forEach((element) => {
         if (!element._id || !HelperService.isValidMongoId(element._id)) {
           throw new apiError.ValidationError('categoryId', messages.ID_INVALID);
         }
@@ -162,7 +162,6 @@ module.exports = {
       return res.status(500).send(ResponseService.failure(e));
     }
   },
-
 
   async getStores(req, res) {
     try {
@@ -217,8 +216,7 @@ module.exports = {
 
       if (!date) {
         date = moment();
-      }
-      else {
+      } else {
         date = moment(date);
       }
 
@@ -318,5 +316,5 @@ module.exports = {
     }
 
     res.send(ResponseService.success({ message: 'All Links have been generated Successfully.' }));
-  },
+  }
 };

@@ -1,8 +1,8 @@
+const mongoose = require('mongoose');
+const moment = require('moment-timezone');
 const ServiceProvider = require('../models/service_provider');
 const Slot = require('../models/slot');
-const mongoose = require('mongoose');
 const config = require('../config/constants');
-const moment = require('moment-timezone');
 
 module.exports = {
   /**
@@ -12,7 +12,7 @@ module.exports = {
     return ServiceProvider.findOne(request);
   },
 
-/**
+  /**
  * Get Service Provider List
  */
 
@@ -75,11 +75,11 @@ module.exports = {
    * Update Service Provider
    */
 
-   updateServiceProvider(details, criteria) {
-     return ServiceProvider.findOneAndUpdate(criteria, details, {new: true});
-   },
+  updateServiceProvider(details, criteria) {
+    return ServiceProvider.findOneAndUpdate(criteria, details, { new: true });
+  },
 
-   /**
+  /**
     * Get Total Service Providers
     */
 
@@ -165,12 +165,11 @@ module.exports = {
     }
   },
 
-
   /**
    * Get Service Provider By Category Id
    */
 
   getServiceProvidersByCategoryId(serviceCategoryId) {
-    return ServiceProvider.findOne({ serviceCategory: serviceCategoryId})
+    return ServiceProvider.findOne({ serviceCategory: serviceCategoryId });
   }
-}
+};

@@ -179,7 +179,6 @@ module.exports = {
           ]
       };
 
-
       return Product
         .find(condition, null, { sort: { created_at: -1 } })
         .limit(criteria.perPage)
@@ -278,7 +277,6 @@ module.exports = {
     ]);
   },
 
-
   getProductsWithPagination(request, pageNo, perPage, criteria, sort) {
     const condition = {
       $and:
@@ -321,7 +319,6 @@ module.exports = {
     return Product.deleteOne(request);
   },
 
-
   async addProductsFromSku(data, storeId) {
     const session = await mongoose.startSession();
     session.startTransaction();
@@ -337,7 +334,6 @@ module.exports = {
         if (!product) throw new Error(`Sku ID is Invalid at index ${i}`);
 
         if (product.store_id !== storeId) throw new Error(`Invalid Auth Token for Product at index ${i}`);
-
 
         if (element.quantity) {
           if (Number.isNaN(Number(element.quantity)) || Number(element.quantity) < 0) throw new Error(`Quantity is Invalid at index ${i}`);

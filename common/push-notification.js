@@ -4,7 +4,7 @@ const moment = require('moment');
 const config = require('../config/constants');
 const serviceAccount = require('../firebase-admin.json');
 
-const notificationMessages = require('../common/notification-messages');
+const notificationMessages = require('./notification-messages');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),

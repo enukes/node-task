@@ -14,9 +14,8 @@ module.exports = {
       }
       const createdServiceProviderCategory = await ServiceProviderCategoryService.addServiceProviderCategory(serviceProviderCategoryToBeCreated);
       return res.status(200).send(ResponseService.success({ createdServiceProviderCategory }));
-    }
-    catch (error) {
-      return res.status(error.code || 500).json(ResponseService.failure(error))
+    } catch (error) {
+      return res.status(error.code || 500).json(ResponseService.failure(error));
     }
   },
 
@@ -42,8 +41,7 @@ module.exports = {
         serviceProviderCategories,
         totalServiceProviderCategories
       }));
-    }
-    catch (error) {
+    } catch (error) {
       return res.status(error.code || 500).send(ResponseService.failure(error));
     }
   },
@@ -60,11 +58,10 @@ module.exports = {
       }
       foundCategory = await ServiceProviderCategoryService.updateServiceProviderCategory(
         categoryToBeUpdated,
-        { _id: serviceProviderCategoryId },
+        { _id: serviceProviderCategoryId }
       );
       return res.status(200).send(ResponseService.success());
-    }
-    catch (error) {
+    } catch (error) {
       return res.status(error.code || 500).send(ResponseService.failure(error));
     }
   },
@@ -83,9 +80,8 @@ module.exports = {
       }
       const deleteServiceProviderCategory = await ServiceProviderCategoryService.deleteServiceProviderCategory(serviceProviderCategoryId);
       return res.status(200).send(ResponseService.success({ serviceProviderCategory: deleteServiceProviderCategory }));
-
     } catch (error) {
-      return res.status(error.code || 500).send(ResponseService.failure(error))
+      return res.status(error.code || 500).send(ResponseService.failure(error));
     }
   }
-}
+};

@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const moment = require('moment-timezone');
 const Order = require('../models/order');
 const Store = require('../models/store');
-const ProductService = require('../services/product');
+const ProductService = require('./product');
 const apiError = require('../common/api-errors');
 const couponService = require('./coupon');
 
@@ -544,7 +544,6 @@ module.exports = {
       {
         $replaceRoot: { newRoot: '$store' }
       }
-
 
     ]);
   },

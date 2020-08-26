@@ -114,7 +114,6 @@ module.exports = {
   // cart
   STORE_ID_MISMATCH: 'Cart has entities from different store.',
 
-
   STREET_NAME_REQUIRED: 'Street name is a required field',
   HOUSE_NO_REQUIRED: 'House No. is a required field',
   ALIAS_REQUIRED: 'Alias is a required field',
@@ -148,25 +147,22 @@ module.exports = {
   DRIVER_IS_ASSOCIATED: 'Driver is either associated with any store or with any order',
   IS_ONLINE_REQUIRED: 'online status is required',
 
-  //Service
+  // Service
   SERVICE_SIZE_REQUIRED: 'Size is a required field',
   SERVICE_ID_REQUIRED: 'Service Id is a required field',
 
-  //Service Category
+  // Service Category
   SERVICE_PROVIDER_CATEGORY_ID_INVALID: 'Service Provider category id is Invalid',
   SERVICE_PROVIDER_CATEGORY_ID_ASSOCIATED: 'Service Provider category id is associated with Service Provider',
 
-  //Service Provider
+  // Service Provider
   SERVICE_PROVIDER_ID_INVALID: 'Service Provider id is Invalid',
   SERVICE_PROVIDER_ORDER_EXISTS_CANNOT_BE_DELETED: 'Above Service Provider cannot be deleted as order has already been placed from this Service Provider. Please disable it to avoid any further orders.',
 
-  //Service Order Validation
+  // Service Order Validation
   SERVICES_REQUIRED: 'There should be atleast 1 Service while placing order',
-  SERVICE_ID_REQUIRED: 'Service Id is a required Field',
   SERVICE_ORDER_ID_REQUIRED: 'The Service Order Id is a required field',
   SERVICE_PROVIDER_ORDER_ID_REQUIRED: 'The Service Order Id is a required field',
-  SERVICE_ID_INVALID: 'Service Provider id is Invalid',
-
-
+  SERVICE_ID_INVALID: 'Service Provider id is Invalid'
 
 };

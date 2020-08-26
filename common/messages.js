@@ -72,6 +72,7 @@ module.exports = {
 
   // category validation
   CATEGORY_PICTURE_REQUIRED: 'Category Picture is a required field',
+  CATEGORY_ID_REQUIRED: 'category id is Required',
   STORE_CATEGORY_MISMATCH: 'Store can only add/edit categories that are under it.',
 
   FCM_TOKEN_REQUIRED: 'Fcm token is a required field.',

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const messages = require('../common/messages');
 
 const { Schema } = mongoose;
 
@@ -123,10 +124,13 @@ const schema = Schema(
       type: Boolean,
       required: true
     },
-    storeCategory: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true
-    },
+    category: [{
+      _id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
+        required: [true, messages.CATEGORY_ID_REQUIRED]
+      }
+    }],
     delivery_charges: [{
       order_amount: {
         type: Number,

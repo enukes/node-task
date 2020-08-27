@@ -163,11 +163,10 @@ module.exports = {
     return Category.findOneAndUpdate(criteria, details, { new: true });
   },
 
-  getAllCategoriesWithSubCategories(storeId) {
+  getAllCategoriesWithSubCategories() {
     return Category.aggregate([
       {
         $match: {
-          store_id: mongoose.Types.ObjectId(storeId),
           parent: null,
           status: 1 // Only Active Categories
         }
@@ -244,11 +243,10 @@ module.exports = {
     return Category.aggregate(condition).skip((pageNo - 1) * perPage).limit(perPage).sort(sort);
   },
 
-  getTotalCategoriesCount(storeId, search) {
+  getTotalCategoriesCount(search) {
     const condition = [
       {
         $match: {
-          store_id: mongoose.Types.ObjectId(storeId),
           parent: null,
           name: new RegExp(search, 'i')
         }

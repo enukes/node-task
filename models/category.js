@@ -2,11 +2,6 @@ const mongoose = require('mongoose');
 const messages = require('../common/messages');
 
 const schema = new mongoose.Schema({
-  store_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Store',
-    required: [true, messages.STORE_ID_REQUIRED]
-  },
   name: {
     type: Object,
     required: true

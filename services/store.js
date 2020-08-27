@@ -15,35 +15,35 @@ module.exports = {
     return Store.find(request);
   },
 
-  getStoresGroupedByCategories(request) {
-    return Store.aggregate([
-      {
-        $match: request
-      },
-      {
-        $group: {
-          _id: '$storeCategory',
-          stores: { $push: '$$ROOT' }
-        }
-      },
-      {
-        $lookup: {
-          from: 'storecategories',
-          localField: '_id',
-          foreignField: '_id',
-          as: 'categoryDetails'
-        }
-      },
-      {
-        $match: {
-          'categoryDetails.status': 1
-        }
-      },
-      {
-        $unwind: '$categoryDetails'
-      }
-    ]);
-  },
+  // getStoresGroupedByCategories(request) {
+  //   return Store.aggregate([
+  //     {
+  //       $match: request
+  //     },
+  //     {
+  //       $group: {
+  //         _id: '$storeCategory',
+  //         stores: { $push: '$$ROOT' }
+  //       }
+  //     },
+  //     {
+  //       $lookup: {
+  //         from: 'storecategories',
+  //         localField: '_id',
+  //         foreignField: '_id',
+  //         as: 'categoryDetails'
+  //       }
+  //     },
+  //     {
+  //       $match: {
+  //         'categoryDetails.status': 1
+  //       }
+  //     },
+  //     {
+  //       $unwind: '$categoryDetails'
+  //     }
+  //   ]);
+  // },
 
   async createStore(details) {
     const session = await mongoose.startSession();
@@ -196,10 +196,6 @@ module.exports = {
     }
   },
 
-  getStoreByCategoryId(storeCategoryId) {
-    return Store.findOne({ storeCategory: storeCategoryId });
-  },
-
   getStoreByArea(request) {
     return Store.aggregate([
       {
@@ -213,15 +209,11 @@ module.exports = {
         }
       },
       {
-        $group: {
-          _id: '$storeCategory',
-          stores: { $push: '$$ROOT' }
-        }
-      },
-      {
+        $unwind: '$categories'
+      }, {
         $lookup: {
-          from: 'storecategories',
-          localField: '_id',
+          from: 'categorynews',
+          localField: 'categories._id',
           foreignField: '_id',
           as: 'categoryDetails'
         }
@@ -232,8 +224,34 @@ module.exports = {
         }
       },
       {
-        $unwind: '$categoryDetails'
-      }
+        $group: {
+          _id: '$categoryDetails',
+          stores: {$push: '$$ROOT'}
+        }
+      },
+
+      // {
+      //   $group: {
+      //     _id: '$storeCategory',
+      //     stores: { $push: '$$ROOT' }
+      //   }
+      // },
+      // {
+      //   $lookup: {
+      //     from: 'storecategories',
+      //     localField: '_id',
+      //     foreignField: '_id',
+      //     as: 'categoryDetails'
+      //   }
+      // },
+      // {
+      //   $match: {
+      //     'categoryDetails.status': 1
+      //   }
+      // },
+      // {
+      //   $unwind: '$categoryDetails'
+      // }
     ]);
   }
 };

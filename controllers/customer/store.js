@@ -12,25 +12,25 @@ const messages = require('../../common/messages');
 const config = require('../../config/constants');
 
 class StoreController {
-  async getStoreBasedOnArea(req, res) {
-    try {
-      // await SlotService.cancelScheduler();
+  // async getStoreBasedOnArea(req, res) {
+  //   try {
+  //     // await SlotService.cancelScheduler();
 
-      const request = { ...req.query };
+  //     const request = { ...req.query };
 
-      if (!request.area_id) throw new apiError.ValidationError('area_id', messages.AREA_ID_REQUIRED);
-      if (!HelperService.isValidMongoId(request.area_id)) throw new apiError.ValidationError('id', messages.ID_INVALID);
+  //     if (!request.area_id) throw new apiError.ValidationError('area_id', messages.AREA_ID_REQUIRED);
+  //     if (!HelperService.isValidMongoId(request.area_id)) throw new apiError.ValidationError('id', messages.ID_INVALID);
 
-      const categories = await StoreService.getStoresGroupedByCategories({ 'address.area_id': mongoose.Types.ObjectId(request.area_id), status: 1, storeCategory: { $ne: null } });
-      // await StoreService.getStoresList({ 'address.area_id': mongoose.Types.ObjectId(request.area_id), status: 1});
-      const area = await AreaService.getArea({ _id: request.area_id });
-      const city = await AreaService.getCity({ areas: request.area_id });
+  //     const categories = await StoreService.getStoresGroupedByCategories({ 'address.area_id': mongoose.Types.ObjectId(request.area_id), status: 1, storeCategory: { $ne: null } });
+  //     // await StoreService.getStoresList({ 'address.area_id': mongoose.Types.ObjectId(request.area_id), status: 1});
+  //     const area = await AreaService.getArea({ _id: request.area_id });
+  //     const city = await AreaService.getCity({ areas: request.area_id });
 
-      return res.status(200).send(ResponseService.success({ categories, area, city }));
-    } catch (e) {
-      return res.status(e.code || 500).send(ResponseService.failure(e));
-    }
-  }
+  //     return res.status(200).send(ResponseService.success({ categories, area, city }));
+  //   } catch (e) {
+  //     return res.status(e.code || 500).send(ResponseService.failure(e));
+  //   }
+  // }
 
   async storeHomePage(req, res) {
     try {

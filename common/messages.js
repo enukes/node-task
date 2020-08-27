@@ -63,6 +63,7 @@ module.exports = {
 
   // store validation
   STORE_PICTURE_REQUIRED: 'Store Picture is a required field',
+  STORE_PERMISSION: 'You need to approve your Store, before changing the Status',
   STORE_DOESNT_SUPPORT_EXPRESS_DELIVERY: 'This Store Doesn\'t provide express delivery',
   OWNER_DETAILS_REQUIRED: 'Owner Details Are Required',
   ADDRESS_REQUIRED: 'Address Details Are Required',

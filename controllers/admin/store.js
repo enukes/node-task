@@ -111,6 +111,9 @@ module.exports = {
       if (!request.timings) {
         throw new apiError.ValidationError('owner_details', messages.TIMINGS_REQUIRED);
       }
+      if(request.storePermission === 'Pending' && request.status === '1') {
+        throw new apiError.ValidationError('storePermission', messages.STORE_PERMISSION)
+      }
 
       request.owner = JSON.parse(request.owner);
       request.address = JSON.parse(request.address);

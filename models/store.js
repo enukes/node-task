@@ -171,6 +171,15 @@ const schema = Schema(
         2 // Inactive
       ],
       default: 2
+    },
+    storePermission: {
+      type: String,
+      enum: [
+        'Active',
+        'Rejected',
+        'Pending'
+      ],
+      default: 'Pending'
     }
   },
   {

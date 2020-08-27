@@ -221,11 +221,10 @@ module.exports = {
     ]);
   },
 
-  getCategoriesWithPagination(pageNo, perPage, storeId, search, sort) {
+  getCategoriesWithPagination(pageNo, perPage, search, sort) {
     const condition = [
       {
         $match: {
-          store_id: mongoose.Types.ObjectId(storeId),
           parent: null,
           name: new RegExp(search, 'i')
         }

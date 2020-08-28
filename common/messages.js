@@ -147,6 +147,8 @@ module.exports = {
   DRIVER_ID_REQUIRED: 'Driver Id is a required field',
   DRIVER_IS_ASSOCIATED: 'Driver is either associated with any store or with any order',
   IS_ONLINE_REQUIRED: 'online status is required',
+  DRIVER_ID_INVALID: 'Driver Id is invalid',
+
 
   // Service
   SERVICE_SIZE_REQUIRED: 'Size is a required field',
@@ -164,6 +166,9 @@ module.exports = {
   SERVICES_REQUIRED: 'There should be atleast 1 Service while placing order',
   SERVICE_ORDER_ID_REQUIRED: 'The Service Order Id is a required field',
   SERVICE_PROVIDER_ORDER_ID_REQUIRED: 'The Service Order Id is a required field',
-  SERVICE_ID_INVALID: 'Service Provider id is Invalid'
+  SERVICE_ID_INVALID: 'Service Provider id is Invalid',
+
+  //Rating
+  RATING_REQUIRED: 'Rating is a required field'
 
 };

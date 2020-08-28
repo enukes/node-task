@@ -8,6 +8,7 @@ const ProductRoutes = require('./product');
 const CartRoutes = require('./cart');
 const UserRoutes = require('./user');
 const OrderRoutes = require('./order');
+const RatingRoutes = require('./rating');
 const ServiceOrderRoutes = require('./service_order');
 const CouponRoutes = require('./coupon');
 
@@ -20,6 +21,7 @@ router.use('/user', UserRoutes);
 router.use('/order', OrderRoutes);
 router.use('/service-order', ServiceOrderRoutes);
 router.use('/coupon', CouponRoutes);
+router.use('/rating', RatingRoutes);
 router.use('/', CommonRoutes);
 
 module.exports = router;

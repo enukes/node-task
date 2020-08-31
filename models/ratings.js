@@ -6,11 +6,11 @@ const schema = new mongoose.Schema({
     type: String,
     required: [true, messages.ORDER_ID_REQUIRED]
   },
-  driver_id: {
+  driverId: {
     type: mongoose.Schema.Types.ObjectId,
     ref:'Driver',
   },
-  store_id: {
+  storeId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Store',
   },

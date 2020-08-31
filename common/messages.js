@@ -169,6 +169,15 @@ module.exports = {
   SERVICE_ID_INVALID: 'Service Provider id is Invalid',
 
   //Rating
-  RATING_REQUIRED: 'Rating is a required field'
+  RATING_REQUIRED: 'Rating is a required field',
+
+  //Order Verify
+  SCANNED_BY_REQUIRED: 'Scanned by is a required field',
+  CODE_TYPE_REQUIRED: 'Code Type is a required field',
+  CODE_REQUIRED: 'Code is Required',
+  CODE_TYPE_INVALID: 'Code Type is invalid',
+  ORDER_VERIFIED: 'Order is verified successfully',
+  ORDER_UNVERIFIED: 'Order verification failed'
+
 
 };

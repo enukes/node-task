@@ -6,5 +6,7 @@ const ConfigController = require('../../../controllers/admin/config');
 
 router.get('/', ConfigController.getConfig);
 router.put('/', ConfigController.updateConfig);
+router.get('/delivery-charges', ConfigController.getDeliveryCharges);
+router.put('/delivery-charges', ConfigController.updateDeliveryCharges)
 
 module.exports = router;

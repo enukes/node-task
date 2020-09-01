@@ -172,7 +172,7 @@ const schema = Schema(
       ],
       default: 2
     },
-    storePermission: {
+    storeApproval: {
       type: String,
       enum: [
         'Active',
@@ -180,7 +180,12 @@ const schema = Schema(
         'Pending'
       ],
       default: 'Pending'
-    }
+    },
+    isFreeDelivery: {
+      type: Boolean,
+      required: true,
+      default: false
+    },
   },
   {
     timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }

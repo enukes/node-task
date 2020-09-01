@@ -12,6 +12,9 @@ module.exports = {
     });
   },
 
+  getDeliveryCharges() {
+    return Config.findOne({});
+  },
   updateConfig(details) {
     return Config.findOneAndUpdate({}, details, { new: true });
   }

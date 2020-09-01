@@ -8,6 +8,18 @@ const schema = new mongoose.Schema({
   per_slot_order_limit: {
     type: Number,
     required: true
+  },
+  minimumDistance: {
+    type: Number,
+    default: 3
+  },
+  basePrice: {
+    type: Number,
+    default: 10
+  },
+  perKmPrice: {
+    type: Number,
+    default: 5
   }
 }, {
   timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }

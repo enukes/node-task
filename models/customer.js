@@ -54,7 +54,6 @@ const schema = new mongoose.Schema({
     },
 
     coordinates: {
-
       latitude: {
         type: Number,
         required: false

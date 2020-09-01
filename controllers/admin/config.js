@@ -68,5 +68,34 @@ module.exports = {
     } catch (e) {
       return res.status(500).send(ResponseService.failure(e));
     }
+  },
+  async getDeliveryCharges(req, res) {
+    try {
+      const config = await ConfigService.getDeliveryCharges();
+      return res.status(200).send(ResponseService.success(config))
+    }
+    catch (error) {
+      return res.status(error.code || 500).send(ResponseService.failure(error))
+    }
+  },
+
+  async updateDeliveryCharges(req, res) {
+    try{
+      const reqBody = req.body;
+      if (!reqBody.minimumDistance) {
+        throw new apiError.ValidationError('minimumDistance', messages.MINIMUM_DISTANCE);
+      }
+      if (!reqBody.basePrice) {
+        throw new apiError.ValidationError('basePrice', messages.BASE_PRICE);
+      }
+      if (!reqBody.perKmPrice) {
+        throw new apiError.ValidationError('perKmPrice', messages.KM_PRICE);
+      }
+
+      const updatedDeliveryCharges = await ConfigService.updateConfig(reqBody);
+      return res.status(200).json(ResponseService.success(updatedDeliveryCharges))
+    } catch(error) {
+      return res.status(error.code || 500).json(ResponseService.failure(error));
+    }
   }
 };

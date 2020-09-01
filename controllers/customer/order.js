@@ -21,7 +21,7 @@ const PushNotification = require('../../common/push-notification');
 const InvoiceService = require('../../common/invoice/invoicePdf');
 const MailerService = require('../../common/mailer');
 const notificationMessages = require('../../common/notification-messages');
-
+const crypto = require('crypto');
 const OrderController = {
 
   async placeOrder(req, res) {
@@ -178,15 +178,16 @@ const OrderController = {
       const { taxes } = adminConfig;
 
       let totalAmountAfterTax = orderDetails.total_amount;
+     
 
       const { delivery_charges: deliveryCharges } = store;
 
-      for (let i = 0; i < deliveryCharges.length; i++) {
-        if (orderDetails.total_amount < deliveryCharges[i].order_amount) {
-          orderDetails.delivery_charges = deliveryCharges[i].charges;
-          break;
-        }
-      }
+      // for (let i = 0; i < deliveryCharges.length; i++) {
+      //   if (orderDetails.total_amount < deliveryCharges[i].order_amount) {
+      //     orderDetails.delivery_charges = deliveryCharges[i].charges;
+      //     break;
+      //   }
+      // }
       orderDetails.taxes = [];
 
       taxes.forEach((tax) => {
@@ -246,6 +247,8 @@ const OrderController = {
         else continue;
       }
       orderDetails.order_id = uniqueId;
+      orderDetails.pickup_code = crypto.randomBytes(4).toString('utf-8');
+      orderDetails.delivery_code = crypto.randomBytes(4).toString('utf-8');
 
       const order = await OrderService.addOrder(orderDetails);
 
@@ -550,7 +553,9 @@ const OrderController = {
       default:
         return 0;
     }
-  }
+  },
+
+  
 };
 
 module.exports = OrderController;

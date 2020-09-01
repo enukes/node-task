@@ -177,7 +177,11 @@ module.exports = {
   CODE_REQUIRED: 'Code is Required',
   CODE_TYPE_INVALID: 'Code Type is invalid',
   ORDER_VERIFIED: 'Order is verified successfully',
-  ORDER_UNVERIFIED: 'Order verification failed'
+  ORDER_UNVERIFIED: 'Order verification failed',
 
+  //Delivery Charges
+  MINIMUM_DISTANCE: 'Minimum distance is required',
+  BASE_PRICE: 'Base Price is required',
+  KM_PRICE: 'Kilometer price is required'
 
 };

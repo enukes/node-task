@@ -21,7 +21,7 @@ module.exports = {
       const perPage = Number(req.query.perPage || config.pagination.perPage);
       const sort = { [req.query.name]: Number(req.query.sortType) };
 
-      const search = req.query.search || '';
+      const search = req.query.search ||'';
 
       const condition = {};
       const type = req._userInfo._user_type;

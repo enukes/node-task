@@ -197,7 +197,7 @@ module.exports = {
                 {
                   $or:
                     [
-                      { order_id: new RegExp(search, 'i') }
+                     { order_id: new RegExp(search, 'i') }
                       // { "store.name": new RegExp(search, 'i') },
                     ]
                 },

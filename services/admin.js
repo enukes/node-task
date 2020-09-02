@@ -18,8 +18,6 @@ class AdminService {
   }
 
   updateAdmin(details, criteria) {
-    console.log('details-------------------------->', details);
-    console.log('criteria------------------------>', criteria);
     return Admin.findOneAndUpdate(criteria, details, { new: true });
   }
 

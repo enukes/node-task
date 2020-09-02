@@ -88,20 +88,10 @@ module.exports = {
   async getAllStoreCategories(req, res) {
     try {
       const type = req._userInfo._user_type;
-
-      // let storeId;
-
-      // if (type === 2) storeId = req._userInfo._user_id;
-      // else storeId = req.query.store_id;
-
       const pageNo = Number(req.query.pageNo || config.pagination.pageNo);
       const perPage = Number(req.query.perPage || config.pagination.perPage);
       const search = req.query.search || '';
       const sort = { [req.query.name]: Number(req.query.sortType) };
-
-      // if (!storeId) throw new apiError.ValidationError('store_id', messages.STORE_ID_REQUIRED);
-      // if (!HelperService.isValidMongoId(storeId)) throw new apiError.ValidationError('store_id', messages.ID_INVALID);
-
       const categories = await CategoryService.getCategoriesWithPagination(
         pageNo,
         perPage,

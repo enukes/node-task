@@ -5,7 +5,6 @@ const StoreController = require('../../../controllers/admin/store');
 const Upload = require(path('common/multer'));
 
 router.get('/', StoreController.getStores);
-router.post('/', Upload.any(), StoreController.addStore);
 router.get('/stores', StoreController.getStoresForCategoryManagement);
 router.put('/:id', Upload.any(), StoreController.updateStore);
 router.get('/:id/drivers', StoreController.getActiveStoreDrivers);

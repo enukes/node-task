@@ -125,21 +125,9 @@ const schema = Schema(
       required: true
     },
     categories: [{
-      _id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category',
-        required: [true, messages.CATEGORY_ID_REQUIRED]
-      }
-    }],
-    delivery_charges: [{
-      order_amount: {
-        type: Number,
-        required: true
-      },
-      charges: {
-        type: Number,
-        required: true
-      }
+        required: [true, messages.CATEGORY_ID_REQUIRED],
     }],
     storeInfo: {
       faq: {

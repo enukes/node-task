@@ -90,7 +90,7 @@ module.exports = {
         const area = await AreaService.getArea({ _id: element.area_id });
         element.unique_link = sh.unique(request.name + city.name + area.name);
       }
-      request.delivery_charges = JSON.parse(request.delivery_charges);
+      // request.delivery_charges = JSON.parse(request.delivery_charges);
       const data = await StoreService.createStore(request);
       if (!data.success) throw new apiError.InternalServerError();
       return res.status(200).send(ResponseService.success({ store: data.store }));
@@ -111,7 +111,7 @@ module.exports = {
       if (!request.timings) {
         throw new apiError.ValidationError('owner_details', messages.TIMINGS_REQUIRED);
       }
-      if(request.storeApproval === 'Pending' && request.status === '1') {
+      if (request.storeApproval === 'Pending' && request.status === '1') {
         throw new apiError.ValidationError('storeApproval', messages.STORE_PERMISSION)
       }
 
@@ -123,7 +123,7 @@ module.exports = {
         throw new apiError.ValidationError('category', messages.CATEGORY_ID_REQUIRED);
       }
       request.categories.forEach((element) => {
-        if (!element._id || !HelperService.isValidMongoId(element._id)) {
+        if (!element || !HelperService.isValidMongoId(element)) {
           throw new apiError.ValidationError('categoryId', messages.ID_INVALID);
         }
       });
@@ -151,7 +151,7 @@ module.exports = {
 
       delete request._id;
       delete request.password;
-      request.delivery_charges = JSON.parse(request.delivery_charges);
+      // request.delivery_charges = JSON.parse(request.delivery_charges);
 
       for (let i = 0; i < request.address.length; i++) {
         const element = request.address[i];

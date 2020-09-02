@@ -5,7 +5,7 @@ const ResponseService = require('../../common/response');
 const apiError = require('../../common/api-errors');
 const messages = require('../../common/messages');
 const config = require('../../config/constants');
-
+const {CategoryHelper} = require('../../helper')
 module.exports = {
   async addCategory(req, res) {
     try {
@@ -85,29 +85,14 @@ module.exports = {
     }
   },
 
-  async getAllStoreCategories(req, res) {
+  async getAllCategories(req, res) {
     try {
-      const type = req._userInfo._user_type;
-      const pageNo = Number(req.query.pageNo || config.pagination.pageNo);
-      const perPage = Number(req.query.perPage || config.pagination.perPage);
-      const search = req.query.search || '';
-      const sort = { [req.query.name]: Number(req.query.sortType) };
-      const categories = await CategoryService.getCategoriesWithPagination(
-        pageNo,
-        perPage,
-        search,
-        sort
-      );
-
-      const paginationVariables = {
-        pageNo,
-        perPage
-      };
-
-      const count = await CategoryService.getTotalCategoriesCount(search);
-      paginationVariables.totalItems = count.length;
-
-      return res.status(200).send(ResponseService.success({ categories, paginationVariables }));
+      const result = await CategoryHelper.getAllCategories(req);
+      if(result && result.success) {
+        return res.status(200).json(result.data)
+      } 
+      return res.status(500).json(result.error)
+     
     } catch (e) {
       return res.status(500).send(ResponseService.failure(e));
     }

@@ -6,12 +6,13 @@ const ResponseService = require('../../common/response');
 const apiError = require('../../common/api-errors');
 const HelperService = require('../../common/helper');
 const AreaService = require('../../services/area');
+const { CategoryHelper } = require('../../helper');
 
 module.exports = {
-/**
-* Verify order during pickup and delivery
-*/
-   verifyOrder: async(req, res) => {
+  /**
+  * Verify order during pickup and delivery
+  */
+  verifyOrder: async (req, res) => {
     try {
       const reqBody = req.body;
       if (!reqBody.scannedBy) {
@@ -56,7 +57,7 @@ module.exports = {
   /**
    * Store Register
    */
-   createStore: async(req, res) => {
+  createStore: async (req, res) => {
     try {
       const request = { ...req.body };
       if (!request.owner) {
@@ -136,6 +137,22 @@ module.exports = {
     }
     catch (error) {
       return res.status(error.code || 500).send(ResponseService.failure(error));
+    }
+  },
+
+  /**
+   * Get All Categories
+   */
+  getAllCategoriesForStoreRegister: async (req, res) => {
+    try {
+      const result = await CategoryHelper.getAllCategories(req);
+      if (result && result.success) {
+        return res.status(200).json(result.data);
+      }
+      return res.status(500).json(result.error);
+    }
+    catch (error) {
+      return res.status(500).send(ResponseService.failure(e));
     }
   }
 }

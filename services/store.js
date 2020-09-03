@@ -279,12 +279,20 @@ module.exports = {
         }
       },
       {
+        $lookup: {
+          from: 'categories',
+          localField: 'categoryDetails._id',
+          foreignField: 'parent',
+          as: 'subcategories'
+        }
+      },
+      {
         $unwind: "$categoryDetails"
       },
       {
         $project: {
-          categories: 1,
-          categoryDetails: 1
+          categoryDetails: 1,
+          subcategories: 1,
         }
       },
       {

@@ -69,7 +69,6 @@ module.exports = {
       if (!request.timings) {
         throw new apiError.ValidationError('owner_details', messages.TIMINGS_REQUIRED);
       }
-
       request.owner = JSON.parse(request.owner);
       request.address = JSON.parse(request.address);
       request.timings = JSON.parse(request.timings);

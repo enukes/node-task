@@ -15,7 +15,9 @@ module.exports = {
       const perPage = Number(req.query.perPage || config.pagination.perPage);
       const request = { ...req.query };
 
-      if (!request.store_id && type !== 2) throw new apiError.ValidationError('store_id', messages.STORE_ID_REQUIRED);
+      if (!request.store_id && type !== 2) {
+        throw new apiError.ValidationError('store_id', messages.STORE_ID_REQUIRED);
+      }
 
       criteria.search = request.search ? request.search : '';
 
@@ -26,7 +28,6 @@ module.exports = {
       if (request.category_id) criteria.category_id = request.category_id;
       const sort = { [req.query.name]: Number(req.query.sortType) };
       const paginationVariables = { pageNo, perPage };
-
       const subcategories = await ProductService.getProductsWithPagination(
         {},
         pageNo,

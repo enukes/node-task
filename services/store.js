@@ -226,7 +226,7 @@ module.exports = {
       {
         $group: {
           _id: '$categoryDetails',
-          stores: {$push: '$$ROOT'}
+          stores: { $push: '$$ROOT' }
         }
       },
 
@@ -253,5 +253,46 @@ module.exports = {
       //   $unwind: '$categoryDetails'
       // }
     ]);
+  },
+
+  getStoresWithCategories(storeId) {
+    return Store.aggregate([
+      {
+        $match: { _id: mongoose.Types.ObjectId(storeId) }
+      },
+      {
+        $unwind: "$categories"
+      },
+      {
+        $project: {
+          categories: 1,
+          name: 1,
+          _id: 1
+        }
+      },
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'categories',
+          foreignField: '_id',
+          as: 'categoryDetails'
+        }
+      },
+      {
+        $unwind: "$categoryDetails"
+      },
+      {
+        $project: {
+          categories: 1,
+          categoryDetails: 1
+        }
+      },
+      {
+        $group: {
+          _id: '$_id',
+          categories: { $push: '$$ROOT' }
+        }
+      }
+    ])
   }
 };

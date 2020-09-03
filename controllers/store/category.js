@@ -1,4 +1,5 @@
 const CategoryService = require('../../services/category');
+const StoreService = require('../../services/store');
 const ResponseService = require('../../common/response');
 const messages = require('../../common/messages');
 const apiError = require('../../common/api-errors');
@@ -18,6 +19,22 @@ class CategoryController {
       return res.status(500).send(ResponseService.failure(e));
     }
   }
+
+  /**
+   * Get All Categories of a Store
+   */
+
+  async getCategoriesOfaStore(req, res) {
+    try {
+      const id = req._userInfo._user_id;
+      const store = await StoreService.getStoresWithCategories(id);
+      return res.status(200).send(ResponseService.success({ store }))
+    }
+    catch (error) {
+      return res.status(error.code || 500).send(ResponseService.failure(error))
+    }
+  }
+
 }
 
 module.exports = new CategoryController();

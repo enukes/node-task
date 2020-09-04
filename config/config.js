@@ -1,5 +1,5 @@
 module.exports = {
   hostname: 'localhost',
-  port: 5000,
+  port: 9586,
   viewDir: './app/views'
 };

@@ -12,6 +12,8 @@ module.exports = {
   OTP_REQUIRED: 'OTP is a required field.',
   USER_ID_REQUIRED: 'User Id is a required field',
   ID_INVALID: 'Id is invalid',
+  STATUS_ALREADY_EXIST: 'Status is already same',
+  STATUS_PERMISSION:'You do not have permission to change status',
   LINK_INVALID: 'Link is invalid',
   STATUS_REQUIRED: 'Status is a required field',
   // USER_ID_REQUIRED: 'User id is a required field.',

@@ -294,7 +294,7 @@ module.exports = {
           _id: '$_id',
           name: { $first: '$name' },
           categoryIds: { $push: '$categories' },
-          categoryDetails: { $push: { $mergeObjects: ['$categoryDetails', { subCategories: '$subcategories' }] } }
+          categoryDetails: { $push: { $mergeObjects: ['$categoryDetails', { subcategories: '$subcategories' }] } }
         }
       }
     ]);

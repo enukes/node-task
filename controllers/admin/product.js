@@ -13,20 +13,25 @@ module.exports = {
       const type = req._userInfo._user_type;
       const pageNo = Number(req.query.pageNo || config.pagination.pageNo);
       const perPage = Number(req.query.perPage || config.pagination.perPage);
+      criteria.search = req.query.search || '';
+      const sort = { [req.query.name]: Number(req.query.sortType) };
       const request = { ...req.query };
 
       if (!request.store_id && type !== 2) {
         throw new apiError.ValidationError('store_id', messages.STORE_ID_REQUIRED);
       }
 
-      criteria.search = request.search ? request.search : '';
+      // criteria.search = request.search ? request.search : '';
 
       if (type === 2) criteria.store_id = req._userInfo._user_id;
       else criteria.store_id = request.store_id;
 
-      if (request.subcategory_id) criteria.subcategory_id = request.subcategory_id;
-      if (request.category_id) criteria.category_id = request.category_id;
-      const sort = { [req.query.name]: Number(req.query.sortType) };
+      if (request.subcategory_id) {
+        criteria.subcategory_id = request.subcategory_id;
+      }
+      if (request.category_id) {
+        criteria.category_id = request.category_id;
+      }
       const paginationVariables = { pageNo, perPage };
       const subcategories = await ProductService.getProductsWithPagination(
         {},

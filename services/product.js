@@ -278,6 +278,11 @@ module.exports = {
   },
 
   getProductsWithPagination(request, pageNo, perPage, criteria, sort) {
+    let filter = {} ;
+    filter.store_id = criteria.store_id ;
+    if(criteria.subcategory_id) {
+      filter.category_id = criteria.subcategory_id
+    }
     const condition = {
       $and:
         [
@@ -288,10 +293,7 @@ module.exports = {
                 { tags: { $regex: criteria.search, $options: 'i' } }
               ]
           },
-          {
-            store_id: criteria.store_id,
-            category_id: criteria.subcategory_id
-          }
+         filter
         ]
     };
 
@@ -299,6 +301,11 @@ module.exports = {
   },
 
   getTotalProductsCount(request, criteria) {
+    let filter = {};
+    filter.store_id = criteria.store_id;
+    if (criteria.subcategory_id) {
+      filter.category_id = criteria.subcategory_id
+    }
     const condition = {
       $and: [
         {
@@ -306,10 +313,7 @@ module.exports = {
             { name: new RegExp(criteria.search, 'i') }
           ]
         },
-        {
-          store_id: criteria.store_id,
-          category_id: criteria.subcategory_id
-        }
+        filter
       ]
     };
     return Product.countDocuments(condition);

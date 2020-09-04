@@ -21,10 +21,9 @@ module.exports = {
       const perPage = Number(req.query.perPage || config.pagination.perPage);
       const sort = { [req.query.name]: Number(req.query.sortType) };
 
-      const search = req.query.search ||'';
+      const search = req.query.search || '';
 
       const condition = {};
-     
       const type = req._userInfo._user_type;
       if (type === 2) condition.store_id = mongoose.Types.ObjectId(req._userInfo._user_id);
 
@@ -69,205 +68,168 @@ module.exports = {
     }
   },
 
-  // async updateOrder(req, res) {
-  //   try {
-  //     const request = { ...req.body };
-  //     delete request.created_at;
-  //     delete request.updated_at;
-  //     delete request.store;
-  //     delete request.driver;
-  //     delete request.address.delivery.city;
-
-  //     request.status = JSON.parse(request.status);
-
-  //     const { id: orderId } = req.params;
-
-  //     if (!request.status) throw new apiError.ValidationError('order_details', messages.STATUS_REQUIRED);
-
-  //     const order = await OrderService.getOrder({ _id: orderId });
-  //     if (!order) throw new apiError.ValidationError('order_id', messages.ORDER_ID_REQUIRED);
-
-  //     const type = req._userInfo._user_type;
-  //     if (type === 2) {
-  //       if (request.store_id !== req._userInfo._user_id) throw new apiError.ValidationError('store_id', messages.ID_INVALID);
-  //     }
-
-  //     if (!request.store_id) throw new apiError.ValidationError('store_id', messages.STORE_ID_REQUIRED);
-
-  //     const store = await StoreService.getStore({ _id: request.store_id });
-  //     if (!store) throw new apiError.ValidationError('store_id', messages.STORE_ID_INVALID);
-
-  //     if (!request.slot_id && !request.is_express_delivery) throw new apiError.ValidationError('slot_id', messages.SLOT_ID_REQUIRED);
-
-  //     if (!store.has_express_delivery && request.is_express_delivery) throw new apiError.ValidationError('express_Delivery', messages.STORE_DOESNT_SUPPORT_EXPRESS_DELIVERY);
-
-  //     if (request.slot_id) {
-  //       const slot = await SlotService.getSlot({ _id: request.slot_id, store_id: store._id });
-  //       if (!slot) throw new apiError.ValidationError('slot_id', messages.SLOT_ID_INVALID);
-
-  //       if (slot.status === 2) throw new apiError.ValidationError('slot_id', messages.SLOT_INACTIVE);
-
-  //       request.deliver_start_time = slot.start_time;
-  //       request.deliver_end_time = slot.end_time;
-  //     } else {
-  //       request.deliver_start_time = moment().toISOString();
-  //       request.deliver_end_time = moment().add(2, 'h').toISOString();
-  //       request.is_express_delivery = true;
-  //       request.slot_id = null;
-  //     }
-
-  //     if (request.driver_id) {
-  //       const driver = await DriverService.getDriver({ _id: request.driver_id });
-  //       if (!driver) throw new apiError.ValidationError('driver_id', messages.DRIVER_ID_REQUIRED);
-  //       request.driver = driver;
-  //     }
-
-  //     const updateOrder = await OrderService.updateOrder(request, { _id: orderId });
-
-  //     // send push notification to the driver and the customer
-  //     // if the status of the order has been changed
-  //     if (order.status !== updateOrder.status) {
-  //       (async (orderStatus) => {
-  //         // TODO: Validate that if the status of the order is only unDelivered before
-  //         // then send the push notification
-  //         const customer = await CustomerService.getCustomer({
-  //           _id: mongoose.Types.ObjectId(updateOrder.customer_id)
-  //         });
-
-  //         const notification = notificationMessages.orderStatusChange({
-  //           orderId: order.order_id,
-  //           status: ((orderStatusInner) => {
-  //             let statusString = '';
-  //             switch (orderStatusInner) {
-  //               case 1:
-  //                 statusString = 'has been placed';
-  //                 break;
-  //               case 2:
-  //                 statusString = 'has been picked up';
-  //                 break;
-  //               case 3:
-  //                 statusString = 'has been delivered';
-  //                 break;
-  //               case 4:
-  //                 statusString = 'is undelivered';
-  //                 break;
-  //               case 5:
-  //                 statusString = 'has been cancelled';
-  //                 break;
-  //               case 6:
-  //                 statusString = 'is ready to deliver';
-  //                 break;
-  //               default:
-  //                 return '';
-  //             }
-  //             return statusString;
-  //           })(orderStatus),
-  //           cancelReason: updateOrder.status === 4 ? updateOrder.undelivered_description : ''
-  //         });
-
-  //         const notificationPayloadData = {
-  //           type: config.notificationTypes.orderStatusChange,
-  //           createdAt: moment.utc().toISOString(),
-  //           notificationTitle: notification.title,
-  //           notificationBody: notification.body,
-  //           order_id: orderId,
-  //           orderStatus: `${updateOrder.status}`
-  //         };
-  //         PushNotification.notifySingleDevice(
-  //           customer.fcm_token,
-  //           notification,
-  //           notificationPayloadData
-  //         );
-
-  //         if (updateOrder.driver_id) {
-  //           const driver = await DriverService.getDriver({
-  //             _id: mongoose.Types.ObjectId(updateOrder.driver_id)
-  //           });
-  //           PushNotification.notifySingleDevice(
-  //             driver.fcm_token,
-  //             notification,
-  //             notificationPayloadData
-  //           );
-  //         }
-
-  //         // Send the mail to customer
-  //         MailerService.sendPlacedOrderToCustomer({
-  //           order: updateOrder,
-  //           customer,
-  //           subject: `Order Status Update for: ${`${order.order_id}`.toUpperCase()}`,
-  //           orderStatusString: notification.body
-  //         });
-  //       })(updateOrder.status);
-  //     }
-
-  //     if ((order.driver_id || '').toString() !== updateOrder.driver_id.toString()) {
-  //       (async () => {
-  //         // TODO: Validate that if the status of the order is only unDelivered before
-  //         // send the push notification to the driver
-  //         const driver = await DriverService.getDriver({ _id: updateOrder.driver_id });
-  //         const notification = notificationMessages.driverAssigned({
-  //           orderId: updateOrder.order_id
-  //         });
-
-  //         const notificationPayloadData = {
-  //           type: config.notificationTypes.orderStatusChange,
-  //           createdAt: moment.utc().toISOString(),
-  //           notificationTitle: notification.title,
-  //           notificationBody: notification.body,
-  //           order_id: orderId,
-  //           orderStatus: `${updateOrder.status}`
-  //         };
-  //         PushNotification.notifySingleDevice(
-  //           driver.fcm_token,
-  //           notification,
-  //           notificationPayloadData
-  //         );
-  //       })();
-  //     }
-
-  //     return res.status(200).send(ResponseService.success({ updateOrder }));
-  //   } catch (e) {
-  //     return res.status(500).send(ResponseService.failure(e));
-  //   }
-  // },
   async updateOrder(req, res) {
     try {
       const request = { ...req.body };
-      
+      delete request.created_at;
       delete request.updated_at;
+      delete request.store;
+      delete request.driver;
+      delete request.address.delivery.city;
 
       request.status = JSON.parse(request.status);
 
       const { id: orderId } = req.params;
 
-      if (!request.status) throw new apiError.ValidationError('status', messages.STATUS_REQUIRED);
-      if (!request.store_id) throw new apiError.ValidationError('store_id', messages.STORE_ID_REQUIRED);
+      if (!request.status) throw new apiError.ValidationError('order_details', messages.STATUS_REQUIRED);
 
       const order = await OrderService.getOrder({ _id: orderId });
-      if (!order) throw new apiError.NotFoundError('order_id', messages.ORDER_ID_INVALID);
-      
-      const store = await StoreService.getStore({ _id: request.store_id });
-      if (!store) throw new apiError.ValidationError('store_id', messages.STORE_ID_INVALID);
+      if (!order) throw new apiError.ValidationError('order_id', messages.ORDER_ID_REQUIRED);
 
       const type = req._userInfo._user_type;
-
       if (type === 2) {
         if (request.store_id !== req._userInfo._user_id) throw new apiError.ValidationError('store_id', messages.ID_INVALID);
       }
-   
-      if (order.status===request.status) throw new apiError.ResourceAlreadyExistError('status', messages.STATUS_ALREADY_EXIST);
-      
-      if((request.status==1) || (request.status==7)){
-        const updateOrder = await OrderService.updateOrder(request, { _id: orderId });
-        return res.status(200).send(ResponseService.success({ updateOrder }));
-      }else{
-        throw new apiError.UnauthorizedError('status', messages.STATUS_PERMISSION);
+
+      if (!request.store_id) throw new apiError.ValidationError('store_id', messages.STORE_ID_REQUIRED);
+
+      const store = await StoreService.getStore({ _id: request.store_id });
+      if (!store) throw new apiError.ValidationError('store_id', messages.STORE_ID_INVALID);
+
+      if (!request.slot_id && !request.is_express_delivery) throw new apiError.ValidationError('slot_id', messages.SLOT_ID_REQUIRED);
+
+      if (!store.has_express_delivery && request.is_express_delivery) throw new apiError.ValidationError('express_Delivery', messages.STORE_DOESNT_SUPPORT_EXPRESS_DELIVERY);
+
+      if (request.slot_id) {
+        const slot = await SlotService.getSlot({ _id: request.slot_id, store_id: store._id });
+        if (!slot) throw new apiError.ValidationError('slot_id', messages.SLOT_ID_INVALID);
+
+        if (slot.status === 2) throw new apiError.ValidationError('slot_id', messages.SLOT_INACTIVE);
+
+        request.deliver_start_time = slot.start_time;
+        request.deliver_end_time = slot.end_time;
+      } else {
+        request.deliver_start_time = moment().toISOString();
+        request.deliver_end_time = moment().add(2, 'h').toISOString();
+        request.is_express_delivery = true;
+        request.slot_id = null;
       }
-     
+
+      if (request.driver_id) {
+        const driver = await DriverService.getDriver({ _id: request.driver_id });
+        if (!driver) throw new apiError.ValidationError('driver_id', messages.DRIVER_ID_REQUIRED);
+        request.driver = driver;
+      }
+
+      const updateOrder = await OrderService.updateOrder(request, { _id: orderId });
+
+      // send push notification to the driver and the customer
+      // if the status of the order has been changed
+      if (order.status !== updateOrder.status) {
+        (async (orderStatus) => {
+          // TODO: Validate that if the status of the order is only unDelivered before
+          // then send the push notification
+          const customer = await CustomerService.getCustomer({
+            _id: mongoose.Types.ObjectId(updateOrder.customer_id)
+          });
+
+          const notification = notificationMessages.orderStatusChange({
+            orderId: order.order_id,
+            status: ((orderStatusInner) => {
+              let statusString = '';
+              switch (orderStatusInner) {
+                case 1:
+                  statusString = 'has been placed';
+                  break;
+                case 2:
+                  statusString = 'has been picked up';
+                  break;
+                case 3:
+                  statusString = 'has been delivered';
+                  break;
+                case 4:
+                  statusString = 'is undelivered';
+                  break;
+                case 5:
+                  statusString = 'has been cancelled';
+                  break;
+                case 6:
+                  statusString = 'is ready to deliver';
+                  break;
+                default:
+                  return '';
+              }
+              return statusString;
+            })(orderStatus),
+            cancelReason: updateOrder.status === 4 ? updateOrder.undelivered_description : ''
+          });
+
+          const notificationPayloadData = {
+            type: config.notificationTypes.orderStatusChange,
+            createdAt: moment.utc().toISOString(),
+            notificationTitle: notification.title,
+            notificationBody: notification.body,
+            order_id: orderId,
+            orderStatus: `${updateOrder.status}`
+          };
+          PushNotification.notifySingleDevice(
+            customer.fcm_token,
+            notification,
+            notificationPayloadData
+          );
+
+          if (updateOrder.driver_id) {
+            const driver = await DriverService.getDriver({
+              _id: mongoose.Types.ObjectId(updateOrder.driver_id)
+            });
+            PushNotification.notifySingleDevice(
+              driver.fcm_token,
+              notification,
+              notificationPayloadData
+            );
+          }
+
+          // Send the mail to customer
+          MailerService.sendPlacedOrderToCustomer({
+            order: updateOrder,
+            customer,
+            subject: `Order Status Update for: ${`${order.order_id}`.toUpperCase()}`,
+            orderStatusString: notification.body
+          });
+        })(updateOrder.status);
+      }
+
+      if ((order.driver_id || '').toString() !== updateOrder.driver_id.toString()) {
+        (async () => {
+          // TODO: Validate that if the status of the order is only unDelivered before
+          // send the push notification to the driver
+          const driver = await DriverService.getDriver({ _id: updateOrder.driver_id });
+          const notification = notificationMessages.driverAssigned({
+            orderId: updateOrder.order_id
+          });
+
+          const notificationPayloadData = {
+            type: config.notificationTypes.orderStatusChange,
+            createdAt: moment.utc().toISOString(),
+            notificationTitle: notification.title,
+            notificationBody: notification.body,
+            order_id: orderId,
+            orderStatus: `${updateOrder.status}`
+          };
+          PushNotification.notifySingleDevice(
+            driver.fcm_token,
+            notification,
+            notificationPayloadData
+          );
+        })();
+      }
+
+      return res.status(200).send(ResponseService.success({ updateOrder }));
     } catch (e) {
       return res.status(500).send(ResponseService.failure(e));
     }
   },
+
   async removeProductFromOrder(req, res) {
     try {
       const { id: orderId } = req.params;
@@ -321,7 +283,7 @@ module.exports = {
           });
 
           let coupon = null;
-          let orderDiscount = 0;innerCoupon
+          let orderDiscount = 0;
           if (order.coupon && order.discount > 0) {
             const { coupon: innerCoupon } = order;
             coupon = totalAmount < innerCoupon.min_order_amount ? null : innerCoupon;

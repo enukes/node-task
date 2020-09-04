@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const sh = require('shorthash');
 const StoreService = require('../../services/store');
 const OrderService = require('../../services/order');
 const messages = require('../../common/messages');

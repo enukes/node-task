@@ -261,7 +261,7 @@ module.exports = {
         $match: { _id: mongoose.Types.ObjectId(storeId) }
       },
       {
-        $unwind: "$categories"
+        $unwind: '$categories'
       },
       {
         $project: {
@@ -287,20 +287,16 @@ module.exports = {
         }
       },
       {
-        $unwind: "$categoryDetails"
-      },
-      {
-        $project: {
-          categoryDetails: 1,
-          subcategories: 1,
-        }
+        $unwind: '$categoryDetails'
       },
       {
         $group: {
           _id: '$_id',
-          categories: { $push: '$$ROOT' }
+          name: { $first: '$name' },
+          categoryIds: { $push: '$categories' },
+          categoryDetails: { $push: { $mergeObjects: ['$categoryDetails', { subCategories: '$subcategories' }] } }
         }
       }
-    ])
+    ]);
   }
 };

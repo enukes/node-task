@@ -197,7 +197,7 @@ module.exports = {
                 {
                   $or:
                     [
-                     { order_id: new RegExp(search, 'i') }
+                      { order_id: new RegExp(search, 'i') }
                       // { "store.name": new RegExp(search, 'i') },
                     ]
                 },
@@ -337,6 +337,10 @@ module.exports = {
     return Order.aggregate([
       { $group: { _id: null, amount: { $sum: '$total_amount' } } }
     ]);
+  },
+
+  getTotalDeliveredOrder(request) {
+    return Order.countDocuments(request)
   },
 
   getStoreTotalSale(storeId) {

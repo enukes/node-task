@@ -22,6 +22,8 @@ module.exports = {
 
         const totalOrders = await OrderService.getTotalOrdersCount({ store_id: storeId });
         const data = await OrderService.getStoreTotalSale(req._userInfo._user_id);
+        const deliveredOrders = await OrderService.getTotalDeliveredOrder({ store_id: storeId, status: 3 });
+        const unDeliveredOrders = await OrderService.getTotalDeliveredOrder({ store_id: storeId, status: 4 })
         const totalSale = data.length > 0 ? data[0].amount : 0;
         const graphOrderDate = await OrderService.getGraphOrderDate(
           request.from_date,
@@ -37,6 +39,8 @@ module.exports = {
         return res.status(200).send(ResponseService.success({
           total_orders: totalOrders,
           total_sale: totalSale,
+          deliveredOrders,
+          unDeliveredOrders,
           graph_sale_data: graphSaleData,
           graph_order_date: graphOrderDate
         }));

@@ -27,7 +27,9 @@ module.exports = {
       if (!order) {
         throw new apiError.NotFoundError('order_id', messages.ORDER_ID_INVALID);
       }
-      
+
+      if (order.store_id != req._userInfo._user_id) throw new apiError.UnauthorizedError('status', messages.STATUS_PERMISSION);
+       
       if (order.status===request.status) {
         throw new apiError.ResourceAlreadyExistError('status', messages.STATUS_ALREADY_EXIST);
       }

@@ -9,6 +9,10 @@ const schema = new mongoose.Schema({
     type: Number,
     enum: [1, 2], // 1-> Active , 2->Inactive,
     default: 1
+  },
+  picture: {
+    type: String,
+    required: false
   }
 }, {
   timestamps: {

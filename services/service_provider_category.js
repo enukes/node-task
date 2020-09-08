@@ -12,11 +12,11 @@ module.exports = {
    * Get all Service Provider Category
    */
 
-  getAllServiceProviderCategories(search, pageNo, perPage, status) {
+  getAllServiceProviderCategories(search, pageNo, perPage, status, sort) {
     return ServiceProviderCategory.find({
       name: new RegExp(search, 'i'),
       ...(!!status && { status })
-    }).skip((pageNo - 1) * perPage).limit(perPage);
+    }).skip((pageNo - 1) * perPage).limit(perPage).sort(sort);
   },
 
   /**

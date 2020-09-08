@@ -251,7 +251,7 @@ const OrderController = {
       orderDetails.delivery_code = crypto.randomBytes(4).toString('utf-8');
 
       const order = await OrderService.addOrder(orderDetails);
-
+       
       if (!store.self_delivery) {
         DriverService.getStoreDriversFCMArray(store).then((fcmArray) => {
           if (fcmArray.length > 0) PushNotification.notifyMultipleDevices('orderPlace', fcmArray, { order_id: order.order_id });
@@ -289,6 +289,32 @@ const OrderController = {
         subject: `Order Status Update for: ${`${order.order_id}`.toUpperCase()}`,
         orderStatusString: `Your order has been confirmed with order id ${`${order.order_id}`.toUpperCase()}`
       });
+
+       // Send push notification to store's device
+       (async () => {
+        const notification = notificationMessages.orderPlace({
+          title: 'Your Order Is Placed',
+          orderId: order.order_id,
+          status: 'has been placed'
+        });
+
+        const notificationPayloadData = {
+          type: config.notificationTypes.orderPlace,
+          createdAt: moment.utc().toISOString(),
+          notificationTitle: notification.title,
+          notificationBody: notification.body,
+          order_id: order.order_id,
+          orderStatus: `${order.status}`
+        };
+        if(typeof store.device_token !== 'undefined' && store.device_token){
+          PushNotification.notifySingleDevice(
+            store.device_token,
+            notification,
+            notificationPayloadData
+          );
+        }
+      })();
+
 
       return res.status(200).send(ResponseService.success({ order }));
     } catch (e) {

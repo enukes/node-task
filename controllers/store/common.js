@@ -103,4 +103,28 @@ module.exports = {
       return res.status(error.code || 500).send(ResponseService.failure(error));
     }
   },
+  updateDeviceToken: async (req, res) => {
+    try {
+      const request = { ...req.body };
+
+      const { id: storeId } = req.params;
+
+      if (!request.device_token) {
+        throw new apiError.ValidationError('device_token', messages.DEVICE_TOKEN_REQUIRED);
+      }
+     
+      const store = await StoreService.getStore({ _id: storeId });
+      if (!store) {
+        throw new apiError.NotFoundError('device_token', messages.ID_INVALID);
+      }
+     
+      if (store._id != req._userInfo._user_id) throw new apiError.UnauthorizedError('device_token', messages.DEVICE_TOKEN_PERMISSION);
+       
+      const updateOrder = await StoreService.updateStore(request, { _id: storeId });
+      return res.status(200).send(ResponseService.success({ updateOrder }));
+     
+    } catch (e) {
+      return res.status(500).send(ResponseService.failure(e));
+    }
+  },
 };

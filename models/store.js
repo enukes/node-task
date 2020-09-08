@@ -70,7 +70,10 @@ const schema = Schema(
       type: String,
       required: false
     },
-
+    device_token: {
+      type: String,
+      required: false
+    },
     timings: {
       open_time: {
         type: String,

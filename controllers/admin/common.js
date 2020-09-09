@@ -3,6 +3,7 @@ const path = require('path');
 const OrderService = require('../../services/order');
 const CustomerService = require('../../services/customer');
 const StoreService = require('../../services/store');
+const ServiceProviderService = require('../../services/service_provider');
 const SlotService = require('../../services/slot');
 const ResponseService = require('../../common/response');
 const apiError = require('../../common/api-errors');
@@ -22,8 +23,10 @@ module.exports = {
 
         const totalOrders = await OrderService.getTotalOrdersCount({ store_id: storeId });
         const data = await OrderService.getStoreTotalSale(req._userInfo._user_id);
-        const deliveredOrders = await OrderService.getTotalDeliveredOrder({ store_id: storeId, status: 3 });
-        const unDeliveredOrders = await OrderService.getTotalDeliveredOrder({ store_id: storeId, status: 4 })
+        let deliveredOrders = {};
+        let unDeliveredOrders = {};
+        deliveredOrders = await OrderService.getTotalDeliveredOrder({ store_id: storeId, status: 3 });
+        unDeliveredOrders = await OrderService.getTotalDeliveredOrder({ store_id: storeId, status: 4 })
         const totalSale = data.length > 0 ? data[0].amount : 0;
         const graphOrderDate = await OrderService.getGraphOrderDate(
           request.from_date,
@@ -49,6 +52,7 @@ module.exports = {
       const totalOrders = await OrderService.getTotalOrdersCount({});
       const totalCustomers = await CustomerService.getTotalCustomerCount({}, '');
       const totalStores = await StoreService.getTotalStoreCount({});
+      const serviceProviders = await ServiceProviderService.getTotalServiceProviderCount({});
       const data = await OrderService.getTotalSale();
       const totalSale = data[0].amount;
       const graphOrderDate = await OrderService.getGraphOrderDate(
@@ -64,6 +68,7 @@ module.exports = {
         total_orders: totalOrders,
         total_customers: totalCustomers,
         total_stores: totalStores,
+        serviceProviders,
         total_sale: totalSale,
         graph_sale_data: graphSaleData,
         graph_order_date: graphOrderDate

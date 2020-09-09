@@ -12,6 +12,12 @@ module.exports = {
       if (!serviceProviderCategoryToBeCreated.name) {
         throw new apiError.ValidationError('serviceProviderCategoryDetails', messages.NAME_REQUIRED);
       }
+      if (!req.file ) {
+        throw new apiError.ValidationError('picture', messages.CATEGORY_PICTURE_REQUIRED);
+      }
+      if (req.file && req.file.filename) {
+        serviceProviderCategoryToBeCreated.picture = req.file.filename;
+      }
       const createdServiceProviderCategory = await ServiceProviderCategoryService.addServiceProviderCategory(serviceProviderCategoryToBeCreated);
       return res.status(200).send(ResponseService.success({ createdServiceProviderCategory }));
     } catch (error) {
@@ -25,12 +31,14 @@ module.exports = {
       const status = Number(req.query.status);
       const pageNo = Number(req.query.pageNo || config.pagination.pageNo);
       const perPage = Number(req.query.perPage || config.pagination.perPage);
+      const sort = { [req.query.name]: Number(req.query.sortType) };
 
       const serviceProviderCategories = await ServiceProviderCategoryService.getAllServiceProviderCategories(
         search,
         pageNo,
         perPage,
-        status
+        status,
+        sort
       );
       if (!serviceProviderCategories) throw new apiError.InternalServerError();
 
@@ -50,6 +58,9 @@ module.exports = {
     try {
       const serviceProviderCategoryId = req.params.id;
       const categoryToBeUpdated = { ...req.body };
+      if (req.file && req.file.filename) {
+        categoryToBeUpdated.picture = req.file.filename;
+      }
       delete categoryToBeUpdated._id;
 
       let foundCategory = await ServiceProviderCategoryService.getServiceProviderCategoryById(serviceProviderCategoryId);

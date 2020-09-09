@@ -210,14 +210,14 @@ module.exports = {
           parent: null
         }
       },
-      {
-        $lookup: {
-          from: 'categories',
-          localField: '_id',
-          foreignField: 'parent',
-          as: 'subcategories'
-        }
-      }
+      // {
+      //   $lookup: {
+      //     from: 'categories',
+      //     localField: '_id',
+      //     foreignField: 'parent',
+      //     as: 'subcategories'
+      //   }
+      // }
     ]);
   },
 

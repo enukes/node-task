@@ -56,7 +56,7 @@ class AuthController {
           contact = new RegExp(contact, 'i');
 
           user = await AuthService.getUser({ 'contact_number': contact }, type);
-          console.log(user);
+         
         }
 
         if (!user) user = await AuthService.getUser({ 'email': request.username }, type);
@@ -72,7 +72,29 @@ class AuthController {
         if (!matchBcrypt) {
           throw new apiError.UnauthorizedError(messages.USERNAME_OR_PASSWORD_INVALID);
         }
-      } else {
+      } else if(type === 3){
+        let contact = request.username;
+
+        if (contact.length >= 10) {
+          contact = contact.slice(-10);
+          contact = new RegExp(contact, 'i');
+
+          user = await AuthService.getUser({ 'contact_number': contact }, type);
+         
+        }
+
+        if (!user) user = await AuthService.getUser({ 'email': request.username }, type);
+        if (!user) throw new apiError.UnauthorizedError(messages.USERNAME_OR_PASSWORD_INVALID);
+
+        if (user && user.status === 2) {
+          throw new apiError.UnauthorizedError(messages.DRIVER_INACTIVE);
+        }
+
+        const matchBcrypt = await bcrypt.compare(request.password, user.password);
+        if (!matchBcrypt) {
+          throw new apiError.UnauthorizedError(messages.USERNAME_OR_PASSWORD_INVALID);
+        }
+      }else {
         let contact = request.username;
 
         if (contact.length >= 10) {
@@ -199,7 +221,7 @@ class AuthController {
       OTP.send(newUser.contact_number, type);
       res.send(ResponseService.success({
         verification_token: data.verification_token,
-        message: messages.OTP_VIA_CONTACT_NUMBER
+        message: messages.OTP_VIA_EMAIL_ID
       }));
     } catch (err) {
       res.status(err.status || 500).send(ResponseService.failure(err));

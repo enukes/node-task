@@ -40,6 +40,7 @@ module.exports = {
   AUTHENTICATION_TOKEN_REQUIRED: 'Authentication token is a required field',
   UNAUTHORIZED_ACCESS: 'You are not Authorized for this Operation',
   OTP_VIA_CONTACT_NUMBER: 'An OTP was sent to your contact number. Please check.',
+  OTP_VIA_EMAIL_ID: 'An OTP was sent to your email id. Please check.',
   OTP_MISMATCH: 'Invalid otp. Please try again.',
   OTP_EXPIRED: 'OTP Expired. Please click on resend OTP.',
   OTP_NOT_VERIFIED: 'Please Verify OTP First.',

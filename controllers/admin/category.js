@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const HelperService = require('../../common/helper');
 const CategoryService = require('../../services/category');
+const StoreService = require('../../services/store');
 const ResponseService = require('../../common/response');
 const apiError = require('../../common/api-errors');
 const messages = require('../../common/messages');
@@ -101,7 +102,6 @@ module.exports = {
   async getAllStoreCategoriesForCategoryManagement(req, res) {
     try {
       const type = req._userInfo._user_type;
-
       let storeId;
 
       if (type === 2) storeId = req._userInfo._user_id;
@@ -114,9 +114,9 @@ module.exports = {
         throw new apiError.ValidationError('store_id', messages.ID_INVALID);
       }
 
-      const categories = await CategoryService.getAllStoreCategoriesForCategoryManagement(storeId);
+      const categories = await StoreService.getStoresWithCategories(storeId);
 
-      return res.status(200).send(ResponseService.success({ categories }));
+      return res.status(200).send(ResponseService.success({ categories: categories[0] }));
     } catch (e) {
       return res.status(500).send(ResponseService.failure(e));
     }

@@ -8,6 +8,7 @@ const apiError = require('../../common/api-errors');
 const HelperService = require('../../common/helper');
 const AreaService = require('../../services/area');
 const { CategoryHelper } = require('../../helper');
+const ServiceProviderService = require('../../services/service_provider');
 const DriverService = require('../../services/driver');
 
 
@@ -19,9 +20,6 @@ module.exports = {
   async addDriver(req, res) {
     try {
       const request = { ...req.body };
-
-    
-
       if (!request.email) throw new apiError.ValidationError('email', messages.EMAIL_REQUIRED);
       if (!request.contact_number) throw new apiError.ValidationError('contact_number', messages.CONTACT_REQUIRED);
 
@@ -57,8 +55,6 @@ module.exports = {
   addAServiceProvider: async (req, res) => {
     try {
       const request = { ...req.body };
-      console.log(req.body);
-      console.log("hello");
 
       if (!request.owner) {
         throw new apiError.ValidationError('owner_details', messages.OWNER_DETAILS_REQUIRED);
@@ -105,6 +101,7 @@ module.exports = {
       if (!hash) {
         throw apiError.InternalServerError();
       }
+     
 
       request.owner.password = hash;
       if (!req.file) {
@@ -121,6 +118,7 @@ module.exports = {
         element.unique_link = sh.unique(request.name + city.name + area.name);
       }
       const data = await ServiceProviderService.createServiceProvider(request);
+     
       if (!data.success) {
         throw new apiError.InternalServerError();
       }

@@ -121,7 +121,16 @@ const schema = Schema(
         2 // Inactive
       ],
       default: 2
-    }
+    },
+    serviceProviderApproval: {
+      type: String,
+      enum: [
+        'Accepted',
+        'Rejected',
+        'Pending',
+      ],
+      default: 'Pending'
+    },
   },
   {
     timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }

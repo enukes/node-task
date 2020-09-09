@@ -166,9 +166,9 @@ const schema = Schema(
     storeApproval: {
       type: String,
       enum: [
-        'Active',
+        'Accepted',
         'Rejected',
-        'Pending'
+        'Pending',
       ],
       default: 'Pending'
     },

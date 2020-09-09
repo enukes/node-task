@@ -77,7 +77,16 @@ const schema = new mongoose.Schema({
     type: Number,
     enum: [1, 2], // 1-> Active , 2->Inactive
     default: 2
-  }
+  },
+  driverApproval: {
+    type: String,
+    enum: [
+      'Accepted',
+      'Rejected',
+      'Pending'
+    ],
+    default: 'Pending'
+  },
 }, {
   timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
 });

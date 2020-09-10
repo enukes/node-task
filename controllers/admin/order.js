@@ -59,12 +59,8 @@ module.exports = {
       const search = req.query.search || '';
 
       const condition = {};
-      // const condition = {
-      //   created_at: { $gt: moment().startOf('day').toDate(), $lte: moment().endOf('day').toDate() }
-      // };
       const type = req._userInfo._user_type;
       if (type === 2) condition.store_id = mongoose.Types.ObjectId(req._userInfo._user_id);
-      // condition
 
       const order = await OrderService.getTodayOrdersWithPagination(
         condition,

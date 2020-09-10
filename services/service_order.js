@@ -216,21 +216,21 @@ module.exports = {
         {
           $unwind: '$address.delivery.city'
         },
-        // {
-        //   $lookup: {
-        //     from: 'drivers',
-        //     localField: 'driver_id',
-        //     foreignField: '_id',
-        //     as: 'driver'
-        //   }
-        // },
-        // {
-        //   $unwind: // "$driver"
-        //   {
-        //     path: '$driver',
-        //     preserveNullAndEmptyArrays: true
-        //   }
-        // },
+        {
+          $lookup: {
+            from: 'drivers',
+            localField: 'driver_id',
+            foreignField: '_id',
+            as: 'driver'
+          }
+        },
+        {
+          $unwind: // "$driver"
+          {
+            path: '$driver',
+            preserveNullAndEmptyArrays: true
+          }
+        },
         {
           $sort: sort
         },

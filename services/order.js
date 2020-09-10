@@ -610,14 +610,17 @@ module.exports = {
               ]
           }
         },
-        {
-          $lookup: {
-            from : 'slots',
-            foreignField: '_id',
-            localField: 'slot_id',
-            as: 'slots'
-          }
-        },
+        // {
+        //   $lookup: {
+        //     from : 'slots',
+        //     foreignField: '_id',
+        //     localField: 'slot_id',
+        //     as: 'slots'
+        //   }
+        // },
+        // {
+        //   $unwind: '$slots'
+        // },
         {
           $lookup: {
             from: 'stores',
@@ -625,6 +628,9 @@ module.exports = {
             localField: 'store_id',
             as: 'store'
           }
+        },
+        {
+
         },
         {
           $unwind: '$store'

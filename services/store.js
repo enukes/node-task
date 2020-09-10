@@ -301,11 +301,15 @@ module.exports = {
   },
   getStoresBySubCategory(category,lat,long,search) {
         return Store.find(
-          {
-            categories:category,
-            status:1,
-            storeApproval:"Accepted"
-          }   
+          { 
+            address:{
+              $geoWithin:{
+                  $centerSphere: [ [ lat, long ], 5 / 3963.2 ] 
+                }
+            } 
+          }
         );
+      
   }
+   
 };

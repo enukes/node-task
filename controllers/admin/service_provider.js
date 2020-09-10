@@ -103,6 +103,9 @@ module.exports = {
       if (!request.timings) {
         throw new apiError.ValidationError('owner_details', messages.TIMINGS_REQUIRED);
       }
+      if (request.serviceProviderApproval === 'Pending' && request.status === '1') {
+        throw new apiError.ValidationError('serviceProviderApproval', messages.SERVICE_PROVIDER_PERMISSION)
+      }
 
       const serviceProviderCategoryId = request.serviceCategory;
       if (!serviceProviderCategoryId || !HelperService.isValidMongoId(serviceProviderCategoryId)) {

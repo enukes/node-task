@@ -591,5 +591,83 @@ module.exports = {
         error: e
       };
     }
-  }
+  },
+  async getTodayOrdersWithPagination(request, pageNo, perPage, search, sort = null) {
+    if (sort) {
+      return Order.aggregate([
+        {
+          $match: {
+            $and:
+              [
+                {
+                  $or:
+                    [
+                      { order_id: new RegExp(search, 'i') }
+                      // { "store.name": new RegExp(search, 'i') },
+                    ]
+                },
+                request
+              ]
+          }
+        },
+        {
+          $lookup: {
+            from : 'slots',
+            foreignField: '_id',
+            localField: 'slot_id',
+            as: 'slots'
+          }
+        },
+        {
+          $lookup: {
+            from: 'stores',
+            foreignField: '_id',
+            localField: 'store_id',
+            as: 'store'
+          }
+        },
+        {
+          $unwind: '$store'
+        },
+        {
+          $lookup: {
+            from: 'cities',
+            localField: 'address.delivery.city_id',
+            foreignField: '_id',
+            as: 'address.delivery.city'
+          }
+        },
+        {
+          $unwind: '$address.delivery.city'
+        },
+        {
+          $lookup: {
+            from: 'drivers',
+            localField: 'driver_id',
+            foreignField: '_id',
+            as: 'driver'
+          }
+        },
+        {
+          $unwind: // "$driver"
+          {
+            path: '$driver',
+            preserveNullAndEmptyArrays: true
+          }
+        },
+        {
+          $sort: sort
+        },
+        {
+          $skip: ((pageNo - 1) * perPage)
+        },
+
+        {
+          $limit: perPage
+        }
+      ]);
+    }
+
+
+  },
 };

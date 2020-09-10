@@ -168,6 +168,7 @@ module.exports = {
   // Service Provider
   SERVICE_PROVIDER_ID_INVALID: 'Service Provider id is Invalid',
   SERVICE_PROVIDER_ORDER_EXISTS_CANNOT_BE_DELETED: 'Above Service Provider cannot be deleted as order has already been placed from this Service Provider. Please disable it to avoid any further orders.',
+  SERVICE_PROVIDER_PERMISSION: 'You need to approve your Service Provider, before changing the Status',
 
   // Service Order Validation
   SERVICES_REQUIRED: 'There should be atleast 1 Service while placing order',

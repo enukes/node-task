@@ -7,7 +7,7 @@ module.exports = {
   getStoreProfile: async (req, res) => {
     try {
       const storeId = req._userInfo._user_id;
-      const store = await StoreService.getStore({ _id: storeId });
+      const store = await StoreService.getStoreProfile(storeId);
       if (!store) {
         throw new apiError.ValidationError('token', messages.AUTHENTICATION_TOKEN_INVALID)
       }

@@ -7,7 +7,7 @@ const ResponseService = require('../../common/response');
 const apiError = require('../../common/api-errors');
 const HelperService = require('../../common/helper');
 const AreaService = require('../../services/area');
-const { CategoryHelper } = require('../../helper');
+const { CategoryHelper,StoreHelper} = require('../../helper');
 const ServiceProviderService = require('../../services/service_provider');
 const DriverService = require('../../services/driver');
 
@@ -178,6 +178,7 @@ module.exports = {
   createStore: async (req, res) => {
     try {
       const request = { ...req.body };
+      console.log(request);
       if (!request.owner) {
         throw new apiError.ValidationError('owner_details', messages.OWNER_DETAILS_REQUIRED);
       }
@@ -219,12 +220,15 @@ module.exports = {
       if (store) {
         throw new apiError.ValidationError('contact_number', messages.CONTACT_ALREADY_EXIST);
       }
+     
       if (request.drivers && request.drivers.length > 0) {
         request.drivers = JSON.parse(request.drivers);
       }
+     
       if (!request.owner && !request.owner.password) {
         throw new apiError.ValidationError('owner_password', messages.PASSWORD_REQUIRED);
       }
+     
 
       const salt = await bcrypt.genSaltSync(10);
       const hash = await bcrypt.hashSync(request.owner.password, salt);
@@ -271,5 +275,21 @@ module.exports = {
     catch (error) {
       return res.status(500).send(ResponseService.failure(e));
     }
+  },
+   /**
+   * Get All Categories
+   */
+  getAllStoreBySubCategory: async (req, res) => {
+    try {
+      const result = await StoreHelper.getAllStoreByCategory(req);
+      if (result && result.success) {
+        return res.status(200).json(result.data);
+      }
+      return res.status(500).json(result.error);
+    }
+    catch (error) {
+      return res.status(500).send(ResponseService.failure(e));
+    }
   }
+
 }

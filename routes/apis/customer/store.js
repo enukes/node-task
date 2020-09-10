@@ -8,4 +8,5 @@ router.get('/', StoreController.getStoreFromArea);
 router.get('/:id', StoreController.aStoreHomePage);
 router.get('/:id/slots', StoreController.getStoreTimingSlots);
 
+
 module.exports = router;

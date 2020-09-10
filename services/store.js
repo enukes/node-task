@@ -298,5 +298,33 @@ module.exports = {
         }
       }
     ]);
+  },
+  getStoresBySubCategory(category,lat,long,search) {
+
+   if(lat && long){
+        return Store.find(
+          { 
+            address:{
+              $geoWithin:{
+                  $centerSphere: [ [ lat, long ], 5 / 3963.2 ] 
+                }
+            } 
+          },
+          {
+            categories:category,
+            status:1,
+            storeApproval:"Accepted"
+          }   
+        );
+      }else{
+        return Store.find(
+          {
+            categories:category,
+            status:1,
+            storeApproval:"Accepted"
+          }   
+        );
+      }
   }
+   
 };

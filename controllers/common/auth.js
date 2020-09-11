@@ -86,8 +86,8 @@ class AuthController {
         if (!user) user = await AuthService.getUser({ 'email': request.username }, type);
         if (!user) throw new apiError.UnauthorizedError(messages.USERNAME_OR_PASSWORD_INVALID);
 
-        if (user && user.status === 2) {
-          throw new apiError.UnauthorizedError(messages.DRIVER_INACTIVE);
+        if (user && user.status === 2 || user.status ===3) {
+          throw new apiError.UnauthorizedError(messages.CUSTOMER_INACTIVE);
         }
 
         const matchBcrypt = await bcrypt.compare(request.password, user.password);

@@ -637,9 +637,6 @@ module.exports = {
           }
         },
         {
-
-        },
-        {
           $unwind: '$store'
         },
         {

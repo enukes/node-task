@@ -52,7 +52,7 @@ const constants = {
     sortType: 1
   },
 
-  baseURL: 'http://localhost:5000',
+  baseURL: 'https://encomendaria.yiipro.com',
 
   adminMailRecipients: ['khushal.pahuja@enukesoftware.com'],
 

@@ -50,42 +50,6 @@ module.exports = {
       return res.status(500).send(ResponseService.failure(e));
     }
   },
-  async getTodayOrders(req, res) {
-    try {
-      const pageNo = Number(req.query.pageNo || config.pagination.pageNo);
-      const perPage = Number(req.query.perPage || config.pagination.perPage);
-      const sort = { [req.query.name]: Number(req.query.sortType) };
-
-      const search = req.query.search || '';
-
-      const condition = {};
-      const type = req._userInfo._user_type;
-      if (type === 2) condition.store_id = mongoose.Types.ObjectId(req._userInfo._user_id);
-
-      const order = await OrderService.getTodayOrdersWithPagination(
-        condition,
-        pageNo,
-        perPage,
-        search,
-        sort
-      );
-      const paginationVariables = {
-        pageNo,
-        perPage
-      };
-      const totalItems = await OrderService.getTotalOrdersCountForOrderManagement(
-        condition,
-        search
-      );
-
-      paginationVariables.totalItems = totalItems;
-
-      return res.status(200).send(ResponseService.success({ order, paginationVariables }));
-    } catch (e) {
-      return res.status(500).send(ResponseService.failure(e));
-    }
-  },
-
   async getTodayOrdersCount(req, res) {
     try {
       const condition = {

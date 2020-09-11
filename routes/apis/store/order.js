@@ -6,9 +6,9 @@ const StoreOrderController = require('../../../controllers/store/order');
 
 router.get('/', OrderController.getOrders);
 router.get('/today-orders', StoreOrderController.getTodayOrders);
-router.get('/total-count', StoreOrderController.getTodayOrdersCountForStore);
+router.get('/today-count', StoreOrderController.getTodayOrdersCountForStore);
 router.put('/:id', OrderController.updateOrder);
 router.put('/status/:id', StoreOrderController.updateOrder);  
-router.get('/today-count', OrderController.getTodayOrdersCount);
+// router.get('/today-count', OrderController.getTodayOrdersCount);
 
 module.exports = router;

@@ -18,7 +18,7 @@ module.exports = {
   async getConfig(req, res) {
     try {
       const config = await ConfigService.getConfig();
-
+      
       const { taxes } = config;
       const { delivery_charges: deliveryCharges } = config;
 

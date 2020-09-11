@@ -9,6 +9,6 @@ router.get('/cities', AreaController.getCitiesList);
 router.get('/areas', AreaController.getAreasList);
 router.post('/contact-us', ContactController.contactRequest);
 router.get('/home-content', HomePageController.homeContent);
-router.post('/delivery-charges', jwtAuth, DeliveryChargesController.calculateDeliveryCharges)
+router.post('/delivery-charges', jwtAuth, DeliveryChargesController.calculateDeliveryCharges);
 
 module.exports = router;

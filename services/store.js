@@ -300,14 +300,13 @@ module.exports = {
     ]);
   },
   getStoresBySubCategory(category,lat,long,search) {
+
         return Store.find(
-          { 
-            address:{
-              $geoWithin:{
-                  $centerSphere: [ [ lat, long ], 5 / 3963.2 ] 
-                }
-            } 
-          }
+          {
+            categories:category,
+            status:1,
+            storeApproval:"Accepted"
+          }   
         );
       
   }

@@ -217,11 +217,10 @@ class AuthController {
       delete newUser.password;
       delete newUser.created_at;
       delete newUser.updated_at;
-
-      OTP.send(newUser.contact_number, type);
+      console.log(req.baseUrl);
+      OTP.send(newUser.contact_number, type,data.verification_token,req.baseUrl);
       res.send(ResponseService.success({
-        verification_token: data.verification_token,
-        message: messages.OTP_VIA_EMAIL_ID
+        message: messages.LINK_VIA_EMAIL_ID
       }));
     } catch (err) {
       res.status(err.status || 500).send(ResponseService.failure(err));
@@ -292,6 +291,57 @@ class AuthController {
         return res.status(422).send(ResponseService.failure({ message: otpVerification.message }));
       }
       return res.status(422).send(ResponseService.failure({ message: messages.OTP_MISMATCH }));
+    } catch (e) {
+      return res.status(e.code || 500).send(ResponseService.failure(e));
+    }
+  }
+  async verifyAccount(req, res) {
+    try {
+      const request = { ...req.query };
+      const type = this.getUserType(req.baseUrl);
+    
+      // If verification token is missing, Throw validation error
+      if (!request.token) throw new apiError.ValidationError('verification_token', messages.VERIFICATION_TOKEN_REQUIRED);
+
+      // If no user, Throw not found error
+
+      let response = {};
+
+      const user = await AuthService.getUser({
+        verification_token: request.token
+      }, type);
+      if (user === null) throw new apiError.ValidationError('verification_token', messages.VERIFICATION_TOKEN_INVALID);
+      
+      // Get JWT auth token and return with response
+      const token = await this.getJwtAuthToken(user, type);
+
+      const tokenVerification = await OTP.verifyToken(request.token,user);
+
+      // otp match 123456
+
+      if (tokenVerification.success) {
+        const userObj = {
+          status: config.status.active,
+          $unset: { otp: 1, otp_created: 1, verification_token: 1 }
+        };
+
+        if (type !== 1) {
+          userObj.auth_token = token;
+        }
+
+        // Update user with a password reset token
+        await AuthService.updateUser(userObj, { verification_token: request.token }, type);
+
+        response = {
+          user,
+          token
+        };
+        return res.status(200).send(ResponseService.success(response));
+      }
+      if (tokenVerification.message) {
+        return res.status(422).send(ResponseService.failure({ message: tokenVerification.message }));
+      }
+      return res.status(422).send(ResponseService.failure({ message: messages.TOKEN_MISMATCH }));
     } catch (e) {
       return res.status(e.code || 500).send(ResponseService.failure(e));
     }
@@ -416,33 +466,31 @@ class AuthController {
     try {
       const request = { ...req.body };
       const type = this.getUserType(req.baseUrl);
+      const genrateToken=uuidv4();
 
       if (!request.contact_number) throw new apiError.ValidationError('contact_number', messages.CONTACT_REQUIRED);
 
       let contact = request.contact_number;
-
+      let user;
       if (contact.length >= 10) {
         contact = contact.slice(-10);
         contact = new RegExp(contact, 'i');
-      } else {
-        throw new apiError.ValidationError('contact_number', messages.CONTACT_INVALID);
+        user = await AuthService.getUser({ contact_number: contact }, type);
       }
-
-      const user = await AuthService.getUser({ contact_number: contact }, type);
-      if (!user) throw new apiError.ValidationError('contact_number', messages.CONTACT_INVALID);
-
-      OTP.send(user.contact_number, type);
+      if (!user) user=await AuthService.getUser({ email: request.contact_number }, type);
+      
+      OTP.sendPasswordResetLink(user,type,req.baseUrl,genrateToken);
+      
 
       const data = {
-        verification_token: uuidv4()
+        verification_token: genrateToken
       };
 
-      const userData = await AuthService.updateUser(data, { contact_number: contact }, type);
+      const userData = await AuthService.updateUser(data, { email: user.email }, type);
       if (!userData) throw new apiError.InternalServerError();
       return res.send(ResponseService.success({
-        verification_token: data.verification_token,
-        message: messages.OTP_VIA_CONTACT_NUMBER
-      }));
+        message: messages.LINK_VIA_EMAIL_ID_RESET
+      }));  
     } catch (e) {
       return res.status(e.code || 500).send(ResponseService.failure(e));
     }
@@ -451,6 +499,7 @@ class AuthController {
   async resetPassword(req, res) {
     try {
       const request = { ...req.body };
+     
       const type = this.getUserType(req.baseUrl);
 
       if (!request.password) throw new apiError.ValidationError('password', messages.PASSWORD_REQUIRED);
@@ -472,6 +521,48 @@ class AuthController {
       user.password = null;
 
       const userData = await AuthService.updateUser(data, { _id: userId }, type);
+
+      if (!userData) throw new apiError.InternalServerError();
+
+      return res.send(ResponseService.success({
+        user,
+        message: messages.PASSWORD_UPDATED_SUCCESSFULLY
+      }));
+    } catch (e) {
+      return res.status(e.code || 500).send(ResponseService.failure(e));
+    }
+  }
+
+  async resetPasswordByMail(req, res) {
+    console.log("start");
+    try {
+      const request = { ...req.body };
+      const prams = { ...req.query };
+      
+      const type = this.getUserType(req.baseUrl);
+
+      if (!request.password) throw new apiError.ValidationError('password', messages.PASSWORD_REQUIRED);
+      console.log("1");
+
+      const user = await AuthService.getUser({ verification_token: prams.token }, type);
+      if (!user) throw new apiError.ValidationError('token', messages.AUTHENTICATION_TOKEN_INVALID);
+      console.log("2");
+
+      const salt = await bcrypt.genSaltSync(10);
+      const hash = await bcrypt.hashSync(request.password, salt);
+     
+      if (!hash) throw apiError.InternalServerError();
+      console.log("3");
+
+      const userObj = {
+        password: hash,
+        $unset: {verification_token: 1 }
+      };
+      // Update user with a password reset token     
+      user.password = null;
+console.log("come");
+      const userData = await AuthService.updateUser(userObj, { _id: user._id }, type);
+      console.log("end");
 
       if (!userData) throw new apiError.InternalServerError();
 

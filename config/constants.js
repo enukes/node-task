@@ -47,6 +47,10 @@ const constants = {
     pageNo: 1,
     perPage: 10
   },
+  sort: {
+    name: 'created_at',
+    sortType: 1
+  },
 
   baseURL: 'http://localhost:5000',
 

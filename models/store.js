@@ -117,12 +117,6 @@ const schema = Schema(
         required: true
       }
     },
-
-    has_express_delivery: {
-      type: Boolean,
-      default: false
-    },
-
     self_delivery: {
       type: Boolean,
       required: true

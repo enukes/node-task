@@ -126,8 +126,8 @@ const MailerService = {
     try {
       // Send mail to user
       const mailer = await transporter.sendMail(payload);
-
       return { status: true, data: mailer };
+      
     } catch (e) {
       console.log(e);
       return { status: false, error: e };

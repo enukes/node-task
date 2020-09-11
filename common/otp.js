@@ -10,70 +10,41 @@ const apiError = require('./api-errors');
 const messages = require('./messages');
 
 module.exports = {
-  async send(contactNumber, type) {
+  async send(contactNumber, type,verification_token,baseUrl) {
     try {
+      const hostName=config.baseURL;
       const contact = config.otp.countryCode + contactNumber.slice(-10);
       const user = await AuthService.getUser({ contact_number: contactNumber }, type);
-      let OTP;
-      if (user.otp) {
-        let date = moment(user.otp_created);
-        date = date.add(config.otp.expiry, 'minutes');
-
-        const current = moment();
-
-        const result = current.isSameOrBefore(date);
-
-        if (result) {
-          OTP = user.otp;
-        } else {
-          OTP = helper.generateOTP();
-          const updatedUser = await AuthService.updateUser(
-            { otp: OTP, otp_created: moment().toDate() },
-            { contact_number: contactNumber },
-            type
-          );
-          if (!updatedUser) throw new apiError.InternalServerError();
-        }
-      } else {
-        OTP = helper.generateOTP();
-        const updatedUser = await AuthService.updateUser(
-          { otp: OTP, otp_created: moment().toDate() },
-          { contact_number: contactNumber },
-          type
-        );
-        if (!updatedUser) throw new apiError.InternalServerError();
+      if(!user){
+         user = await AuthService.getUser({ email: contactNumber }, type);
       }
-
-      const options = {
-        method: 'GET',
-        uri: 'http://smsctp3.eocean.us:24555/api',
-        qs: {
-          action: 'sendmessage',
-          username: config.otp.username,
-          password: config.otp.password,
-          originator: config.otp.originator,
-          recipient: contact,
-          messagedata: `${OTP} is your OTP for Encomendaria, Please don't share this with anyone.`
-        },
-        headers: {
-          'User-Agent': 'Request-Promise'
-        },
-        json: true
-
-      };
-      rp(options);
-
       Mailer.sendMail({
         to: [user.email],
         from: 'aapkidokan@gmail.com',
         subject: 'Account created',
-        html: `<h4>Dear ${user.full_name}!</h4><p>${OTP} is your OTP for Encomendaria, Please don't share this with anyone.</p><br>`
+        html: `<h4>Dear ${user.full_name}!</h4><p>Please click on the below link for activate your account.</p><br><a href="${hostName}${baseUrl}/verify-account?token=${verification_token}">${hostName}${baseUrl}/verify-account?token=${verification_token}</a>`
       });
     } catch (error) {
       console.log(error);
     }
   },
+  async sendPasswordResetLink(user, type,baseUrl,genrateToken) {
+    try {
+      const hostName=config.baseURL;
+      if(!user){
+         user = await AuthService.getUser({ email: contactNumber }, type);
+      }
+      Mailer.sendMail({
+        to: [user.email],
+        from: 'aapkidokan@gmail.com',
+        subject: 'Reset Password',
+        html: `<h4>Dear ${user.full_name}!</h4><p>Please click on the below link for reset your password.</p><br><a href="${hostName}${baseUrl}/reset-password?token=${genrateToken}">${hostName}${baseUrl}/reset-password?token=${genrateToken}</a>`
+      });
+    } catch (error) {
+      console.log(error);
+    }
 
+  },
   async verify(contactNumber, otp, user) {
     try {
       if (`${otp}` === `${user.otp}`) {
@@ -101,6 +72,25 @@ module.exports = {
       return {
         success: false,
         message: messages.OTP_MISMATCH
+      };
+    }
+  },
+  async verifyToken(token, user) {
+    try {
+      if (`${token}` === `${user.verification_token}`) {
+          return {
+            success: true,
+            message: messages.LINK_VIA_EMAIL
+          };
+      }
+      return {
+        success: false,
+        message: messages.TOKEN_MISMATCH
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: messages.TOKEN_MISMATCH
       };
     }
   }

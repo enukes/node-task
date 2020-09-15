@@ -178,7 +178,7 @@ module.exports = {
   createStore: async (req, res) => {
     try {
       const request = { ...req.body };
-      console.log(request);
+     
       if (!request.owner) {
         throw new apiError.ValidationError('owner_details', messages.OWNER_DETAILS_REQUIRED);
       }
@@ -282,6 +282,7 @@ module.exports = {
   getAllStoreBySubCategory: async (req, res) => {
     try {
       const result = await StoreHelper.getAllStoreByCategory(req);
+    
       if (result && result.success) {
         return res.status(200).json(result.data);
       }

@@ -300,9 +300,10 @@ module.exports = {
     ]);
   },
   getStoresBySubCategory(category,lat,long,search) {
-
-        return Store.find(
-         
+    // return Store.find({ geoPoint:
+    //   { $geoWithin:
+    //      { $centerSphere: [ [ lat,long  ], 1000 / 3963.2 ] } } });
+         return Store.find(
           {
             categories:category,
             status:1,

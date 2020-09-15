@@ -34,7 +34,7 @@ const addressSchema = new Schema({
     coordinates: {
       type: [Number],
       default: [0, 0]
-    }
+    },
   },
 
   gps_address: {

@@ -35,6 +35,7 @@ const OrderController = {
       if (!customer) throw new apiError.ValidationError('token', messages.AUTHENTICATION_TOKEN_INVALID);
 
       if (!request.address_id) throw new apiError.ValidationError('address_id', messages.ADDRESS_ID_REQUIRED);
+    
       if (!request.store_address_id) throw new apiError.ValidationError('store_address_id', messages.ADDRESS_ID_REQUIRED);
 
       const address = customer.address.find((customerAddress) => (

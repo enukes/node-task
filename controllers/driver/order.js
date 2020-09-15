@@ -102,8 +102,8 @@ module.exports = {
   async scheduledOrders(req, res) {
     try {
       const driverId = req._userInfo._user_id;
-      const orders = await OrderService.getOrders({ driver_id: mongoose.Types.ObjectId(driverId), status: 1, deliver_start_time: { $gte: moment().startOf('day').toDate() } });
-
+      // const orders = await OrderService.getOrders({ driver_id: mongoose.Types.ObjectId(driverId), status: 1, deliver_start_time: { $gte: moment().startOf('day').toDate() } });
+      const orders = await OrderService.getOrders({ driver_id: mongoose.Types.ObjectId(driverId), status: 1 });
       res.send(ResponseService.success({ orders }));
     } catch (e) {
       res.status(500).send(ResponseService.failure(e));

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const ServiceOrder = require('../models/service_order');
 const ServicesService = require('./service');
-
+const moment = require('moment');
 module.exports = {
   /**
    * Get Orders for Service Provider
@@ -312,5 +312,58 @@ module.exports = {
         ]
     };
     return ServiceOrder.countDocuments(condition);
-  }
+  },
+
+  getGraphSaleData(fromDate, toDate, serviceProviderId = null) {
+    const condition = {
+      $and: [{ created_at: { $gt: moment(fromDate).toDate(), $lt: moment(toDate).toDate() } }]
+    };
+    if (serviceProviderId) condition.service_provider_id = mongoose.Types.ObjectId(serviceProviderId);
+    return ServiceOrder.aggregate([
+      {
+        $match: condition
+      },
+      {
+        $group: {
+          _id: { $substr: ['$created_at', 5, 2] },
+          sale: { $sum: '$total_amount' }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          month: '$_id',
+          sale: '$sale'
+        }
+      }
+    ]);
+  },
+
+  getGraphOrderDate(fromDate, toDate, serviceProviderId = null) {
+    const condition = {
+      $and: [{ created_at: { $gt: moment(fromDate).toDate(), $lt: moment(toDate).toDate() } }]
+    };
+
+    if (serviceProviderId) condition.service_provider_id = mongoose.Types.ObjectId(serviceProviderId);
+
+    return ServiceOrder.aggregate([
+      {
+        $match: condition
+      },
+      {
+        $group: {
+          _id: '$status',
+          sale: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          status: '$_id',
+          order: '$sale'
+        }
+      }
+    ]);
+  },
+
 };

@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const OrderService = require('../../services/order');
+const ServiceOrderService = require('../../services/service_order');
 const CustomerService = require('../../services/customer');
 const StoreService = require('../../services/store');
 const ServiceProviderService = require('../../services/service_provider');
@@ -59,9 +60,17 @@ module.exports = {
         request.from_date,
         request.to_date
       );
+      const graphServiceOrderDate = await ServiceOrderService.getGraphOrderDate(
+        request.from_date,
+        request.to_date
+      );
       const graphSaleData = await OrderService.getGraphSaleData(
         request.from_date,
         request.to_date
+      );
+      const graphSaleDataServiceOrder = await ServiceOrderService.getGraphSaleData(
+        request.from_date,
+        request.to_date,
       );
 
       return res.status(200).send(ResponseService.success({
@@ -71,7 +80,9 @@ module.exports = {
         serviceProviders,
         total_sale: totalSale,
         graph_sale_data: graphSaleData,
-        graph_order_date: graphOrderDate
+        graph_order_date: graphOrderDate,
+        graphSaleDataServiceOrder,
+        graphServiceOrderDate
       }));
     } catch (e) {
       return res.status(500).send(ResponseService.failure(e));

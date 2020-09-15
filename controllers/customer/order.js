@@ -248,8 +248,8 @@ const OrderController = {
         else continue;
       }
       orderDetails.order_id = uniqueId;
-      orderDetails.pickup_code = crypto.randomBytes(4).toString('utf-8');
-      orderDetails.delivery_code = crypto.randomBytes(4).toString('utf-8');
+      orderDetails.pickup_code = cryptoRandomString({ length: 5 });;
+      orderDetails.delivery_code = cryptoRandomString({ length: 5 });;
 
       const order = await OrderService.addOrder(orderDetails);
        

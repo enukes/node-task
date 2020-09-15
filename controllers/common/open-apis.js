@@ -7,7 +7,7 @@ const ResponseService = require('../../common/response');
 const apiError = require('../../common/api-errors');
 const HelperService = require('../../common/helper');
 const AreaService = require('../../services/area');
-const { CategoryHelper,StoreHelper} = require('../../helper');
+const { CategoryHelper, StoreHelper } = require('../../helper');
 const ServiceProviderService = require('../../services/service_provider');
 const DriverService = require('../../services/driver');
 
@@ -101,7 +101,7 @@ module.exports = {
       if (!hash) {
         throw apiError.InternalServerError();
       }
-     
+
 
       request.owner.password = hash;
       if (!req.file) {
@@ -118,7 +118,7 @@ module.exports = {
         element.unique_link = sh.unique(request.name + city.name + area.name);
       }
       const data = await ServiceProviderService.createServiceProvider(request);
-     
+
       if (!data.success) {
         throw new apiError.InternalServerError();
       }
@@ -133,9 +133,10 @@ module.exports = {
   verifyOrder: async (req, res) => {
     try {
       const reqBody = req.body;
-      if (!reqBody.scannedBy) {
-        throw new apiError.ValidationError('scannedBy', messages.SCANNED_BY_REQUIRED)
-      }
+      const scannedById = req._userInfo._user_id;
+      // if (!reqBody.scannedBy) {
+      //   throw new apiError.ValidationError('scannedBy', messages.SCANNED_BY_REQUIRED)
+      // }
       if (!reqBody.codeType) {
         throw new apiError.ValidationError('codeType', messages.CODE_TYPE_REQUIRED)
       }
@@ -145,25 +146,24 @@ module.exports = {
       if (!(reqBody.codeType === 'pickup' || reqBody.codeType === 'delivery')) {
         throw new apiError.ValidationError('codeType', messages.CODE_TYPE_INVALID)
       }
-      let request = {
-        pickup_code: reqBody.code,
-      }
       let order = null;
       if (reqBody.codeType === 'pickup') {
         request = {
-          store_id: reqBody.scannedBy
+          store_id: scannedById,
+          pickup_code: reqBody.code
         }
         order = await OrderService.getOrder(request)
       } else {
         request = {
-          driver_id: reqBody.scannedBy
+          driver_id: scannedById,
+          delivery_code: reqBody.code
         }
         order = await OrderService.getOrder(request);
       }
       if (order) {
         return res.status(200).send(ResponseService.success({ message: messages.ORDER_VERIFIED }));
       }
-      return res.status(401).send(ResponseService.failure({ message: messages.ORDER_UNVERIFIED }));
+      return res.status(500).send(ResponseService.failure({ message: messages.ORDER_UNVERIFIED }));
     }
     catch (error) {
       if (error.name == 'JsonWebTokenError') {
@@ -220,15 +220,15 @@ module.exports = {
       if (store) {
         throw new apiError.ValidationError('contact_number', messages.CONTACT_ALREADY_EXIST);
       }
-     
+
       if (request.drivers && request.drivers.length > 0) {
         request.drivers = JSON.parse(request.drivers);
       }
-     
+
       if (!request.owner && !request.owner.password) {
         throw new apiError.ValidationError('owner_password', messages.PASSWORD_REQUIRED);
       }
-     
+
 
       const salt = await bcrypt.genSaltSync(10);
       const hash = await bcrypt.hashSync(request.owner.password, salt);
@@ -276,9 +276,9 @@ module.exports = {
       return res.status(500).send(ResponseService.failure(error));
     }
   },
-   /**
-   * Get All Categories
-   */
+  /**
+  * Get All Categories
+  */
   getAllStoreBySubCategory: async (req, res) => {
     try {
       const request = { ...req.query };

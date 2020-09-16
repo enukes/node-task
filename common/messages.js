@@ -160,6 +160,7 @@ module.exports = {
   DRIVER_IS_ASSOCIATED: 'Driver is either associated with any store or with any order',
   IS_ONLINE_REQUIRED: 'online status is required',
   DRIVER_ID_INVALID: 'Driver Id is invalid',
+  DRIVER_PERMISSION: 'You need to approve your Driver, before changing the Status',
 
 
   // Service

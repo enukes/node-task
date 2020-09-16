@@ -85,6 +85,10 @@ module.exports = {
       delete data.verification_token;
       delete data.created_at;
       delete data.updated_at;
+      if (data.driverApproval === 'Pending' && data.status === '1') {
+        throw new apiError.ValidationError('driverApproval', messages.DRIVER_PERMISSION)
+
+      }
 
       if (req.files && req.files.length > 0) {
         const drivingLicensePicture = req.files.filter((ele) => ele.fieldname === 'driving_license_picture');

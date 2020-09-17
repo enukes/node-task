@@ -273,7 +273,7 @@ module.exports = {
       return res.status(500).json(result.error);
     }
     catch (error) {
-      return res.status(500).send(ResponseService.failure(e));
+      return res.status(500).send(ResponseService.failure(error));
     }
   },
   /**
@@ -281,6 +281,17 @@ module.exports = {
   */
   getAllStoreBySubCategory: async (req, res) => {
     try {
+      const request = { ...req.query };
+     
+      if (!request.subCategory) {
+        throw new apiError.ValidationError('subCategory', messages.SUBCATEGORY_REQUIRED);
+      }
+      if (!request.lat) {
+        throw new apiError.ValidationError('lat', messages.LATITUDE_REQUIRED);
+      }
+      if (!request.long) {
+        throw new apiError.ValidationError('long', messages.LONGITUDE_REQUIRED);
+      }
       const result = await StoreHelper.getAllStoreByCategory(req);
     
       if (result && result.success) {
@@ -289,7 +300,7 @@ module.exports = {
       return res.status(500).json(result.error);
     }
     catch (error) {
-      return res.status(500).send(ResponseService.failure(e));
+      return res.status(500).send(ResponseService.failure(error));
     }
   }
 

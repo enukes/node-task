@@ -94,6 +94,28 @@ class AuthController {
         if (!matchBcrypt) {
           throw new apiError.UnauthorizedError(messages.USERNAME_OR_PASSWORD_INVALID);
         }
+      }else if(type === 5){
+        let contact = request.username;
+
+        if (contact.length >= 10) {
+          contact = contact.slice(-10);
+          contact = new RegExp(contact, 'i');
+
+          user = await AuthService.getUser({ 'contact_number': contact }, type);
+         
+        }
+
+        if (!user) user = await AuthService.getUser({ 'email': request.username }, type);
+        if (!user) throw new apiError.UnauthorizedError(messages.USERNAME_OR_PASSWORD_INVALID);
+
+        if (user && user.status === 2 || user.status ===3) {
+          throw new apiError.UnauthorizedError(messages.SERVICE_PROVIDER_INACTIVE);
+        }
+
+        const matchBcrypt = await bcrypt.compare(request.password, user.password);
+        if (!matchBcrypt) {
+          throw new apiError.UnauthorizedError(messages.USERNAME_OR_PASSWORD_INVALID);
+        }
       }else {
         let contact = request.username;
 
@@ -656,6 +678,8 @@ console.log("come");
         return 3;
       case 'driver':
         return 4;
+        case 'service-provider':
+        return 5;
       default:
         return 0;
     }

@@ -92,6 +92,7 @@ module.exports = {
   STORE_INACTIVE: 'The Store is not active . Please Contact Admin.',
   DRIVER_INACTIVE: 'The Driver is not active . Please Contact Admin.',
   CUSTOMER_INACTIVE: 'The Customer is not active . Please Check Email ID.',
+  SERVICE_PROVIDER_INACTIVE: 'The Service provider is not active . Please Check Email ID.',
   DRIVER_APPROVAL: 'The Driver is not approve . Please Contact Admin.',
   STORE_NAME_REQUIRED: 'The Store Name is a required field',
   STORE_ID_INVALID: 'The Store Id is invalid',

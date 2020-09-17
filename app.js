@@ -40,7 +40,7 @@ module.exports = () => {
     });
   };
 
-  const start = () => {
+  const start = () => {    
     const hostname = server.get('hostname');
     const port = server.get('port');
     const uri = 'mongodb+srv://root:root@grocery-system-wa6ge.mongodb.net/grocery-demo?retryWrites=true&w=majority';

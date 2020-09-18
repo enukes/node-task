@@ -140,10 +140,10 @@ const schema = Schema(
         type: String
       }
     },
-    drivers: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Driver'
-    }],
+    // drivers: [{
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: 'Driver'
+    // }],
 
     otp: Number,
     auth_token: String,
@@ -160,7 +160,7 @@ const schema = Schema(
     storeApproval: {
       type: String,
       enum: [
-        'Accepted',
+        'Approved',
         'Rejected',
         'Pending',
       ],

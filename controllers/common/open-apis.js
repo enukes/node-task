@@ -193,7 +193,7 @@ module.exports = {
       request.timings = JSON.parse(request.timings);
       request.categories = JSON.parse(request.categories);
 
-      if (request.address.length === 0) {
+      if (request.address.length === 0 && request.address.length > 1) {
         throw new apiError.ValidationError('address', messages.ADDRESS_REQUIRED);
       }
       if (!request.owner.email) {
@@ -210,6 +210,7 @@ module.exports = {
           throw new apiError.ValidationError('categoryId', messages.ID_INVALID);
         }
       });
+      request.status = 2;
 
       let store = await StoreService.getStore({ 'owner.email': request.owner.email });
       if (store) {
@@ -244,6 +245,7 @@ module.exports = {
 
       const storePicture = req.files.filter((ele) => ele.fieldname === 'store_picture');
       request.picture = storePicture[0].filename;
+      request.commission = 10;
 
       for (let i = 0; i < request.address.length; i++) {
         const element = request.address[i];

@@ -81,7 +81,7 @@ const schema = new mongoose.Schema({
   driverApproval: {
     type: String,
     enum: [
-      'Accepted',
+      'Approved',
       'Rejected',
       'Pending'
     ],

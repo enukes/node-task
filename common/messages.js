@@ -124,7 +124,8 @@ module.exports = {
   PRODUCTS_CANNOT_BE_REMOVED_THERE_IS_SINGLE_PRODUCT: 'Products can not be removed as there is only single product in the order.',
   ORDER_CANNOT_BE_CANCELLED_NOW: 'The Order cannot be cancelled. Please Contact Customer Support.',
   ORDER_INVOICE_UNAVAILABLE: 'Invoice are only available for orders that are delivered.',
-
+  DRIVER_ORDER_NOT_ACCEPTED: 'Driver has not accepted the order',
+  PICKUP_CODE_INVALID: 'Pickup Code is invalid',
   IMAGE_REQUIRED: 'Image is a required ',
 
   // cart

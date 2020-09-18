@@ -56,7 +56,7 @@ module.exports = {
     else sortObject = { created_at: -1 };
     if (!pageNo) {
       return Order.aggregate([
-          
+
         { $match: request },
         // {
         //   $lookup:{
@@ -102,7 +102,7 @@ module.exports = {
         {
           $unwind: '$customer'
         },
-       
+
         {
           $sort: sortObject
         }
@@ -822,5 +822,20 @@ module.exports = {
         }
       ]);
     }
-  }
+  },
+  orderVerified(request) {
+    return Order.aggregate([
+      { 
+        request 
+      },
+      // {
+      //   $lookup: {
+      //     from : 'drivers',
+      //     foreignField: '_id',
+      //     localField: 'driver_id',
+      //     as: 'driver'
+      //   }
+      // }
+    ]);
+  },
 };

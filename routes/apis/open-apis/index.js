@@ -16,7 +16,4 @@ router.get('/cities', AreaController.getCitiesList);
 router.get('/areas', AreaController.getAreasList);
 router.get('/config',ConfigController.getConfig);
 
-
-
-
 module.exports = router;

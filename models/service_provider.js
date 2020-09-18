@@ -125,7 +125,7 @@ const schema = Schema(
     serviceProviderApproval: {
       type: String,
       enum: [
-        'Accepted',
+        'Approved',
         'Rejected',
         'Pending',
       ],

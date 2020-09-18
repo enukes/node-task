@@ -152,7 +152,7 @@ module.exports = {
           store_id: scannedById,
           pickup_code: reqBody.code
         }
-        order = await OrderService.getOrder(request)
+        order = await OrderService.getOrder(request);
       } else {
         request = {
           driver_id: scannedById,
@@ -160,8 +160,16 @@ module.exports = {
         }
         order = await OrderService.getOrder(request);
       }
-      if (order) {
-        return res.status(200).send(ResponseService.success({ message: messages.ORDER_VERIFIED }));
+      if(!order) {
+        return res.status(500).send(ResponseService.success({ message: messages.PICKUP_CODE_INVALID }));
+      }
+      if (!order.driver_id) {
+        return res.status(500).send(ResponseService.success({ message: messages.DRIVER_ORDER_NOT_ACCEPTED }));
+      }
+      const driver = await DriverService.getDriver({ _id: order.driver_id});
+
+        if (order && driver) {
+          return res.status(200).send(ResponseService.success({ order, driver, message: messages.ORDER_VERIFIED}, ));
       }
       return res.status(500).send(ResponseService.failure({ message: messages.ORDER_UNVERIFIED }));
     }

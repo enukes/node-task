@@ -302,10 +302,10 @@ module.exports = {
 
   getTotalProductsCount(request, criteria) {
     let filter = {};
-    filter.store_id = criteria.store_id;
-    if (criteria.subcategory_id) {
-      filter.category_id = criteria.subcategory_id
-    }
+    filter.service_provider_id = criteria.service_provider_id;
+    // if (criteria.subcategory_id) {
+    //   filter.category_id = criteria.subcategory_id
+    // }
     const condition = {
       $and: [
         {

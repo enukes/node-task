@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Service = require('../models/service');
+const ServiceOrder = require('../models/service_order');
 
 module.exports = {
   getServicesWithPagination(request, pageNo, perPage, criteria, sort) {
@@ -58,10 +59,6 @@ module.exports = {
     return Service.findOne(request);
   },
 
-  /**
-   * Update a Service
-   */
-
   updateService(criteria, details) {
     return Service.findOneAndUpdate(criteria, details, { new: true });
   },
@@ -71,5 +68,31 @@ module.exports = {
    */
   deleteService(request) {
     return Service.deleteOne(request);
-  }
+  },
+
+  getTotalServiceOrderCount(request, criteria) {
+    let filter = {};
+    filter.service_provider_id = criteria.service_provider_id;
+    
+    const condition = {
+      $and: [
+        filter
+      ]
+    };
+    return ServiceOrder.countDocuments(condition);
+  },
+
+  getServiceOrderWithPagination(request, pageNo, perPage, criteria, sort) {
+    let filter = {} ;
+    filter.service_provider_id = criteria.service_provider_id ;
+   
+    const condition = {
+      $and:
+        [
+         filter
+        ]
+    };
+
+    return ServiceOrder.find(condition).skip((pageNo - 1) * perPage).limit(perPage).sort(sort);
+  },
 };

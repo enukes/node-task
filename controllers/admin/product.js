@@ -23,7 +23,12 @@ module.exports = {
 
       // criteria.search = request.search ? request.search : '';
 
-      if (type === 2) criteria.store_id = req._userInfo._user_id;
+      if (type === 2) {
+        criteria.store_id = req._userInfo._user_id;
+        if (!(store.storeApproval === 'Accepted')) {
+          throw new apiError.ValidationError('storeApproval', messages.STORE_PERMISSION);
+        }
+      }
       else criteria.store_id = request.store_id;
 
       if (request.subcategory_id) {

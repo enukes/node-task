@@ -25,7 +25,12 @@ module.exports = {
 
       const condition = {};
       const type = req._userInfo._user_type;
-      if (type === 2) condition.store_id = mongoose.Types.ObjectId(req._userInfo._user_id);
+      if (type === 2) {
+        condition.store_id = mongoose.Types.ObjectId(req._userInfo._user_id);
+        if (!(store.storeApproval === 'Accepted')) {
+          throw new apiError.ValidationError('storeApproval', messages.STORE_PERMISSION);
+        }
+      }
 
       const order = await OrderService.getOrdersWithPagination(
         condition,

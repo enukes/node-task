@@ -21,6 +21,10 @@ module.exports = {
 
       if (type === 2) {
         const storeId = req._userInfo._user_id;
+        const store = await StoreService.getStore({ _id: storeId });
+        if (!(store.storeApproval === 'Accepted')) {
+          throw new apiError.ValidationError('storeApproval', messages.STORE_PERMISSION);
+        }
 
         const totalOrders = await OrderService.getTotalOrdersCount({ store_id: storeId });
         const data = await OrderService.getStoreTotalSale(req._userInfo._user_id);

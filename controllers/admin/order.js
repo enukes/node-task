@@ -27,7 +27,8 @@ module.exports = {
       const type = req._userInfo._user_type;
       if (type === 2) {
         condition.store_id = mongoose.Types.ObjectId(req._userInfo._user_id);
-        if (!(store.storeApproval === 'Accepted')) {
+        const store = await StoreService.getStore({ _id: condition.store_id });
+        if (!(store.storeApproval === 'Approved')) {
           throw new apiError.ValidationError('storeApproval', messages.STORE_PERMISSION);
         }
       }

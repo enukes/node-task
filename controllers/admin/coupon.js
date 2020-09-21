@@ -19,8 +19,8 @@ class CouponController {
       const type = req._userInfo._user_type;
       if (type == 2) {
         criteria.store_id = req._userInfo._user_id;
-        const store = await StoreService.getStore({ _id: store_id });
-        if (!(store.storeApproval === 'Accepted')) {
+        const store = await StoreService.getStore({ _id: criteria.store_id });
+        if (!(store.storeApproval === 'Approved')) {
           throw new apiError.ValidationError('storeApproval', messages.STORE_PERMISSION);
         }
       }

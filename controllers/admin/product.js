@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const ProductService = require('../../services/product');
+const StoreService = require('../../services/store')
 const ResponseService = require('../../common/response');
 const HelperService = require('../../common/helper');
 const apiError = require('../../common/api-errors');
@@ -25,7 +26,8 @@ module.exports = {
 
       if (type === 2) {
         criteria.store_id = req._userInfo._user_id;
-        if (!(store.storeApproval === 'Accepted')) {
+        const store = await StoreService.getStore({ _id: criteria.store_id });
+        if (!(store.storeApproval === 'Approved')) {
           throw new apiError.ValidationError('storeApproval', messages.STORE_PERMISSION);
         }
       }
@@ -64,7 +66,13 @@ module.exports = {
 
       if (!request.store_id && `${userType}` !== '2') throw new apiError.ValidationError('store_id', messages.STORE_ID_REQUIRED);
 
-      if (`${userType}` === '2') request.store_id = req._userInfo._user_id;
+      if (`${userType}` === '2') {
+        request.store_id = req._userInfo._user_id;
+        const store = await StoreService.getStore({ _id: request.store_id });
+        if (!(store.storeApproval === 'Approved')) {
+          throw new apiError.ValidationError('storeApproval', messages.STORE_PERMISSION);
+        }
+      }
       if (request.tags) {
         request.tags = JSON.parse(request.tags);
         request.tags = request.tags.map((tag) => (tag || '').trim()).filter((tag) => !!tag);

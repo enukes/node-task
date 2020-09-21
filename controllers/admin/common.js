@@ -22,7 +22,7 @@ module.exports = {
       if (type === 2) {
         const storeId = req._userInfo._user_id;
         const store = await StoreService.getStore({ _id: storeId });
-        if (!(store.storeApproval === 'Accepted')) {
+        if (!(store.storeApproval === 'Approved')) {
           throw new apiError.ValidationError('storeApproval', messages.STORE_PERMISSION);
         }
 

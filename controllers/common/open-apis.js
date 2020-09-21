@@ -153,7 +153,7 @@ module.exports = {
           pickup_code: reqBody.code
         }
         const store = await StoreService.getStore({_id: store_id});
-        if (!(store.storeApproval === 'Accepted')) {
+        if (!(store.storeApproval === 'Approved')) {
           throw new apiError.ValidationError('storeApproval', messages.STORE_PERMISSION);
         }
         order = await OrderService.getOrder(request);

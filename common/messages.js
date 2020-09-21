@@ -128,6 +128,7 @@ module.exports = {
   ORDER_INVOICE_UNAVAILABLE: 'Invoice are only available for orders that are delivered.',
   DRIVER_ORDER_NOT_ACCEPTED: 'Driver has not accepted the order',
   PICKUP_CODE_INVALID: 'Pickup Code is invalid',
+  DELIVERY_CODE_INVALID: 'delivery Code is invalid',
   IMAGE_REQUIRED: 'Image is a required ',
 
   // cart

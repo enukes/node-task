@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const sh = require('shorthash');
 const StoreService = require('../../services/store');
 const OrderService = require('../../services/order');
+const ServiceOrderService = require('../../services/service_order');
 const messages = require('../../common/messages');
 const ResponseService = require('../../common/response');
 const apiError = require('../../common/api-errors');
@@ -139,7 +140,7 @@ module.exports = {
       // }
       if (!reqBody.codeType) {
         throw new apiError.ValidationError('codeType', messages.CODE_TYPE_REQUIRED)
-      }
+      } 
       if (!reqBody.code) {
         throw new apiError.ValidationError('code', messages.CODE_REQUIRED)
       }
@@ -184,6 +185,45 @@ module.exports = {
       return res.status(error.code || 500).send(ResponseService.failure(error))
     }
   },
+
+    /**
+  * Verify service during delivery
+  */
+ verifyService: async (req, res) => {
+  try {
+    const reqBody = req.body;
+    const scannedById = req._userInfo._user_id;
+   
+    if (!reqBody.code) {
+      throw new apiError.ValidationError('code', messages.CODE_REQUIRED)
+    }
+    let order = null;
+    if (reqBody.code) {
+      request = {
+        service_provider_id: scannedById,
+        delivery_code: reqBody.code
+      }
+      const service = await ServiceProviderService.getServiceProvider({_id: service_provider_id});
+      if (!(service.serviceProviderApproval === 'Approved')) {
+        throw new apiError.ValidationError('serviceApproval', messages.SERVICE_PROVIDER_PERMISSION);
+      }
+      order = await ServiceOrderService.getServiceOrder(request);
+    } 
+    if(!order) {
+      return res.status(500).send(ResponseService.success({ message: messages.DELIVERY_CODE_INVALID }));
+    }
+    if (order) {
+        return res.status(200).send(ResponseService.success({ order, message: messages.ORDER_VERIFIED}, ));
+    }
+    return res.status(500).send(ResponseService.failure({ message: messages.ORDER_UNVERIFIED }));
+  }
+  catch (error) {
+    if (error.name == 'JsonWebTokenError') {
+      return res.status(401).send({ message: 'Auth Token is Invalid.' });
+    }
+    return res.status(error.code || 500).send(ResponseService.failure(error))
+  }
+},
   /**
    * Store Register
    */

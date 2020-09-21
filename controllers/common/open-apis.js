@@ -7,7 +7,7 @@ const ResponseService = require('../../common/response');
 const apiError = require('../../common/api-errors');
 const HelperService = require('../../common/helper');
 const AreaService = require('../../services/area');
-const { CategoryHelper,StoreHelper} = require('../../helper');
+const { CategoryHelper, StoreHelper } = require('../../helper');
 const ServiceProviderService = require('../../services/service_provider');
 const DriverService = require('../../services/driver');
 
@@ -101,7 +101,7 @@ module.exports = {
       if (!hash) {
         throw apiError.InternalServerError();
       }
-     
+
 
       request.owner.password = hash;
       if (!req.file) {
@@ -118,7 +118,7 @@ module.exports = {
         element.unique_link = sh.unique(request.name + city.name + area.name);
       }
       const data = await ServiceProviderService.createServiceProvider(request);
-     
+
       if (!data.success) {
         throw new apiError.InternalServerError();
       }
@@ -133,9 +133,10 @@ module.exports = {
   verifyOrder: async (req, res) => {
     try {
       const reqBody = req.body;
-      if (!reqBody.scannedBy) {
-        throw new apiError.ValidationError('scannedBy', messages.SCANNED_BY_REQUIRED)
-      }
+      const scannedById = req._userInfo._user_id;
+      // if (!reqBody.scannedBy) {
+      //   throw new apiError.ValidationError('scannedBy', messages.SCANNED_BY_REQUIRED)
+      // }
       if (!reqBody.codeType) {
         throw new apiError.ValidationError('codeType', messages.CODE_TYPE_REQUIRED)
       }
@@ -145,25 +146,36 @@ module.exports = {
       if (!(reqBody.codeType === 'pickup' || reqBody.codeType === 'delivery')) {
         throw new apiError.ValidationError('codeType', messages.CODE_TYPE_INVALID)
       }
-      let request = {
-        pickup_code: reqBody.code,
-      }
       let order = null;
       if (reqBody.codeType === 'pickup') {
         request = {
-          store_id: reqBody.scannedBy
+          store_id: scannedById,
+          pickup_code: reqBody.code
         }
-        order = await OrderService.getOrder(request)
+        const store = await StoreService.getStore({_id: store_id});
+        if (!(store.storeApproval === 'Approved')) {
+          throw new apiError.ValidationError('storeApproval', messages.STORE_PERMISSION);
+        }
+        order = await OrderService.getOrder(request);
       } else {
         request = {
-          driver_id: reqBody.scannedBy
+          driver_id: scannedById,
+          delivery_code: reqBody.code
         }
         order = await OrderService.getOrder(request);
       }
-      if (order) {
-        return res.status(200).send(ResponseService.success({ message: messages.ORDER_VERIFIED }));
+      if(!order) {
+        return res.status(500).send(ResponseService.success({ message: messages.PICKUP_CODE_INVALID }));
       }
-      return res.status(401).send(ResponseService.failure({ message: messages.ORDER_UNVERIFIED }));
+      if (!order.driver_id) {
+        return res.status(500).send(ResponseService.success({ message: messages.DRIVER_ORDER_NOT_ACCEPTED }));
+      }
+      const driver = await DriverService.getDriver({ _id: order.driver_id});
+
+        if (order && driver) {
+          return res.status(200).send(ResponseService.success({ order, driver, message: messages.ORDER_VERIFIED}, ));
+      }
+      return res.status(500).send(ResponseService.failure({ message: messages.ORDER_UNVERIFIED }));
     }
     catch (error) {
       if (error.name == 'JsonWebTokenError') {
@@ -178,7 +190,7 @@ module.exports = {
   createStore: async (req, res) => {
     try {
       const request = { ...req.body };
-      console.log(request);
+     
       if (!request.owner) {
         throw new apiError.ValidationError('owner_details', messages.OWNER_DETAILS_REQUIRED);
       }
@@ -193,7 +205,7 @@ module.exports = {
       request.timings = JSON.parse(request.timings);
       request.categories = JSON.parse(request.categories);
 
-      if (request.address.length === 0) {
+      if (request.address.length === 0 && request.address.length > 1) {
         throw new apiError.ValidationError('address', messages.ADDRESS_REQUIRED);
       }
       if (!request.owner.email) {
@@ -210,6 +222,7 @@ module.exports = {
           throw new apiError.ValidationError('categoryId', messages.ID_INVALID);
         }
       });
+      request.status = 2;
 
       let store = await StoreService.getStore({ 'owner.email': request.owner.email });
       if (store) {
@@ -220,15 +233,15 @@ module.exports = {
       if (store) {
         throw new apiError.ValidationError('contact_number', messages.CONTACT_ALREADY_EXIST);
       }
-     
+
       if (request.drivers && request.drivers.length > 0) {
         request.drivers = JSON.parse(request.drivers);
       }
-     
+
       if (!request.owner && !request.owner.password) {
         throw new apiError.ValidationError('owner_password', messages.PASSWORD_REQUIRED);
       }
-     
+
 
       const salt = await bcrypt.genSaltSync(10);
       const hash = await bcrypt.hashSync(request.owner.password, salt);
@@ -244,6 +257,7 @@ module.exports = {
 
       const storePicture = req.files.filter((ele) => ele.fieldname === 'store_picture');
       request.picture = storePicture[0].filename;
+      request.commission = 10;
 
       for (let i = 0; i < request.address.length; i++) {
         const element = request.address[i];
@@ -273,22 +287,34 @@ module.exports = {
       return res.status(500).json(result.error);
     }
     catch (error) {
-      return res.status(500).send(ResponseService.failure(e));
+      return res.status(500).send(ResponseService.failure(error));
     }
   },
-   /**
-   * Get All Categories
-   */
+  /**
+  * Get All Categories
+  */
   getAllStoreBySubCategory: async (req, res) => {
     try {
+      const request = { ...req.query };
+     
+      if (!request.subCategory) {
+        throw new apiError.ValidationError('subCategory', messages.SUBCATEGORY_REQUIRED);
+      }
+      if (!request.lat) {
+        throw new apiError.ValidationError('lat', messages.LATITUDE_REQUIRED);
+      }
+      if (!request.long) {
+        throw new apiError.ValidationError('long', messages.LONGITUDE_REQUIRED);
+      }
       const result = await StoreHelper.getAllStoreByCategory(req);
+    
       if (result && result.success) {
         return res.status(200).json(result.data);
       }
       return res.status(500).json(result.error);
     }
     catch (error) {
-      return res.status(500).send(ResponseService.failure(e));
+      return res.status(500).send(ResponseService.failure(error));
     }
   }
 

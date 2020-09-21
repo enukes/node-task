@@ -10,9 +10,9 @@ const StoreHelper = {
    */
   getAllStoreByCategory: async (req) => {
     try {
-      const subCategoryId=req.query.subCategory || '';
-      const lat = req.query.lat || '';
-      const long = req.query.long || '';  
+      const subCategoryId=req.query.subCategory;
+      const lat = Number(req.query.lat);
+      const long = Number(req.query.long);  
       const search = req.query.search || '';
       const categoryDetail=await CategoryService.findCategoryByName({ _id: subCategoryId });
       const stores = await StoreService.getStoresBySubCategory(

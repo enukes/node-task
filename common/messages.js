@@ -17,6 +17,9 @@ module.exports = {
   DEVICE_TOKEN_PERMISSION:'You do not have permission to change device token',
   LINK_INVALID: 'Link is invalid',
   STATUS_REQUIRED: 'Status is a required field',
+  SUBCATEGORY_REQUIRED: 'Subcategory is a required field',
+  LATITUDE_REQUIRED: 'Latitude is a required field',
+  LONGITUDE_REQUIRED: 'Longitude is a required field',
   DEVICE_TOKEN_REQUIRED: 'Device token is a required field',
   // USER_ID_REQUIRED: 'User id is a required field.',
   // RELATION_REQUIRED: 'Relation is a required field.',
@@ -79,6 +82,7 @@ module.exports = {
   STORE_ADDRESS_ID_INVALID: 'Store Address Id is Invalid',
   TIMINGS_REQUIRED: 'Timing Details Are Required',
   STORE_ORDER_EXISTS_CANNOT_BE_DELETED: 'Above store cannot be deleted as order has already been placed from this store. Please disable it to avoid any further orders.',
+  STORE_PROFILE_NOT_UPDATE: 'Store profile cant be updated, once the store is approved.',
 
   // category validation
   CATEGORY_PICTURE_REQUIRED: 'Category Picture is a required field',
@@ -122,7 +126,8 @@ module.exports = {
   PRODUCTS_CANNOT_BE_REMOVED_THERE_IS_SINGLE_PRODUCT: 'Products can not be removed as there is only single product in the order.',
   ORDER_CANNOT_BE_CANCELLED_NOW: 'The Order cannot be cancelled. Please Contact Customer Support.',
   ORDER_INVOICE_UNAVAILABLE: 'Invoice are only available for orders that are delivered.',
-
+  DRIVER_ORDER_NOT_ACCEPTED: 'Driver has not accepted the order',
+  PICKUP_CODE_INVALID: 'Pickup Code is invalid',
   IMAGE_REQUIRED: 'Image is a required ',
 
   // cart
@@ -161,6 +166,7 @@ module.exports = {
   DRIVER_IS_ASSOCIATED: 'Driver is either associated with any store or with any order',
   IS_ONLINE_REQUIRED: 'online status is required',
   DRIVER_ID_INVALID: 'Driver Id is invalid',
+  DRIVER_PERMISSION: 'You need to approve your Driver, before changing the Status',
 
 
   // Service

@@ -55,11 +55,21 @@ module.exports = {
     let sortObject = {};
     if (sort) sortObject = sort;
     else sortObject = { created_at: -1 };
-
     if (!pageNo) {
       return Order.aggregate([
 
         { $match: request },
+        // {
+        //   $lookup:{
+        //     from:'drivers',
+        //     foreignField:'_id',
+        //     localField:'driver_id',
+        //     as:'driverDetails'
+        //   }
+        // },
+        // {
+        //   $unwind:'$driverDetails'
+        // }, 
         {
           $lookup: {
             from: 'stores',
@@ -93,6 +103,7 @@ module.exports = {
         {
           $unwind: '$customer'
         },
+
         {
           $sort: sortObject
         }
@@ -102,6 +113,17 @@ module.exports = {
     return Order.aggregate([
 
       { $match: request },
+      // {
+      //   $lookup:{
+      //     from:'drivers',
+      //     foreignField:'_id',
+      //     localField:'driver_id',
+      //     as:'driverDetails'
+      //   }
+      // },
+      // {
+      //   $unwind:'$driverDetails'
+      // },
       {
         $lookup: {
           from: 'stores',
@@ -429,26 +451,63 @@ module.exports = {
     ]);
   },
 
+  // getUnassignedOrder(driverId, pageNo, perPage, sort = null) {
+  //   // return Store.find({"drivers": driverId})
+
+  //   return Store.aggregate([
+
+  //     { $match: { drivers: mongoose.Types.ObjectId(driverId) } },
+
+  //     {
+  //       $lookup: {
+  //         from: 'orders',
+  //         localField: '_id',
+  //         foreignField: 'store_id',
+  //         as: 'orders'
+  //       }
+  //     },
+  //     {
+  //       $unwind: '$orders'
+  //     },
+  //     { $replaceRoot: { newRoot: '$orders' } },
+  //     // { $match: { created_at: { "$gte": moment().startOf('day').toDate() } } },
+  //     {
+  //       $lookup: {
+  //         from: 'customers',
+  //         foreignField: '_id',
+  //         localField: 'customer_id',
+  //         as: 'customer'
+  //       }
+  //     },
+  //     {
+  //       $unwind: '$customer'
+  //     },
+  //     {
+  //       $lookup: {
+  //         from: 'stores',
+  //         foreignField: '_id',
+  //         localField: 'store_id',
+  //         as: 'store'
+  //       }
+  //     },
+  //     {
+  //       $unwind: '$store'
+  //     },
+  //     { $match: { driver_assigned: false, status: 1 } },
+  //     {
+  //       $sort: sort
+  //     },
+  //     { $skip: (pageNo - 1) * perPage },
+  //     { $limit: perPage }
+  //   ]);
+  // },
+
   getUnassignedOrder(driverId, pageNo, perPage, sort = null) {
     // return Store.find({"drivers": driverId})
 
-    return Store.aggregate([
+    return Order.aggregate([
 
-      { $match: { drivers: mongoose.Types.ObjectId(driverId) } },
-
-      {
-        $lookup: {
-          from: 'orders',
-          localField: '_id',
-          foreignField: 'store_id',
-          as: 'orders'
-        }
-      },
-      {
-        $unwind: '$orders'
-      },
-      { $replaceRoot: { newRoot: '$orders' } },
-      // { $match: { created_at: { "$gte": moment().startOf('day').toDate() } } },
+      { $match: { driver_assigned: false, status: 1 } },
       {
         $lookup: {
           from: 'customers',
@@ -471,7 +530,6 @@ module.exports = {
       {
         $unwind: '$store'
       },
-      { $match: { driver_assigned: false, status: 1 } },
       {
         $sort: sort
       },
@@ -858,5 +916,20 @@ module.exports = {
         }
       ]);
     }
-  }
+  },
+  orderVerified(request) {
+    return Order.aggregate([
+      { 
+        request 
+      },
+      // {
+      //   $lookup: {
+      //     from : 'drivers',
+      //     foreignField: '_id',
+      //     localField: 'driver_id',
+      //     as: 'driver'
+      //   }
+      // }
+    ]);
+  },
 };

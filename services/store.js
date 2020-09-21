@@ -300,15 +300,35 @@ module.exports = {
     ]);
   },
   getStoresBySubCategory(category,lat,long,search) {
-
-        return Store.find(
-         
-          {
-            categories:category,
-            status:1,
-            storeApproval:"Accepted"
-          }   
-        );
+   if(search!=''){
+      return Store.aggregate([
+        {
+          $geoNear: {
+            near: { type: "Point", coordinates: [ long, lat ] },
+            distanceField: "dist.calculated",
+            maxDistance: 2*5000,
+            query: { categories: category,'address.gps_address':search},
+            includeLocs: "dist.geoPoint",
+            spherical: true,
+            "distanceMultiplier": 0.001,
+          }
+        }
+    ]);
+   }else{       
+    return Store.aggregate([
+      {
+        $geoNear: {
+           near: { type: "Point", coordinates: [ long, lat ] },
+           distanceField: "dist.calculated",
+           maxDistance: 5000,
+           query: { categories: category },
+           includeLocs: "dist.geoPoint",
+           spherical: true,  
+           "distanceMultiplier": 0.001
+        }
+      }
+   ]);
+   }
   },
 
   getStoreProfile(storeId) {

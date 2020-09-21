@@ -35,6 +35,7 @@ const OrderController = {
       if (!customer) throw new apiError.ValidationError('token', messages.AUTHENTICATION_TOKEN_INVALID);
 
       if (!request.address_id) throw new apiError.ValidationError('address_id', messages.ADDRESS_ID_REQUIRED);
+    
       if (!request.store_address_id) throw new apiError.ValidationError('store_address_id', messages.ADDRESS_ID_REQUIRED);
 
       const address = customer.address.find((customerAddress) => (
@@ -247,8 +248,8 @@ const OrderController = {
         else continue;
       }
       orderDetails.order_id = uniqueId;
-      orderDetails.pickup_code = crypto.randomBytes(4).toString('utf-8');
-      orderDetails.delivery_code = crypto.randomBytes(4).toString('utf-8');
+      orderDetails.pickup_code = cryptoRandomString({ length: 5 });;
+      orderDetails.delivery_code = cryptoRandomString({ length: 5 });;
 
       const order = await OrderService.addOrder(orderDetails);
        

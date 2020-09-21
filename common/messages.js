@@ -83,6 +83,7 @@ module.exports = {
   TIMINGS_REQUIRED: 'Timing Details Are Required',
   STORE_ORDER_EXISTS_CANNOT_BE_DELETED: 'Above store cannot be deleted as order has already been placed from this store. Please disable it to avoid any further orders.',
   STORE_PROFILE_NOT_UPDATE: 'Store profile cant be updated, once the store is approved.',
+  STORE_PROFILE_UPDATED: 'Store Profile updated successfully',
 
   // category validation
   CATEGORY_PICTURE_REQUIRED: 'Category Picture is a required field',

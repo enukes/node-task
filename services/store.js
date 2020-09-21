@@ -336,45 +336,45 @@ module.exports = {
       {
         $match: { _id: mongoose.Types.ObjectId(storeId) }
       },
-      {
-        $unwind: '$address'
-      },
-      {
-        $lookup: {
-          from : 'cities',
-          localField: 'address.city_id',
-          foreignField: '_id',
-          as: 'city'
-        }
-      },
-      {
-        $lookup: {
-          from: 'areas',
-          localField: 'address.area_id',
-          foreignField: '_id',
-          as: 'area'
-        }
-      },
-      {
-        $group: {
-          _id: '$_id',
-          picture: { $first: '$picture' },
-          status: { $first: '$status' },
-          timings: { $first: '$timings' },
-          owner: { $first: '$owner'},
-          name: { $first: '$name'},
-          commission: { $first: '$commission'},
-          created_at: { $first: '$created_at'},
-          updated_at: { $first: '$updated_at'},
-          auth_token: { $first: '$auth_token'},
-          categories: { $first: '$categories'},
-          storeApproval: { $first: '$storeApproval' },
-          isFreeDelivery: { $first: '$isFreeDelivery'},
-          address: { $first: '$address'},
-          city: { $first: '$city'},
-          area: { $first: '$area'}
-        }
-      }
+      // {
+      //   $unwind: '$address'
+      // },
+      // {
+      //   $lookup: {
+      //     from : 'cities',
+      //     localField: 'address.city_id',
+      //     foreignField: '_id',
+      //     as: 'city'
+      //   }
+      // },
+      // {
+      //   $lookup: {
+      //     from: 'areas',
+      //     localField: 'address.area_id',
+      //     foreignField: '_id',
+      //     as: 'area'
+      //   }
+      // },
+      // {
+      //   $group: {
+      //     _id: '$_id',
+      //     picture: { $first: '$picture' },
+      //     status: { $first: '$status' },
+      //     timings: { $first: '$timings' },
+      //     owner: { $first: '$owner'},
+      //     name: { $first: '$name'},
+      //     commission: { $first: '$commission'},
+      //     created_at: { $first: '$created_at'},
+      //     updated_at: { $first: '$updated_at'},
+      //     auth_token: { $first: '$auth_token'},
+      //     categories: { $first: '$categories'},
+      //     storeApproval: { $first: '$storeApproval' },
+      //     isFreeDelivery: { $first: '$isFreeDelivery'},
+      //     address: { $first: '$address'},
+      //     city: { $first: '$city'},
+      //     area: { $first: '$area'}
+      //   }
+      // }
     ])
   }
    

@@ -184,7 +184,13 @@ module.exports = {
   async changeStorePassword(req, res) {
     try {
       const request = { ...req.body };
-      const { id } = req.params;
+      const type = req._userInfo._user_type;
+      let id = null
+      if(type === 2) {
+        id = req._userInfo._user_id;
+      } else {
+        id = req.params.id;
+      }
 
       if (!request.password) {
         throw new apiError.ValidationError('password', messages.PASSWORD_REQUIRED);
@@ -193,6 +199,9 @@ module.exports = {
       const store = await StoreService.getStore({ _id: id });
       if (!store) {
         throw new apiError.ValidationError('id', messages.ID_INVALID);
+      }
+      if (type === 2 && store.storeApproval === 'Approved') {
+        throw new apiError.ValidationError('storeApproval', messages.STORE_PROFILE_NOT_UPDATE)
       }
       const salt = await bcrypt.genSaltSync(10);
       const hash = await bcrypt.hashSync(request.password, salt);

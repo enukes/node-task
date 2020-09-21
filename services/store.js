@@ -367,7 +367,7 @@ module.exports = {
           created_at: { $first: '$created_at'},
           updated_at: { $first: '$updated_at'},
           auth_token: { $first: '$auth_token'},
-          categories: { $push: '$categories'},
+          categories: { $first: '$categories'},
           isFreeDelivery: { $first: '$isFreeDelivery'},
           address: { $first: '$address'},
           city: { $first: '$city'},

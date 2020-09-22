@@ -5,6 +5,7 @@ const Upload = require('../../../common/multer');
 const AreaController = require('../../../controllers/customer/area');
 const ConfigController = require('../../../controllers/admin/config');
 const AuthController = require('../../../controllers/common/auth');
+const ServiceProviderCategoryController = require('../../../controllers/admin/service_provider_category');
 
 
 // router.post('/', dsd)
@@ -18,5 +19,6 @@ router.get('/categories', OpenApiController.getAllCategoriesForStoreRegister);
 router.get('/cities', AreaController.getCitiesList);
 router.get('/areas', AreaController.getAreasList);
 router.get('/config',ConfigController.getConfig);
+router.get('/service-categories', ServiceProviderCategoryController.getServiceProviderCategories);
 
 module.exports = router;

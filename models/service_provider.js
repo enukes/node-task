@@ -92,10 +92,11 @@ const schema = Schema(
         required: true
       }
     },
-    serviceCategory: {
+    categories: [{
       type: mongoose.Schema.Types.ObjectId,
-      required: true
-    },
+      ref: 'ServiceProviderCategory',
+      required: [true, messages.CATEGORY_ID_REQUIRED],
+    }],
     storeInfo: {
       faq: {
         type: String

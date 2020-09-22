@@ -67,14 +67,15 @@ module.exports = {
         throw new apiError.ValidationError('owner_details', messages.TIMINGS_REQUIRED);
       }
 
-      const serviceProviderCategoryId = request.serviceCategory;
-      if (!serviceProviderCategoryId || !HelperService.isValidMongoId(serviceProviderCategoryId)) {
-        throw new apiError.ValidationError('serviceProviderCategoryId', messages.ID_INVALID);
-      }
+      // const serviceProviderCategoryId = request.serviceCategory;
+      // if (!serviceProviderCategoryId || !HelperService.isValidMongoId(serviceProviderCategoryId)) {
+      //   throw new apiError.ValidationError('serviceProviderCategoryId', messages.ID_INVALID);
+      // }
 
       request.owner = JSON.parse(request.owner);
       request.address = JSON.parse(request.address);
       request.timings = JSON.parse(request.timings);
+      request.categories = JSON.parse(request.categories);
 
       if (!request.owner.email) {
         throw new apiError.ValidationError('email', messages.EMAIL_REQUIRED);
@@ -82,7 +83,14 @@ module.exports = {
       if (!request.owner.contact_number) {
         throw new apiError.ValidationError('email', messages.CONTACT_REQUIRED);
       }
-
+      if (!(request.categories && request.categories.length > 0)) {
+        throw new apiError.ValidationError('category', messages.CATEGORY_ID_REQUIRED);
+      }
+      request.categories.forEach((element) => {
+        if (!element._id || !HelperService.isValidMongoId(element._id)) {
+          throw new apiError.ValidationError('categoryId', messages.ID_INVALID);
+        }
+      });
       let service_provider = await ServiceProviderService.getServiceProvider({ 'owner.email': request.owner.email });
       if (service_provider) {
         throw new apiError.ValidationError('email', messages.EMAIL_ALREADY_EXIST);
@@ -140,7 +148,7 @@ module.exports = {
       // }
       if (!reqBody.codeType) {
         throw new apiError.ValidationError('codeType', messages.CODE_TYPE_REQUIRED)
-      } 
+      }
       if (!reqBody.code) {
         throw new apiError.ValidationError('code', messages.CODE_REQUIRED)
       }
@@ -153,7 +161,7 @@ module.exports = {
           store_id: scannedById,
           pickup_code: reqBody.code
         }
-        const store = await StoreService.getStore({_id: store_id});
+        const store = await StoreService.getStore({ _id: store_id });
         if (!(store.storeApproval === 'Approved')) {
           throw new apiError.ValidationError('storeApproval', messages.STORE_PERMISSION);
         }
@@ -165,16 +173,16 @@ module.exports = {
         }
         order = await OrderService.getOrder(request);
       }
-      if(!order) {
+      if (!order) {
         return res.status(500).send(ResponseService.success({ message: messages.PICKUP_CODE_INVALID }));
       }
       if (!order.driver_id) {
         return res.status(500).send(ResponseService.success({ message: messages.DRIVER_ORDER_NOT_ACCEPTED }));
       }
-      const driver = await DriverService.getDriver({ _id: order.driver_id});
+      const driver = await DriverService.getDriver({ _id: order.driver_id });
 
-        if (order && driver) {
-          return res.status(200).send(ResponseService.success({ order, driver, message: messages.ORDER_VERIFIED}, ));
+      if (order && driver) {
+        return res.status(200).send(ResponseService.success({ order, driver, message: messages.ORDER_VERIFIED },));
       }
       return res.status(500).send(ResponseService.failure({ message: messages.ORDER_UNVERIFIED }));
     }
@@ -186,51 +194,51 @@ module.exports = {
     }
   },
 
-    /**
-  * Verify service during delivery
-  */
- verifyService: async (req, res) => {
-  try {
-    const reqBody = req.body;
-    const scannedById = req._userInfo._user_id;
-   
-    if (!reqBody.code) {
-      throw new apiError.ValidationError('code', messages.CODE_REQUIRED)
-    }
-    let order = null;
-    if (reqBody.code) {
-      request = {
-        service_provider_id: scannedById,
-        delivery_code: reqBody.code
+  /**
+* Verify service during delivery
+*/
+  verifyService: async (req, res) => {
+    try {
+      const reqBody = req.body;
+      const scannedById = req._userInfo._user_id;
+
+      if (!reqBody.code) {
+        throw new apiError.ValidationError('code', messages.CODE_REQUIRED)
       }
-      const service = await ServiceProviderService.getServiceProvider({_id: service_provider_id});
-      if (!(service.serviceProviderApproval === 'Approved')) {
-        throw new apiError.ValidationError('serviceApproval', messages.SERVICE_PROVIDER_PERMISSION);
+      let order = null;
+      if (reqBody.code) {
+        request = {
+          service_provider_id: scannedById,
+          delivery_code: reqBody.code
+        }
+        const service = await ServiceProviderService.getServiceProvider({ _id: service_provider_id });
+        if (!(service.serviceProviderApproval === 'Approved')) {
+          throw new apiError.ValidationError('serviceApproval', messages.SERVICE_PROVIDER_PERMISSION);
+        }
+        order = await ServiceOrderService.getServiceOrder(request);
       }
-      order = await ServiceOrderService.getServiceOrder(request);
-    } 
-    if(!order) {
-      return res.status(500).send(ResponseService.success({ message: messages.DELIVERY_CODE_INVALID }));
+      if (!order) {
+        return res.status(500).send(ResponseService.success({ message: messages.DELIVERY_CODE_INVALID }));
+      }
+      if (order) {
+        return res.status(200).send(ResponseService.success({ order, message: messages.ORDER_VERIFIED },));
+      }
+      return res.status(500).send(ResponseService.failure({ message: messages.ORDER_UNVERIFIED }));
     }
-    if (order) {
-        return res.status(200).send(ResponseService.success({ order, message: messages.ORDER_VERIFIED}, ));
+    catch (error) {
+      if (error.name == 'JsonWebTokenError') {
+        return res.status(401).send({ message: 'Auth Token is Invalid.' });
+      }
+      return res.status(error.code || 500).send(ResponseService.failure(error))
     }
-    return res.status(500).send(ResponseService.failure({ message: messages.ORDER_UNVERIFIED }));
-  }
-  catch (error) {
-    if (error.name == 'JsonWebTokenError') {
-      return res.status(401).send({ message: 'Auth Token is Invalid.' });
-    }
-    return res.status(error.code || 500).send(ResponseService.failure(error))
-  }
-},
+  },
   /**
    * Store Register
    */
   createStore: async (req, res) => {
     try {
       const request = { ...req.body };
-     
+
       if (!request.owner) {
         throw new apiError.ValidationError('owner_details', messages.OWNER_DETAILS_REQUIRED);
       }
@@ -335,7 +343,7 @@ module.exports = {
   getAllStoreBySubCategory: async (req, res) => {
     try {
       const request = { ...req.query };
-     
+
       if (!request.subCategory) {
         throw new apiError.ValidationError('subCategory', messages.SUBCATEGORY_REQUIRED);
       }
@@ -346,7 +354,7 @@ module.exports = {
         throw new apiError.ValidationError('long', messages.LONGITUDE_REQUIRED);
       }
       const result = await StoreHelper.getAllStoreByCategory(req);
-    
+
       if (result && result.success) {
         return res.status(200).json(result.data);
       }

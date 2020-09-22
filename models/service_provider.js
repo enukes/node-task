@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const messages = require('../common/messages');
 
 const { Schema } = mongoose;
 
@@ -70,7 +71,6 @@ const schema = Schema(
     },
     commission: {
       type: Number,
-      required: true
     },
     owner: {
       full_name: {
@@ -92,10 +92,11 @@ const schema = Schema(
         required: true
       }
     },
-    serviceCategory: {
+    categories: [{
       type: mongoose.Schema.Types.ObjectId,
-      required: true
-    },
+      ref: 'ServiceProviderCategory',
+      required: [true, messages.CATEGORY_ID_REQUIRED],
+    }],
     storeInfo: {
       faq: {
         type: String

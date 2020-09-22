@@ -75,6 +75,7 @@ module.exports = {
       request.owner = JSON.parse(request.owner);
       request.address = JSON.parse(request.address);
       request.timings = JSON.parse(request.timings);
+      request.categories = JSON.parse(request.categories);
 
       if (!request.owner.email) {
         throw new apiError.ValidationError('email', messages.EMAIL_REQUIRED);
@@ -82,7 +83,14 @@ module.exports = {
       if (!request.owner.contact_number) {
         throw new apiError.ValidationError('email', messages.CONTACT_REQUIRED);
       }
-
+      if (!(request.categories && request.categories.length > 0)) {
+        throw new apiError.ValidationError('category', messages.CATEGORY_ID_REQUIRED);
+      }
+      request.categories.forEach((element) => {
+        if (!element._id || !HelperService.isValidMongoId(element._id)) {
+          throw new apiError.ValidationError('categoryId', messages.ID_INVALID);
+        }
+      });
       let service_provider = await ServiceProviderService.getServiceProvider({ 'owner.email': request.owner.email });
       if (service_provider) {
         throw new apiError.ValidationError('email', messages.EMAIL_ALREADY_EXIST);

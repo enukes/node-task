@@ -2,6 +2,7 @@ const AdminService = require('./admin');
 const StoreService = require('./store');
 const CustomerService = require('./customer');
 const DriverService = require('./driver');
+const ServiceProviderService = require('./service_provider');
 
 module.exports = {
   async getUser(request, type) {
@@ -14,6 +15,8 @@ module.exports = {
         return CustomerService.getCustomer(request);
       case 4:
         return DriverService.getDriver(request);
+      case 5:
+        return ServiceProviderService.getServiceProvider(request);
       default:
         return null;
     }
@@ -44,6 +47,8 @@ module.exports = {
         return CustomerService.updateCustomer(newData, criteria);
       case 4:
         return DriverService.updateDriver(newData, criteria);
+      case 5:
+        return ServiceProviderService.updateServiceProvider(newData, criteria);
       default:
         return null;
     }

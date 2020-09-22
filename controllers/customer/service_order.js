@@ -252,6 +252,7 @@ const ServiceOrderController = {
         else continue;
       }
       orderDetails.service_order_id = uniqueId;
+      orderDetails.delivery_code = cryptoRandomString({ length: 5 });;
 
       const serviceOrder = await ServiceOrderService.addOrder(orderDetails);
 

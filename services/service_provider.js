@@ -171,5 +171,58 @@ module.exports = {
 
   getServiceProvidersByCategoryId(serviceCategoryId) {
     return ServiceProvider.findOne({ serviceCategory: serviceCategoryId });
+  },
+
+    /**
+   * Get Service Provider profile by id
+   */
+
+  getServiceProviderProfile(serviceproviderId) {
+    return ServiceProvider.aggregate([
+      {
+        $match: { _id: mongoose.Types.ObjectId(serviceproviderId) }
+      },
+      {
+        $unwind: '$address'
+      },
+      {
+        $lookup: {
+          from : 'cities',
+          localField: 'address.city_id',
+          foreignField: '_id',
+          as: 'city'
+        }
+      },
+      {
+        $lookup: {
+          from: 'areas',
+          localField: 'address.area_id',
+          foreignField: '_id',
+          as: 'area'
+        }
+      },
+      {
+        $group: {
+          _id: '$_id',
+          picture: { $first: '$picture' },
+          status: { $first: '$status' },
+          timings: { $first: '$timings' },
+          owner: { $first: '$owner'},
+          address: { $first: '$address'},
+          name: { $first: '$name'},
+          commission: { $first: '$commission'},
+          created_at: { $first: '$created_at'},
+          updated_at: { $first: '$updated_at'},
+          auth_token: { $first: '$auth_token'},
+          serviceCategory: { $push: '$serviceCategory'},
+          serviceProviderApproval: { $first: '$serviceProviderApproval'},
+          city: { $first: '$city'},
+          area: { $first: '$area'}
+        }
+      }
+    ])
   }
 };
+
+
+

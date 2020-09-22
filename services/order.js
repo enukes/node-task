@@ -3,6 +3,7 @@
 const mongoose = require('mongoose');
 const moment = require('moment-timezone');
 const Order = require('../models/order');
+const ServiceOrder = require('../models/service_order');
 const Store = require('../models/store');
 const ProductService = require('./product');
 const apiError = require('../common/api-errors');
@@ -56,7 +57,7 @@ module.exports = {
     else sortObject = { created_at: -1 };
     if (!pageNo) {
       return Order.aggregate([
-
+          
         { $match: request },
         // {
         //   $lookup:{
@@ -102,7 +103,6 @@ module.exports = {
         {
           $unwind: '$customer'
         },
-
         {
           $sort: sortObject
         }
@@ -349,6 +349,10 @@ module.exports = {
 
   getOrder(request) {
     return Order.findOne(request);
+  },
+
+  getService(request) {
+    return ServiceOrder.findOne(request);
   },
 
   getTotalOrdersCount(request) {
@@ -614,6 +618,10 @@ module.exports = {
     return Order.findOneAndUpdate(criteria, details, { new: true, upsert: false });
   },
 
+  updateServiceOrder(details, criteria) {
+    return ServiceOrder.findOneAndUpdate(criteria, details, { new: true, upsert: false });
+  },
+
   async markOrdersAsPaid(orders, amount) {
     const session = await mongoose.startSession();
     session.startTransaction();
@@ -661,7 +669,6 @@ module.exports = {
                   $or:
                     [
                       { order_id: new RegExp(search, 'i') }
-                      // { "store.name": new RegExp(search, 'i') },
                     ]
                 },
                 { store_id },
@@ -735,6 +742,92 @@ module.exports = {
         }
       ]);
     }
+  },
+
+  async getTodayServiceWithPagination({ service_provider_id, testStartDate, testEndDate, status = null }, pageNo, perPage, search, sort = null) {
+    
+      return ServiceOrder.aggregate([
+        {
+          $match: {
+            $and:
+              [
+                {
+                  $or:
+                    [
+                      { order_id: new RegExp(search, 'i') }
+                    ]
+                },
+                { service_provider_id },
+                { ...(status && { status }) }
+              ]
+          }
+        },
+        {
+          $lookup: {
+            from: 'slots',
+            foreignField: '_id',
+            localField: 'slot_id',
+            as: 'slots'
+          }
+        },
+        {
+          $unwind: '$slots'
+        },
+        {
+          $match: {
+            $and: [{ 'slots.start_time': { $gte: testStartDate } },
+            { 'slots.end_time': { $lte: testEndDate } }],
+          },
+        },
+        {
+          $lookup: {
+            from: 'stores',
+            foreignField: '_id',
+            localField: 'service_provider_id',
+            as: 'store'
+          }
+        },
+        {
+          $unwind: '$store'
+        },
+        {
+          $lookup: {
+            from: 'cities',
+            localField: 'address.delivery.city_id',
+            foreignField: '_id',
+            as: 'address.delivery.city'
+          }
+        },
+        {
+          $unwind: '$address.delivery.city'
+        },
+        {
+          $lookup: {
+            from: 'drivers',
+            localField: 'driver_id',
+            foreignField: '_id',
+            as: 'driver'
+          }
+        },
+        {
+          $unwind: // "$driver"
+          {
+            path: '$driver',
+            preserveNullAndEmptyArrays: true
+          }
+        },
+        // {
+        //   $sort: sort
+        // },
+        {
+          $skip: ((pageNo - 1) * perPage)
+        },
+
+        {
+          $limit: perPage
+        }
+      ]);
+    
   },
 
   async getTodayOrdersCountForStore({ store_id, testStartDate, testEndDate, status = null }, pageNo, perPage, search, sort = null) {

@@ -16,8 +16,8 @@ class AuthController {
   async login(req, res) {
     try {
       const request = { ...req.body };
-
-      const type = this.getUserType(req.baseUrl);
+     
+      const type = this.getUserType(req.baseUrl);  
 
       // If no username provided, Throw error.
       if (!request.username) throw new apiError.ValidationError('username', messages.USERNAME_REQUIRED);
@@ -97,6 +97,28 @@ class AuthController {
         if (!matchBcrypt) {
           throw new apiError.UnauthorizedError(messages.USERNAME_OR_PASSWORD_INVALID);
         }
+      }else if(type === 5){ 
+        let contact = request.username;
+
+        if (contact.length >= 10) {
+          contact = contact.slice(-10);
+          contact = new RegExp(contact, 'i');
+
+          user = await AuthService.getUser({ 'owner.contact_number': contact }, type);
+         
+        }
+
+        if (!user) user = await AuthService.getUser({ 'owner.email': request.username }, type);  
+        if (!user) throw new apiError.UnauthorizedError(messages.USERNAME_OR_PASSWORD_INVALID);
+     
+        if (user && user.status === 2 || user.status ===3) {
+          throw new apiError.UnauthorizedError(messages.SERVICE_PROVIDER_INACTIVE);
+        }
+        
+        const matchBcrypt = await bcrypt.compare(request.password, user.owner.password);
+        if (!matchBcrypt) { 
+          throw new apiError.UnauthorizedError(messages.USERNAME_OR_PASSWORD_INVALID);
+        } 
       }else {
         let contact = request.username;
 
@@ -147,7 +169,7 @@ class AuthController {
       // Get JWT auth token and return with response
       const token = await this.getJwtAuthToken(user, type);
       const updationObj = {};
-
+     
       // fcm_token
       if (request.fcm_token) {
         updationObj.fcm_token = request.fcm_token;
@@ -587,9 +609,10 @@ console.log("come");
 
       if (!request.new_password) throw new apiError.ValidationError('new_password', messages.NEW_PASSWORD_REQUIRED);
 
-      const userId = req._userInfo._user_id;
+      const userId = req._userInfo._user_id; 
+      
 
-      const user = await AuthService.getUser({ _id: userId }, type);
+      const user = await AuthService.getUser({ _id: userId }, type); 
       if (!user) throw new apiError.ValidationError('token', messages.AUTHENTICATION_TOKEN_INVALID);
 
       const matchBcrypt = await bcrypt.compare(request.password, user.password);
@@ -659,6 +682,8 @@ console.log("come");
         return 3;
       case 'driver':
         return 4;
+        case 'serviceprovider':
+        return 5;
       default:
         return 0;
     }

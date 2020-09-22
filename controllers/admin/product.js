@@ -17,7 +17,6 @@ module.exports = {
       criteria.search = req.query.search || '';
       const sort = { [req.query.name]: Number(req.query.sortType) };
       const request = { ...req.query };
-
       if (!request.store_id && type !== 2) {
         throw new apiError.ValidationError('store_id', messages.STORE_ID_REQUIRED);
       }
@@ -100,7 +99,7 @@ module.exports = {
     try {
       const request = { ...req.body };
       const { id } = req.params;
-
+      
       if (request.sku_id) {
         const product = await ProductService.getProduct({
           sku_id: request.sku_id,

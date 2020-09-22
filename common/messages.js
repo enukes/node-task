@@ -98,6 +98,7 @@ module.exports = {
   STORE_INACTIVE: 'The Store is not active . Please Contact Admin.',
   DRIVER_INACTIVE: 'The Driver is not active . Please Contact Admin.',
   CUSTOMER_INACTIVE: 'The Customer is not active . Please Check Email ID.',
+  SERVICE_PROVIDER_INACTIVE: 'The Service provider is not active . Please Check Email ID.',
   DRIVER_APPROVAL: 'The Driver is not approve . Please Contact Admin.',
   STORE_NAME_REQUIRED: 'The Store Name is a required field',
   STORE_ID_INVALID: 'The Store Id is invalid',
@@ -129,6 +130,7 @@ module.exports = {
   ORDER_INVOICE_UNAVAILABLE: 'Invoice are only available for orders that are delivered.',
   DRIVER_ORDER_NOT_ACCEPTED: 'Driver has not accepted the order',
   PICKUP_CODE_INVALID: 'Pickup Code is invalid',
+  DELIVERY_CODE_INVALID: 'delivery Code is invalid',
   IMAGE_REQUIRED: 'Image is a required ',
 
   // cart

@@ -95,7 +95,6 @@ const schema = Schema(
     },
     commission: {
       type: Number,
-      required: true
     },
     owner: {
       full_name: {

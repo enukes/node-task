@@ -257,7 +257,6 @@ module.exports = {
 
       const storePicture = req.files.filter((ele) => ele.fieldname === 'store_picture');
       request.picture = storePicture[0].filename;
-      request.commission = 10;
 
       for (let i = 0; i < request.address.length; i++) {
         const element = request.address[i];

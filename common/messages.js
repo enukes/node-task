@@ -59,6 +59,7 @@ module.exports = {
   AREA_ID_INVALID: 'Area Id is Invalid',
   ADDRESS_ID_REQUIRED: 'Address Id is a required field',
   ADDRESS_ID_INVALID: 'Address Id is invalid',
+  COMMISSION_REQUIRED: 'Commission is required',
 
   // Store Category
   STORE_CATEGORY_ID_INVALID: 'Store category id is Invalid',

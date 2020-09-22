@@ -29,6 +29,9 @@ module.exports = {
       if (request.storeApproval === 'Pending' && request.status === '1') {
         throw new apiError.ValidationError('storeApproval', messages.STORE_PERMISSION)
       }
+      if(!request.commission) {
+        throw new apiError.ValidationError('commission', messages.COMMISSION_REQUIRED)
+      }
 
       request.owner = JSON.parse(request.owner);
       request.address = JSON.parse(request.address);

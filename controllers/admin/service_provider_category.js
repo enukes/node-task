@@ -25,7 +25,7 @@ module.exports = {
     }
   },
 
-  getServiceProviderCategories: async (req, res) => {
+  getServiceProviderAllCategories: async (req, res) => {
     try {
       const search = req.query.search || '';
       const status = Number(req.query.status);
@@ -94,5 +94,17 @@ module.exports = {
     } catch (error) {
       return res.status(error.code || 500).send(ResponseService.failure(error));
     }
-  }
+  },
+      
+
+  getServiceProviderCategories: async (req, res) => {
+    try {
+      const id = req._userInfo._user_id;
+      const service_provider = await ServiceProviderService.getServiceprovidersWithCategories(id);
+      return res.status(200).send(ResponseService.success({ service_provider }))
+    }
+    catch (error) {
+      return res.status(error.code || 500).send(ResponseService.failure(error))
+    }
+  },
 };

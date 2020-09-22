@@ -221,6 +221,32 @@ module.exports = {
         }
       }
     ])
+  },
+
+  getServiceprovidersWithCategories(serviceproviderId) {
+    return ServiceProvider.aggregate([
+      {
+        $match: { _id: mongoose.Types.ObjectId(serviceproviderId) }
+      },
+      {
+        $unwind: '$serviceCategory'
+      },
+      {
+        $lookup: {
+          from : 'serviceprovidercategories',
+          localField: 'serviceCategory',
+          foreignField: '_id',
+          as: 'category'
+        }
+      },
+      {
+        $group: {
+          _id: '$_id',
+          serviceCategory: { $push: '$serviceCategory'},
+          category: { $push: '$category'}
+        }
+      }
+    ])
   }
 };
 

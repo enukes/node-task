@@ -59,8 +59,8 @@ module.exports = {
       const type = req._userInfo._user_type;
       if (type === 5) 
       {
-        criteria.service_provider_id = mongoose.Types.ObjectId(req._userInfo._user_id);;
-        const service = await ServiceProviderService.getServiceProvider({ _id: criteria.service_provider_id });
+        condition.service_provider_id = mongoose.Types.ObjectId(req._userInfo._user_id);;
+        const service = await ServiceProviderService.getServiceProvider({ _id: condition.service_provider_id });
         if (!(service.serviceProviderApproval === 'Approved')) {
           throw new apiError.ValidationError('serviceApproval', messages.SERVICE_PROVIDER_PERMISSION);
         }

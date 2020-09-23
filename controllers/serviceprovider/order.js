@@ -6,6 +6,7 @@ const ResponseService = require('../../common/response');
 const apiError = require('../../common/api-errors');
 const messages = require('../../common/messages');
 const config = require('../../config/constants');
+const ServiceProviderService = require('../../services/service_provider');
 
 
 module.exports = {
@@ -56,7 +57,15 @@ module.exports = {
 
       const condition = {};
       const type = req._userInfo._user_type;
-      if (type === 5) condition.service_provider_id = mongoose.Types.ObjectId(req._userInfo._user_id);
+      if (type === 5) 
+      {
+        criteria.service_provider_id = mongoose.Types.ObjectId(req._userInfo._user_id);;
+        const service = await ServiceProviderService.getServiceProvider({ _id: criteria.service_provider_id });
+        if (!(service.serviceProviderApproval === 'Approved')) {
+          throw new apiError.ValidationError('serviceApproval', messages.SERVICE_PROVIDER_PERMISSION);
+        }
+        }
+        
       condition.testStartDate = moment('2020-04-13T14:30:00.000Z').startOf('day').toDate();
       condition.testEndDate = moment('2020-04-13T14:30:00.000Z').endOf('day').toDate();
       if (req.query.status) {

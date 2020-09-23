@@ -129,6 +129,9 @@ module.exports = {
       if (!service_provider) {
         throw new apiError.ValidationError('service_provider_id', messages.ID_INVALID);
       }
+      if (service_provider.serviceProviderApproval === 'Approved') {
+        throw new apiError.ValidationError('serviceProviderApproval', messages.SERVICE_PROVIDER_PROFILE_NOT_UPDATE);
+      }
 
       delete request._id;
       delete request.password;

@@ -5,6 +5,7 @@ const HelperService = require('../../common/helper');
 const apiError = require('../../common/api-errors');
 const messages = require('../../common/messages');
 const config = require('../../config/constants');
+const ServiceProviderService = require('../../services/service_provider');
 
 module.exports = {
  
@@ -19,7 +20,13 @@ module.exports = {
 
       if (!request.service_provider_id && `${userType}` !== '5') throw new apiError.ValidationError('service_provider_id', messages.SERVICE_ID_REQUIRED);
 
-      if (`${userType}` === '5') request.service_provider_id = req._userInfo._user_id;
+      if (`${userType}` === '5') {
+      request.service_provider_id = req._userInfo._user_id; 
+      const service = await ServiceProviderService.getServiceProvider({ _id: request.service_provider_id });
+      if (!(service.serviceProviderApproval === 'Approved')) {
+        throw new apiError.ValidationError('serviceApproval', messages.SERVICE_PROVIDER_PERMISSION);
+      }
+      }
 
       const service = await ServicesService.addAServiceToServiceProvider(request);
       return res.status(200).send(ResponseService.success(service));
@@ -42,7 +49,13 @@ module.exports = {
         throw new apiError.ValidationError('service_provider_id', messages.SERVICE_ID_REQUIRED);
       }
 
-      if (type === 5) criteria.service_provider_id = req._userInfo._user_id;
+      if (type === 5) {
+        criteria.service_provider_id = req._userInfo._user_id;
+        const service = await ServiceProviderService.getServiceProvider({ _id: criteria.service_provider_id });
+        if (!(service.serviceProviderApproval === 'Approved')) {
+          throw new apiError.ValidationError('serviceApproval', messages.SERVICE_PROVIDER_PERMISSION);
+        }
+        }
       else criteria.service_provider_id = request.service_provider_id;
 
       const paginationVariables = { pageNo, perPage };
@@ -99,8 +112,15 @@ module.exports = {
         throw new apiError.ValidationError('service_provider_id', messages.SERVICE_ID_REQUIRED);
       }
 
-      if (type === 5) criteria.service_provider_id = req._userInfo._user_id;
-      else criteria.service_provider_id = request.service_provider_id;
+      if (type === 5) 
+      {
+        criteria.service_provider_id = req._userInfo._user_id;
+        const service = await ServiceProviderService.getServiceProvider({ _id: criteria.service_provider_id });
+        if (!(service.serviceProviderApproval === 'Approved')) {
+          throw new apiError.ValidationError('serviceApproval', messages.SERVICE_PROVIDER_PERMISSION);
+        }
+        }
+              else criteria.service_provider_id = request.service_provider_id;
 
       const paginationVariables = { pageNo, perPage };
       const subcategories = await ServicesService.getServiceOrderWithPagination(

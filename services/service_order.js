@@ -366,4 +366,69 @@ module.exports = {
     ]);
   },
 
+  getServiceorderTotalSale(storeId) {
+    return ServiceOrder.aggregate([
+      { $match: { store_id: mongoose.Types.ObjectId(storeId) } },
+      { $group: { _id: null, amount: { $sum: '$total_amount' } } }
+    ]);
+  },
+
+  getTotalDeliveredOrder(request) {
+    return ServiceOrder.countDocuments(request)
+  },
+
+  getGraphOrderDate(fromDate, toDate, serviceproviderId = null) {
+    const condition = {
+      $and: [{ created_at: { $gt: moment(fromDate).toDate(), $lt: moment(toDate).toDate() } }]
+    };
+
+    if (serviceproviderId) condition.service_provider_id = mongoose.Types.ObjectId(serviceproviderId);
+
+    return ServiceOrder.aggregate([
+      {
+        $match: condition
+      },
+      {
+        $group: {
+          _id: '$status',
+          sale: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          status: '$_id',
+          order: '$sale'
+        }
+      }
+    ]);
+  },
+
+  getGraphSaleData(fromDate, toDate, serviceproviderId = null) {
+    const condition = {
+      $and: [{ created_at: { $gt: moment(fromDate).toDate(), $lt: moment(toDate).toDate() } }]
+    };
+    if (serviceproviderId) condition.service_provider_id = mongoose.Types.ObjectId(serviceproviderId);
+
+    return ServiceOrder.aggregate([
+      {
+        $match: condition
+      },
+      {
+        $group: {
+          _id: { $substr: ['$created_at', 5, 2] },
+          sale: { $sum: '$total_amount' }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          month: '$_id',
+          sale: '$sale'
+        }
+      }
+    ]);
+  },
+
+
 };

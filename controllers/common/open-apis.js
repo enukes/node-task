@@ -313,7 +313,6 @@ module.exports = {
         const area = await AreaService.getArea({ _id: element.area_id });
         element.unique_link = sh.unique(request.name + city.name + area.name);
       }
-      console.log(request);
       const data = await StoreService.createStore(request);
       if (!data.success) throw new apiError.InternalServerError();
       return res.status(200).send(ResponseService.success({ store: data.store }));

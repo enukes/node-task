@@ -15,7 +15,7 @@ module.exports = {
     try {
       const request = { ...req.body };
       const type = req._userInfo._user_type;
-
+      
       if (!request.from_date) throw new apiError.ValidationError('from_date', messages.FROM_DATE_REQUIRED);
       if (!request.to_date) throw new apiError.ValidationError('from_date', messages.TO_DATE_REQUIRED);
 
@@ -42,6 +42,43 @@ module.exports = {
           request.from_date,
           request.to_date,
           storeId
+        );
+
+        return res.status(200).send(ResponseService.success({
+          total_orders: totalOrders,
+          total_sale: totalSale,
+          deliveredOrders,
+          unDeliveredOrders,
+          graph_sale_data: graphSaleData,
+          graph_order_date: graphOrderDate
+        }));
+      }
+
+
+     
+
+      if (type === 5)  {
+        const serviceproviderId = req._userInfo._user_id;
+        const service = await ServiceProviderService.getServiceProvider({ _id: serviceproviderId });
+        if (!(service.serviceProviderApproval === 'Approved')) {
+          throw new apiError.ValidationError('serviceApproval', messages.SERVICE_PROVIDER_PERMISSION);
+        }
+        const totalOrders = await ServiceOrderService.getTotalOrdersCount({ service_provider_id: serviceproviderId });
+        const data = await ServiceOrderService.getServiceorderTotalSale(req._userInfo._user_id);
+        let deliveredOrders = {};
+        let unDeliveredOrders = {};
+        deliveredOrders = await ServiceOrderService.getTotalDeliveredOrder({ service_provider_id: serviceproviderId, status: 3 });
+        unDeliveredOrders = await ServiceOrderService.getTotalDeliveredOrder({ service_provider_id: serviceproviderId, status: 4 })
+        const totalSale = data.length > 0 ? data[0].amount : 0;
+        const graphOrderDate = await ServiceOrderService.getGraphOrderDate(
+          request.from_date,
+          request.to_date,
+          serviceproviderId
+        );
+        const graphSaleData = await ServiceOrderService.getGraphSaleData(
+          request.from_date,
+          request.to_date,
+          serviceproviderId
         );
 
         return res.status(200).send(ResponseService.success({

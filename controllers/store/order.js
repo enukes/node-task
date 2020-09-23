@@ -70,27 +70,27 @@ module.exports = {
         search,
         sort
       );
-      // const paginationVariables = {
-      //   totalOrders : order.length,
-      // };
-      // let count = 0;
-      // order.forEach((singleOrder) => {
-      //   if(singleOrder.status === 3) {
-      //     count+=1;
-      //   };
-      // });
-      // paginationVariables.deliveredOrders = count;
-      // paginationVariables.undeliveredOrders = order.length - count;
-      // const totalItems = await OrderService.getTotalOrdersCountForOrderManagement(
-      //   condition,
-      //   search
-      // );
+      const paginationVariables = {
+        totalOrders : order.length,
+      };
+      let count = 0;
+      order.forEach((singleOrder) => {
+        if(singleOrder.status === 3) {
+          count+=1;
+        };
+      });
+      paginationVariables.deliveredOrders = count;
+      paginationVariables.undeliveredOrders = order.length - count;
+      const totalItems = await OrderService.getTotalOrdersCountForOrderManagement(
+        condition,
+        search
+      );
 
-      // paginationVariables.totalItems = totalItems;
+      paginationVariables.totalItems = totalItems;
 
       return res.status(200).send(ResponseService.success({
-        order
-        // paginationVariables 
+        order,
+        paginationVariables 
       }));
     } catch (e) {
       return res.status(500).send(ResponseService.failure(e));

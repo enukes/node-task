@@ -19,6 +19,6 @@ router.get('/categories', OpenApiController.getAllCategoriesForStoreRegister);
 router.get('/cities', AreaController.getCitiesList);
 router.get('/areas', AreaController.getAreasList);
 router.get('/config',ConfigController.getConfig);
-router.get('/service-categories', ServiceProviderCategoryController.getServiceProviderAllCategories);
+router.get('/service-categories', ServiceProviderCategoryController.getServiceProviderCategories);
 
 module.exports = router;

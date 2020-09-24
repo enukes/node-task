@@ -304,7 +304,7 @@ module.exports = {
       return Store.aggregate([
         {
           $geoNear: {
-            near: { type: "Point", coordinates: [ long, lat ] },
+            near: { type: "Point", coordinates: [lat, long ] },
             distanceField: "dist.calculated",
             maxDistance: 2*5000,
             query: { categories: category,'address.gps_address':search},
@@ -318,7 +318,7 @@ module.exports = {
     return Store.aggregate([
       {
         $geoNear: {
-           near: { type: "Point", coordinates: [ long, lat ] },
+           near: { type: "Point", coordinates: [ lat, long ] },
            distanceField: "dist.calculated",
            maxDistance: 5000,
            query: { categories: category },

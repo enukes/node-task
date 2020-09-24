@@ -107,14 +107,26 @@ module.exports = {
         throw new apiError.ValidationError('serviceProviderApproval', messages.SERVICE_PROVIDER_PERMISSION)
       }
 
-      const serviceProviderCategoryId = request.serviceCategory;
-      if (!serviceProviderCategoryId || !HelperService.isValidMongoId(serviceProviderCategoryId)) {
-        throw new apiError.ValidationError('serviceProviderCategoryId', messages.ID_INVALID);
+      // const serviceProviderCategoryId = request.serviceCategory;
+      // if (!serviceProviderCategoryId || !HelperService.isValidMongoId(serviceProviderCategoryId)) {
+      //   throw new apiError.ValidationError('serviceProviderCategoryId', messages.ID_INVALID);
+      // }
+
+      if (!(request.categories && request.categories.length > 0)) {
+        throw new apiError.ValidationError('category', messages.CATEGORY_ID_REQUIRED);
       }
+      
 
       request.owner = JSON.parse(request.owner);
       request.address = JSON.parse(request.address);
       request.timings = JSON.parse(request.timings);
+      request.categories = JSON.parse(request.categories);
+
+      request.categories.forEach((element) => {
+        if (!element || !HelperService.isValidMongoId(element)) {
+          throw new apiError.ValidationError('categoryId', messages.ID_INVALID);
+        }
+      });
 
       if (request.address.length === 0) {
         throw new apiError.ValidationError('address', messages.ADDRESS_REQUIRED);

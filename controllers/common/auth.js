@@ -495,14 +495,24 @@ class AuthController {
 
       if (!request.contact_number) throw new apiError.ValidationError('contact_number', messages.CONTACT_REQUIRED);
 
-      let contact = request.contact_number;
+      let contact = request.contact_number; 
+      
       let user;
-      if (contact.length >= 10) {
+      if (contact.length >= 10) { 
         contact = contact.slice(-10);
         contact = new RegExp(contact, 'i');
-        user = await AuthService.getUser({ contact_number: contact }, type);
+        if(type==5 ||type==2){
+        user = await AuthService.getUser({ 'owner.contact_number': contact }, type);}
+        else{
+        user = await AuthService.getUser({ contact_number: contact }, type);}
+      } 
+      if (!user){
+        if(type==5 ||type==2){
+          user = await AuthService.getUser({ 'owner.email': contact }, type);}
+          else{
+            user=await AuthService.getUser({ email: request.contact_number }, type);}
       }
-      if (!user) user=await AuthService.getUser({ email: request.contact_number }, type);
+      
       
       OTP.sendPasswordResetLink(user,type,req.baseUrl,genrateToken);
       

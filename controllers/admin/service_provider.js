@@ -94,6 +94,7 @@ module.exports = {
   updateAServiceProvider: async (req, res) => {
     try {
       const request = { ...req.body };
+      const type = req.baseUrl.split('/')[2];
       if (!request.owner) {
         throw new apiError.ValidationError('owner_details', messages.OWNER_DETAILS_REQUIRED);
       }
@@ -141,7 +142,7 @@ module.exports = {
       if (!service_provider) {
         throw new apiError.ValidationError('service_provider_id', messages.ID_INVALID);
       }
-      if (service_provider.serviceProviderApproval === 'Approved') {
+      if (service_provider.serviceProviderApproval === 'Approved' && type=="serviceprovider") {
         throw new apiError.ValidationError('serviceProviderApproval', messages.SERVICE_PROVIDER_PROFILE_NOT_UPDATE);
       }
 

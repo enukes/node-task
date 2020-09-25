@@ -161,7 +161,7 @@ module.exports = {
           store_id: scannedById,
           pickup_code: reqBody.code
         }
-        const store = await StoreService.getStore({ _id: store_id });
+        const store = await StoreService.getStore({ _id: request.store_id });
         if (!(store.storeApproval === 'Approved')) {
           throw new apiError.ValidationError('storeApproval', messages.STORE_PERMISSION);
         }

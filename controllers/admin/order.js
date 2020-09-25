@@ -31,15 +31,20 @@ module.exports = {
         if (!(store.storeApproval === 'Approved')) {
           throw new apiError.ValidationError('storeApproval', messages.STORE_PERMISSION);
         }
+        if (req.query.fromDate) fromDate = req.query.fromDate;
+        if (req.query.toDate) toDate = req.query.toDate;
       }
-
+      
       const order = await OrderService.getOrdersWithPagination(
         condition,
         pageNo,
         perPage,
         search,
-        sort
-      );
+        sort,
+        fromDate,
+        toDate
+
+      ); 
       const paginationVariables = {
         pageNo,
         perPage

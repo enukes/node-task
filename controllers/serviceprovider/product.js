@@ -59,7 +59,7 @@ module.exports = {
       else criteria.service_provider_id = request.service_provider_id;
 
       const paginationVariables = { pageNo, perPage };
-      const subcategories = await ServicesService.getServicesWithPagination(
+      const services = await ServicesService.getServicesWithPagination(
         {},
         pageNo,
         perPage,
@@ -68,7 +68,7 @@ module.exports = {
       );
 
       paginationVariables.totalItems = await ServicesService.getTotalServicesCount({}, criteria);
-      return res.status(200).send(ResponseService.success({ subcategories, paginationVariables }));
+      return res.status(200).send(ResponseService.success({ services, paginationVariables }));
     } catch (e) {
       return res.status(500).send(ResponseService.failure(e));
     }

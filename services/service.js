@@ -37,16 +37,16 @@ module.exports = {
 
   getTotalServicesCount(request, criteria) {
     const condition = {
-      $and: [
+     $and: [
         {
           $or: [
             { name: new RegExp(criteria.search, 'i') }
           ]
         },
-        {
-          service_provider_id: criteria.store_id
+       {
+          service_provider_id: criteria.service_provider_id
         }
-      ]
+     ]
     };
     return Service.countDocuments(condition);
   },

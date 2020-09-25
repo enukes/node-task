@@ -31,7 +31,7 @@ module.exports = {
         }
       }
       else criteria.store_id = request.store_id;
-
+    
       if (request.subcategory_id) {
         criteria.subcategory_id = request.subcategory_id;
       }

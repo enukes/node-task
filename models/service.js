@@ -38,6 +38,11 @@ const schema = new mongoose.Schema({
     required: [true, messages.STOCK_QUANTITY_REQUIRED],
     min: [0, messages.STOCK_QUANTITY_NON_NEGATIVE]
   },
+  category_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ServiceProviderCategory',
+    required: true
+  },
   status: {
     type: Number,
     enum: [

@@ -57,7 +57,7 @@ module.exports = {
     else sortObject = { created_at: -1 };
     if (!pageNo) {
       return Order.aggregate([
-          
+
         { $match: request },
         // {
         //   $lookup:{
@@ -209,37 +209,26 @@ module.exports = {
   },
 
   // getting orders for super-admin
-  async getOrdersWithPagination(request, pageNo, perPage, search, sort = null,fromDate,toDate) {
+  async getOrdersWithPagination(request, pageNo, perPage, search, sort = null, fromDate, toDate) {
 
     const condition = {
-      $and: [{ deliver_start_time: { $gt: moment(fromDate, 'YYYY-MM-DD') } },
-        { deliver_end_time: { $lt: moment(toDate, 'YYYY-MM-DD') } },
+      $and: [
+        { deliver_start_time: { $gt: moment(fromDate).toDate() } },
+        { deliver_end_time: { $lt: moment(toDate).toDate() } },
         {
           $or:
             [
               { order_id: new RegExp(search, 'i') }
               // { "store.name": new RegExp(search, 'i') },
             ]
-        }, request
+        },
+        request
       ]
     };
     if (sort) {
       return Order.aggregate([
         {
           $match: condition
-          // {
-          //   $and:
-          //     [
-          //       {
-          //         $or:
-          //           [
-          //             { order_id: new RegExp(search, 'i') }
-          //             // { "store.name": new RegExp(search, 'i') },
-          //           ]
-          //       },
-          //       request
-          //     ]
-          // }
         },
         {
           $lookup: {
@@ -252,17 +241,17 @@ module.exports = {
         {
           $unwind: '$store'
         },
-        {
-          $lookup: {
-            from: 'cities',
-            localField: 'address.delivery.city_id',
-            foreignField: '_id',
-            as: 'address.delivery.city'
-          }
-        },
-        {
-          $unwind: '$address.delivery.city'
-        },
+        // {
+        //   $lookup: {
+        //     from: 'cities',
+        //     localField: 'address.delivery.city_id',
+        //     foreignField: '_id',
+        //     as: 'address.delivery.city'
+        //   }
+        // },
+        // {
+        //   $unwind: '$address.delivery.city'
+        // },
         {
           $lookup: {
             from: 'drivers',
@@ -292,10 +281,12 @@ module.exports = {
     }
   },
 
-  getTotalOrdersCountForOrderManagement(request, search) {
+  getTotalOrdersCountForOrderManagement(request, search, fromDate, toDate) {
     const condition = {
       $and:
         [
+          { deliver_start_time: { $gt: moment(fromDate).toDate() } },
+          { deliver_end_time: { $lt: moment(toDate).toDate() } },
           {
             $or: [
               {
@@ -707,89 +698,89 @@ module.exports = {
   },
 
   async getTodayServiceWithPagination({ service_provider_id, testStartDate, testEndDate, status = null }, pageNo, perPage, search, sort = null) {
-    
-      return ServiceOrder.aggregate([
-        {
-          $match: {
-            $and:
-              [
-                {
-                  $or:
-                    [
-                      { order_id: new RegExp(search, 'i') }
-                    ]
-                },
-                { service_provider_id },
-                { ...(status && { status }) }
-              ]
-          }
-        },
-        {
-          $lookup: {
-            from: 'slots',
-            foreignField: '_id',
-            localField: 'slot_id',
-            as: 'slots'
-          }
-        },
-        {
-          $unwind: '$slots'
-        },
-        {
-          $match: {
-            $and: [{ 'slots.start_time': { $gte: testStartDate } },
-            { 'slots.end_time': { $lte: testEndDate } }],
-          },
-        },
-        {
-          $lookup: {
-            from: 'stores',
-            foreignField: '_id',
-            localField: 'service_provider_id',
-            as: 'store'
-          }
-        },
-        {
-          $unwind: '$store'
-        },
-        {
-          $lookup: {
-            from: 'cities',
-            localField: 'address.delivery.city_id',
-            foreignField: '_id',
-            as: 'address.delivery.city'
-          }
-        },
-        {
-          $unwind: '$address.delivery.city'
-        },
-        {
-          $lookup: {
-            from: 'drivers',
-            localField: 'driver_id',
-            foreignField: '_id',
-            as: 'driver'
-          }
-        },
-        {
-          $unwind: // "$driver"
-          {
-            path: '$driver',
-            preserveNullAndEmptyArrays: true
-          }
-        },
-        // {
-        //   $sort: sort
-        // },
-        {
-          $skip: ((pageNo - 1) * perPage)
-        },
 
-        {
-          $limit: perPage
+    return ServiceOrder.aggregate([
+      {
+        $match: {
+          $and:
+            [
+              {
+                $or:
+                  [
+                    { order_id: new RegExp(search, 'i') }
+                  ]
+              },
+              { service_provider_id },
+              { ...(status && { status }) }
+            ]
         }
-      ]);
-    
+      },
+      {
+        $lookup: {
+          from: 'slots',
+          foreignField: '_id',
+          localField: 'slot_id',
+          as: 'slots'
+        }
+      },
+      {
+        $unwind: '$slots'
+      },
+      {
+        $match: {
+          $and: [{ 'slots.start_time': { $gte: testStartDate } },
+          { 'slots.end_time': { $lte: testEndDate } }],
+        },
+      },
+      {
+        $lookup: {
+          from: 'stores',
+          foreignField: '_id',
+          localField: 'service_provider_id',
+          as: 'store'
+        }
+      },
+      {
+        $unwind: '$store'
+      },
+      {
+        $lookup: {
+          from: 'cities',
+          localField: 'address.delivery.city_id',
+          foreignField: '_id',
+          as: 'address.delivery.city'
+        }
+      },
+      {
+        $unwind: '$address.delivery.city'
+      },
+      {
+        $lookup: {
+          from: 'drivers',
+          localField: 'driver_id',
+          foreignField: '_id',
+          as: 'driver'
+        }
+      },
+      {
+        $unwind: // "$driver"
+        {
+          path: '$driver',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      // {
+      //   $sort: sort
+      // },
+      {
+        $skip: ((pageNo - 1) * perPage)
+      },
+
+      {
+        $limit: perPage
+      }
+    ]);
+
   },
 
   async getTodayOrdersCountForStore({ store_id, testStartDate, testEndDate, status = null }, pageNo, perPage, search, sort = null) {
@@ -880,8 +871,8 @@ module.exports = {
   },
   orderVerified(request) {
     return Order.aggregate([
-      { 
-        request 
+      {
+        request
       },
       // {
       //   $lookup: {

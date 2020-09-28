@@ -51,7 +51,9 @@ module.exports = {
       };
       const totalItems = await OrderService.getTotalOrdersCountForOrderManagement(
         condition,
-        search
+        search,
+        fromDate,
+        toDate
       );
 
       paginationVariables.totalItems = totalItems;

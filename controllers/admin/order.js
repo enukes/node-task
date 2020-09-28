@@ -31,8 +31,8 @@ module.exports = {
         if (!(store.storeApproval === 'Approved')) {
           throw new apiError.ValidationError('storeApproval', messages.STORE_PERMISSION);
         }
-        if (req.query.fromDate) fromDate = req.query.fromDate;
-        if (req.query.toDate) toDate = req.query.toDate;
+        if (req.query.fromDate) fromDate = req.query.fromDate ;else fromDate=null;
+        if (req.query.toDate) toDate = req.query.toDate; else toDate=null;
       }
       
       const order = await OrderService.getOrdersWithPagination(

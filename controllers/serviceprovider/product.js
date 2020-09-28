@@ -24,7 +24,7 @@ module.exports = {
 
       if (`${userType}` === '5') {
       request.service_provider_id = req._userInfo._user_id; 
-      
+      request.price = JSON.parse(request.price);
       const service = await ServiceProviderService.getServiceProvider({ _id: request.service_provider_id });
       const categories = service.categories.find((category) => (
         category.toString() === request.category_id

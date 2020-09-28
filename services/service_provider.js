@@ -234,7 +234,7 @@ module.exports = {
       {
         $lookup: {
           from : 'serviceprovidercategories',
-          localField: 'serviceCategory',
+          localField: 'categories',
           foreignField: '_id',
           as: 'category'
         }

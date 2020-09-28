@@ -6,6 +6,7 @@ const apiError = require('../../common/api-errors');
 const messages = require('../../common/messages');
 const config = require('../../config/constants');
 const ServiceProviderService = require('../../services/service_provider');
+const category = require('../../models/category');
 
 
 module.exports = {
@@ -25,11 +26,17 @@ module.exports = {
       request.service_provider_id = req._userInfo._user_id; 
       
       const service = await ServiceProviderService.getServiceProvider({ _id: request.service_provider_id });
+      const categories = service.categories.find((category) => (
+        category.toString() === request.category_id
+      )) || null;
+      
       if (!(service.serviceProviderApproval === 'Approved')) {
         throw new apiError.ValidationError('serviceApproval', messages.SERVICE_PROVIDER_PERMISSION);
       }
+      if (categories == null) {
+        throw new apiError.ValidationError('serviceApproval', messages.SERVICE_PROVIDER_CATEGORY_ID_INVALID);
       }
-      request.category_id = JSON.parse(request.category_id); 
+      }
       const service = await ServicesService.addAServiceToServiceProvider(request);
       return res.status(200).send(ResponseService.success(service));
     } catch (e) {

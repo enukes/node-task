@@ -255,17 +255,17 @@ module.exports = {
         {
           $unwind: '$store'
         },
-        // {
-        //   $lookup: {
-        //     from: 'cities',
-        //     localField: 'address.delivery.city_id',
-        //     foreignField: '_id',
-        //     as: 'address.delivery.city'
-        //   }
-        // },
-        // {
-        //   $unwind: '$address.delivery.city'
-        // },
+        {
+          $lookup: {
+            from: 'cities',
+            localField: 'address.delivery.city_id',
+            foreignField: '_id',
+            as: 'address.delivery.city'
+          }
+        },
+        {
+          $unwind: '$address.delivery.city'
+        },
         {
           $lookup: {
             from: 'drivers',

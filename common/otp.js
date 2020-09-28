@@ -8,7 +8,6 @@ const AuthService = require('../services/auth');
 const Mailer = require('./mailer');
 const apiError = require('./api-errors');
 const messages = require('./messages');
-const { base } = require('../models/slot');
 
 module.exports = {
   async send(contactNumber, type,verification_token,baseUrl) {
@@ -32,8 +31,6 @@ module.exports = {
   async sendPasswordResetLink(user, type,baseUrl,genrateToken) {
     try {
       const hostName=config.baseURL;
-      if (type==5) base="service-provider";
-      else base=baseUrl;
       if(!user){
          user = await AuthService.getUser({ email: contactNumber }, type);
       }
@@ -41,7 +38,7 @@ module.exports = {
         to: [user.email],
         from: 'aapkidokan@gmail.com',
         subject: 'Reset Password',
-        html: `<h4>Dear ${user.full_name}!</h4><p>Please click on the below link for reset your password.</p><br><a href="${hostName}${base}/reset-password?token=${genrateToken}">${hostName}${baseUrl}/reset-password?token=${genrateToken}</a>`
+        html: `<h4>Dear ${user.full_name}!</h4><p>Please click on the below link for reset your password.</p><br><a href="${hostName}${baseUrl}/reset-password?token=${genrateToken}">${hostName}${baseUrl}/reset-password?token=${genrateToken}</a>`
       });
     } catch (error) {
       console.log(error);

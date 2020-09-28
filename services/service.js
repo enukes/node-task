@@ -16,6 +16,9 @@ module.exports = {
           },
           {
             service_provider_id: criteria.service_provider_id
+          },
+          {
+            category_id: criteria.categoryId
           }
         ]
     };
@@ -45,6 +48,9 @@ module.exports = {
         },
        {
           service_provider_id: criteria.service_provider_id
+        },
+        {
+          category_id: criteria.categoryId
         }
      ]
     };

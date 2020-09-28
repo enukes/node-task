@@ -7,6 +7,7 @@ const messages = require('../../common/messages');
 const config = require('../../config/constants');
 const ServiceProviderService = require('../../services/service_provider');
 
+
 module.exports = {
  
  async addService(req, res) {
@@ -22,12 +23,13 @@ module.exports = {
 
       if (`${userType}` === '5') {
       request.service_provider_id = req._userInfo._user_id; 
+      
       const service = await ServiceProviderService.getServiceProvider({ _id: request.service_provider_id });
       if (!(service.serviceProviderApproval === 'Approved')) {
         throw new apiError.ValidationError('serviceApproval', messages.SERVICE_PROVIDER_PERMISSION);
       }
       }
-
+      request.category_id = JSON.parse(request.category_id); 
       const service = await ServicesService.addAServiceToServiceProvider(request);
       return res.status(200).send(ResponseService.success(service));
     } catch (e) {
@@ -44,6 +46,7 @@ module.exports = {
       criteria.search = req.query.search || '';
       const sort = { [req.query.name]: Number(req.query.sortType) };
       const request = { ...req.query };
+      if (req.query.categoryId) criteria.categoryId =  req.query.categoryId ;
       
       if (!request.service_provider_id && type !== 5) {
         throw new apiError.ValidationError('service_provider_id', messages.SERVICE_ID_REQUIRED);
@@ -57,7 +60,6 @@ module.exports = {
         }
         }
       else criteria.service_provider_id = request.service_provider_id;
-
       const paginationVariables = { pageNo, perPage };
       const services = await ServicesService.getServicesWithPagination(
         {},
